@@ -1,0 +1,29 @@
+{
+  "name": "@monsoft/monsoft-crm",
+  "description": "The ABA therapy note-generation app",
+  "author": "Monsoft Solutions",
+  "private": true,
+  "scripts": {
+    "prepare": "husky",
+    "check": "turbo run check",
+    "pre-commit": "git stash -q -k -u && (npm run check || (git stash pop -q && exit 1)) && git stash pop -q",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
+  },
+  "dependencies": {
+    "husky": "^9.1.7",
+    "vitepress": "^1.6.3"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.1",
+    "eslint": "^8.57.0",
+    "prettier": "^3.2.5",
+    "turbo": "^2.4.2"
+  },
+  "packageManager": "npm@10.9.2",
+  "workspaces": [
+    "monsoft-crm-app",
+    "packages/*"
+  ]
+}
