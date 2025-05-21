@@ -1,0 +1,15 @@
+---
+description: a standard format for enum definition files
+globs: */src/*/api/*.enum.ts
+---
+- follow this template: 
+
+```
+import { z } from 'zod';
+
+// template status enum
+export const templateStatusEnum = z.enum(['draft', 'finished']);
+
+// template status type
+export type TemplateStatus = z.infer<typeof templateStatusEnum>;
+```

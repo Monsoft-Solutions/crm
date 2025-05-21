@@ -1,0 +1,10 @@
+---
+description: a standard format for constant definition files
+globs: */src/*/api/*.constant.ts
+---
+- follow this template: 
+
+```
+// key used to store session id in browser session storage
+export const sessionIdStorageKey = 'session_id';
+```

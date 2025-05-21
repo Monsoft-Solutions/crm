@@ -1,0 +1,97 @@
+---
+description: New Feature Implementation Documentation
+globs: 
+alwaysApply: false
+---
+**Task:** Document the new feature's architecture, implementation strategy, and integration details. Your documentation should provide a clear overview of the feature, highlight key architectural components, and include sample code that demonstrates core implementation concepts. Focus on presenting the general picture of how the feature fits into the overall system. If necessary, perform internet searches to gather additional details on specific topics, technologies, or packages relevant to the implementation.
+
+---
+
+## Documentation Structure
+
+1. **Feature Overview**  
+   - Describe the new feature and its purpose.  
+   - Explain the business problem it addresses and the value it adds.
+   - Include user stories or use cases that illustrate how the feature will be used.
+   - Define the feature's scope and any constraints or limitations.
+
+2. **Architecture Overview**  
+   - Present a high-level description of the feature's architecture.  
+   - Identify the major components, modules, and interactions within the system.  
+   - Include architecture diagrams or flow descriptions if applicable.
+   - Document any architectural patterns being applied (e.g., MVC, CQRS, etc.).
+
+3. **Key Components and Modules**  
+   - List and describe the main components or modules involved.  
+   - Explain the responsibilities of each component and their communication patterns.
+   - Identify dependencies between components and any external systems.
+   - Document interface contracts between modules.
+
+4. **Database Changes**
+   - Detail all database modifications required for the feature:
+     - New tables/collections with their schemas and relationships
+     - Modificg tables/schemas
+     - New indexes or constraints
+     - Migration strategy and scripts
+     - Data seeding requirements (if applicable)
+   - Include entity relationship diagrams for complex data models
+   - Document any performance considerations for database operations
+
+5. **Implementation Details**  
+   - Detail the technical design and key implementation decisions.  
+   - Explain how the new feature integrates with the existing codebase and architecture.  
+   - Describe any new services, APIs, or data models that are introduced.
+   - Include sample code for critical implementation components.
+   - Document any configuration changes needed.
+
+6. **Implementation Steps**
+   - Provide a sequential list of implementation steps to accomplish the new feature.
+   - Each step should be independent, actionable, and testable.
+   - Include estimated complexity/effort for each step.
+   - Identify dependencies between steps and critical path items.
+   - Highlight any steps that require coordination with other teams.
+
+7. **New Modules Guidelines**  
+   - Always follow the guidelines defined in @module.rules.mdc
+   - Carefully review the current architecture and the implemented features. Follow the guidelines and code styles defined in the project.
+   - Reference the template module at monsoft-crm-app/src/template for coding conventions and structure.
+   - Document any deviations from existing patterns and their justification.
+
+8. **Integration and Testing Strategy**  
+   - Describe how the feature will be integrated into the current system.  
+   - Outline the testing approach, including:
+     - Unit tests for individual components
+     - Integration tests for component interactions
+     - End-to-end test scenarios
+     - Performance testing requirements
+   - Include sample test cases and acceptance criteria.
+   - Document any test data requirements.
+
+9. **Impact on Existing Architecture**  
+   - Detail any modifications or extensions to the current system architecture.  
+   - Discuss potential risks or challenges and strategies for mitigating them.
+   - Document any backward compatibility considerations.
+   - Address any required refactoring of existing code.
+
+10. **Deployment Strategy**
+    - Document the deployment approach for the new feature.
+    - Include any required infrastructure changes.
+    - Outline feature flag strategy if applicable.
+    - Document rollback procedures.
+    - Address any data migration considerations during deployment.
+
+11. **Future Considerations**  
+    - Highlight any planned enhancements, scalability considerations, or further improvements.  
+    - Offer recommendations for maintaining and evolving the feature over time.
+    - Document technical debt items to be addressed in future iterations.
+    - Suggest monitoring and observability approaches for the new feature.
+
+12. **Documentation Requirements**
+    - Specify what end-user documentation is needed.
+    - Outline any API documentation requirements.
+    - Identify which architectural decisions should be documented in ADRs.
+    - List any configuration or operations documentation needed.
+
+---
+
+*Note:* Your documentation should be clear, comprehensive, and actionable, providing a complete picture of the new feature's architecture and implementation strategy while ensuring it aligns with existing system principles. If needed, perform internet searches to validate technologies, discover best practices, or gather additional insights on specific topics, technologies, and packages.

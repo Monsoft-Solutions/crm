@@ -1,0 +1,205 @@
+---
+description: Guidelines to generate code for implementing a Model Context Protocol (MCP) Server and Client using the official TypeScript SDK.
+globs: packages/mcp-*/**.md
+alwaysApply: false
+---
+Guidelines for generating MCP Server and Client implementations using the official TypeScript SDK, integrating Resources, Tools, and Prompts.
+
+## ✅ Project Initialization
+- Initialize a new TypeScript project.
+
+### Example `package.json` Structure:
+```json
+{
+  "name": "@monsoft/server-example",
+  "version": "0.0.1",
+  "description": "Example MCP server",
+  "license": "MIT",
+  "author": "Monsoft Solutions (https://monsoftsolutions.com)",
+  "homepage": "https://modelcontextprotocol.io",
+  "bugs": "https://github.com/modelcontextprotocol/servers/issues",
+  "type": "module",
+  "bin": {
+    "mcp-server-example": "dist/server/index.js"
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc && shx chmod +x dist/*.js",
+    "prepare": "npm run build",
+    "watch": "tsc --watch"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.6.1",
+    "@types/node": "^22",
+    "zod": "^3.22.4",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}
+```
+
+NOTE: After creating the package.json, run `npm i` to install the needed dependencies.
+
+### Example of the tsconfig.json
+```
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "strict": true,
+        "skipLibCheck": true,
+        "declaration": true,
+        "outDir": "./dist",
+        "rootDir": "./src"
+    },
+    "include": ["src/**/*"],
+    "exclude": ["node_modules", "dist"]
+}
+
+```
+
+---
+
+## 🚧 Server Implementation
+
+The main configuration of the server should contain the following. For the logic, let's create additional files with the implementation
+
+### Step 1: Create MCP Server
+```typescript
+import { McpServer, ResourceTemplate } from '@modelcontextprotocol/sdk/server/mcp.js';
+import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { z } from 'zod';
+
+const server = new McpServer({ name: 'YourServerName', version: '1.0.0' });
+
+// Define a static resource
+server.resource(
+  "config",
+  "config://app",
+  async (uri) => ({
+    contents: [{ uri: uri.href, text: "App configuration here" }]
+  })
+);
+
+// Define a dynamic resource with parameters
+server.resource(
+  "user-profile",
+  new ResourceTemplate("users://{userId}/profile", { list: undefined }),
+  async (uri, { userId }) => ({
+    contents: [{ uri: uri.href, text: `Profile data for user ${userId}` }]
+  })
+);
+
+// Define a computational tool
+server.tool(
+  "calculate-bmi",
+  { weightKg: z.number(), heightM: z.number() },
+  async ({ weightKg, heightM }) => ({
+    content: [{ type: "text", text: String(weightKg / (heightM * heightM)) }]
+  })
+);
+
+// Define a reusable prompt
+define.prompt(
+  "review-code",
+  { code: z.string() },
+  ({ code }) => ({
+    messages: [{ role: "user", content: { type: "text", text: `Please review this code:\n\n${code}` } }]
+  })
+);
+
+// Start the server with stdio transport
+const transport = new StdioServerTransport();
+await server.connect(transport);
+```
+
+---
+
+## 🚧 Client Implementation
+
+### Step 1: Create MCP Client
+```typescript
+import { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { StdioClientTransport } from '@modelcontextprotocol/sdk/client/stdio.js';
+
+const client = new Client(
+  { name: 'YourClientName', version: '1.0.0' },
+  { capabilities: {} }
+);
+```
+
+### Step 2: Configure Client Transport
+```typescript
+const transport = new StdioClientTransport({ command: 'path/to/mcp-server-executable-or-script' });
+await client.connect(transport);
+```
+
+### Step 3: Implement Client Logic
+```typescript
+// Call a server tool
+const bmiResult = await client.executeTool('calculate-bmi', { weightKg: 70, heightM: 1.75 });
+
+// Access a dynamic resource
+const userProfile = await client.getResource('users://123/profile');
+```
+
+---
+
+## 🚀 Running the Server
+
+### Using stdio
+Ideal for CLI or direct integrations.
+
+### Using HTTP with SSE
+For remote setups, create endpoints to handle Server-Sent Events (SSE):
+
+```typescript
+import express from 'express';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+
+const app = express();
+const server = new McpServer({ name: 'example-server', version: '1.0.0' });
+
+app.get("/sse", async (req, res) => {
+  const transport = new SSEServerTransport("/messages", res);
+  await server.connect(transport);
+});
+
+app.post("/messages", async (req, res) => {
+  await transport.handlePostMessage(req, res);
+});
+
+app.listen(3001);
+```
+
+---
+
+NOTE: DOn't generate tests for the package. I don't need them
+
+---
+
+## 📌 Code Standards and Best Practices
+- Follow modern TypeScript best practices (strict typing, async/await patterns).
+- Clearly comment components, maintain import/export consistency.
+- Logical file structure (separate server/client directories).
+- Prefer `type` over `interface`.
+- DON'T use `any`.
+
+---
+
+## 📖 Documentation
+- Create a comprehensive README with setup instructions, examples, and details on client-server interactions.
+- Keep the README updated with new changes.
+
+## Finishing the devoloping of the MCP
+- Install the dependencies
+- Build the project
+- Fix any issues you detect on the build
+
+
+

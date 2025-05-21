@@ -1,0 +1,28 @@
+---
+description: a standard format for react component definition files
+globs: */src/*/api/*.component.ts
+---
+- follow this template: 
+
+```
+import { ReactElement } from 'react';
+
+import { Card, CardDescription, CardHeader, CardTitle } from '@ui/card';
+
+// card shown when a user tries to access a non-found private page
+export function NotFoundCard(): ReactElement {
+    return (
+        <Card className="mx-auto max-w-96">
+            <CardHeader>
+                <CardTitle>Page not found</CardTitle>
+
+                <CardDescription>
+                    The page you were looking for could not be found. Please
+                    double check the URL.
+                </CardDescription>
+            </CardHeader>
+        </Card>
+    );
+}
+
+```

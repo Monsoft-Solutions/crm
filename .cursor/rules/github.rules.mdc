@@ -1,0 +1,13 @@
+---
+description: use it for anything related to Github
+globs: 
+alwaysApply: false
+---
+- The owner of the project and is `Monsoft-Solutions`
+- The repo name is: `monsoft-crm`
+- To create or update issues, check the guidelines in [github-issues.rules.mdc](mdc:.cursor/rules/github-issues.rules.mdc)
+- To create or update Pull Requests, check [pull-request.rules.mdc](mdc:.cursor/rules/pull-request.rules.mdc)
+- For the operations related to GitHub project, follow [github-project-operations.rules.mdc](mdc:.cursor/rules/github-project-operations.rules.mdc)
+- For the templates of the issues and Pull Requests, check the folder `.github`
+
+- AFter any operations on Github, share the link so the user can check the changes

@@ -1,0 +1,37 @@
+---
+description: When creating or updating issues in GitHub, **follow these guidelines** 
+globs: 
+alwaysApply: false
+---
+
+
+---
+
+## 📌 Repository Info
+- **Owner**: `Monsoft-Solutions`
+- **Repo**: `monsoft-crm`
+
+#ight Template
+- For **feature requests**, use: [feature_request.md](mdc:.github/ISSUE_TEMPLATE/feature_request.md)
+- For **bug reports**, use: [bug_report.md](mdc:.github/ISSUE_TEMPLATE/bug_report.md)
+- Ensure the issue title and body match the tone and structure of the selected template
+
+---
+
+## 🛠️ Implementation Plan (Required)
+- Every issue must include a **proposed implementation plan**
+- Investigate the current codebase if necessary to:
+  - Understand context and dependencies
+  - Suggest viable and efficient implementation paths
+- Be specific about:
+  - Affected components or files
+  - Expected changes (logic, UI, API, etc.)
+  - Any blockers or unknowns
+
+---
+
+## ✅ Best Practices
+- Use **clear, concise language**
+- Add **labels** (`bug`, `feature`, `enhancement`, etc.)
+- Assign to the appropriate team member(s) if known
+- Link to relevant commits, PRs, or documentation

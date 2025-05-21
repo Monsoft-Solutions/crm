@@ -1,0 +1,1345 @@
+---
+description: standard filesystem structure for app modules
+globs: */src/*/instructions/*.md
+---
+# Module initialization rules
+
+
+## Consistent directory structure 
+
+follow this structure for creating a module directory, where each of these subfolders is called a `capability`:
+            
+            <app>
+            ├── app/                            # integration of all modules into the app, each capability has its own subfolder 
+            │   ├── <capability>/               # integration of all functionalities for the given <capability> from all modules
+            │   └── ...                         # other capabilities
+            ├── bases/                          # backbone for all capabilities, should NOT be modified
+            │   ├── <capability>/               # backbone for the given <capability>, should NOT be modified
+            │   └── ...                         # other capabilities
+            ├── routes/                         # client-side routes for rendering the different views
+            │   ├── _private                    # private views
+            │   └── _public                     # public views
+            └── src/                            # app modules, each module has its own subfolder 
+                ├── <module>/                   # root of the given <module>
+                │   ├── README.md               # the README file describing the module's features
+                │   ├── api/                    # api endpoints: queries, mutations and subscriptions
+                │   │   ├── <module>.api.ts     # api router, the only thing that should be re-exported by the api barrel file
+                │   │   ├── *.query.ts          # query endpoint
+                │   │   ├── *.mutation.ts       # mutation endpoint
+                │   │   └── *.subscription.ts   # subscription endpoint 
+                │   ├── components/             # react components
+                │   │   └── *.component.tsx     # react component
+                │   ├── conf/                   # configurations: core and custom
+                │   │   ├── core/               # core configurations
+                │   │   │   └── *.core.ts       # core configuration
+                │   │   └── custom/             # custom configurations
+                │   │       └── *.custom.ts     # custom configuration 
+                │   ├── constants/              # constants
+                │   │   └── *.constant.ts       # constant 
+                │   ├── db/                     # database tables
+                │   │   └── *.table.ts          # database table 
+                │   ├── enums/                  # zod enums
+                │   │   └── *.enum.ts           # zod enum 
+                │   ├── events/                 # events
+                │   │   └── *.event.ts          # event 
+                │   ├── guards/                 # authorization guards
+                │   │   └── <resource>.roles.ts # authorization guard, i.e. resource-related roles 
+                │   ├── hub/                    # event listeners
+                │   │   └── *.listener.ts       # event listener 
+                │   ├── providers/              # impure functions
+                │   │   └── *.provider.ts       # impure function 
+                │   ├── res/                    # resources
+                │   │   └── *.res.ts            # resource 
+                │   ├── schemas/                # zod schemas
+                │   │   └── *.schema.ts         # zod schema 
+                │   ├── seed/                   # database seeds
+                │   │   └── <table>.seed.ts     # database seeds for <table> 
+                │   ├── types/                  # typescript types
+                │   │   └── *.type.ts           # typescript type 
+                │   ├── utils/                  # pure (utility) functions
+                │   │   └── *.util.ts           # utility function 
+                │   ├── views/                  # views (pages) to be rendered by routes
+                │   │   └── *.view.tsx          # view 
+                │   └── ...                     # other kinds of functionality
+                └── ...                         # other modules
+
+where `<module>` is the name of the given module, and the `<module>/` folder represents its root
+
+
+## Initialization Order
+
+create all the files required by the module's features, proceeding in the following order:
+        
+1. define database tables and relations
+2. define constants and enums
+3. define schemas and types
+4. define resources for permission system
+5. define events
+6. implement API endpoints (queries, mutations, subscriptions)
+7. create UI components and views
+8. set up routes
+9. Ensure the generated code is perfect and follows the instructions, and all the imports work as expected
+
+
+
+## Barrel files
+
+for each `capability` that the module implements functionality, create an `index.ts` barrel file for re-exporting all definitions from all files inside it
+
+        - keep it simple, with only re-exports
+        - do not include any additional definitions
+        - use the pattern `export * from './file-path';`
+        - in the case of the API, it should only re-export the module router itself, not the endpoints
+        - do NOT create unified module-wide barrel file at the root of the module re-exporting from all capabilities
+
+
+## App integration
+
+for each of the following capabilities, if used by the module, integrate it in the existing `app.*.ts` file in the subfolder for the given capability, inside the existing `app` directory at the root of the current `<app>` (as shown in the above diagram):
+
+        - api   -> api/app.api.ts
+        - db    -> db/app.tables.ts
+        - event -> events/app.events.ts
+        - guard -> guard/app.roles.ts
+        - hub   -> hub/app.listeners.ts
+        - res   -> res/app.res.ts
+        - seed  -> seed/app.seed.ts
+
+* do NOT create new files or folders for this, just extend the corresponding existing file by adding a new re-export line: `export * from '@src/<module>/<capability>'`
+* in the case of `db`, it should instead be `export * from '../../src/<module>/db'`
+
+
+## Module README
+
+Generate a `README.md` file describing the module
+
+        - located at the root of the module
+        - following best practices
+        - should be perfect and include everything the module does
+        - may include an additional section with ideas for desirable feature extensions
+
+
+## File naming conventions
+
+respect the filesystem hierarchy guidelines
+
+        - use kebab-case for file names
+        - use singular nouns for resource names
+        - use descriptive suffixes to indicate file purpose (.event.ts, .table.ts, etc.)
+
+
+## Code style
+
+respect the code guidelines
+
+- use camelCase for variable and function names
+- use PascalCase for type names, never use `interface`
+- use descriptive names that explain purpose
+- include JSDoc comments for functions
+- leave empty new lines for easier reading, as in the template files, specially for import statements
+- import definitions from other modules using `@src/<other-module>/<capability>`
+- do NOT include unused imports
+- avoid code duplication
+
+## Tech stach
+
+make optimal use of the tech stack:
+
+        - Tanstack router for client-side navigation
+        - TailwindCSS for utility-class styling
+        - ShadCN based on RadixUI for UI primitives
+
+
+## UI/UX 
+        
+stick to the UI/UX principles
+
+        - clean, not overloaded
+        - very easy to use
+        - make use of shared ui primitives in `<app>/shared/ui`, imported from `@ui/<primitive>`
+        - create new primitive if needed 
+
+
+## Database
+
+        - only one table definition per file, with its relations if existing
+        - as many files as tables required
+        - use `bigint` for timestamps
+        - leave blank new lines for easier reading, especially between import statements, and to separate table columns
+        - add descriptive comments for the table and each column
+        - import all utilities for creating tables and columns from `@db/sql` instead of `drizzle-orm` 
+        - import any other required tables from '../../../bases/db/db.tables'
+        - do NOT import definitions for tables that are not directly used, like when used only as `db.query.<table>.findMany()`
+
+follow this template:
+
+        ``` ts
+        import { relations } from 'drizzle-orm';
+
+        // import from the db base, not from drizzle
+        import { char, enumType, sqlEnum, table, varchar, bigint } from '@db/sql';
+
+        import { user } from '../../../bases/db/db.tables';
+
+        import { templateStatusEnum } from '../enums';
+
+        export const statusEnum = enumType(
+        'template_status',
+        templateStatusEnum.options,
+        );
+
+        // templates
+        export const templateTable = table('template', {
+        id: char('id', { length: 36 }).primaryKey(),
+
+        // short name of the template
+        name: varchar('name', { length: 255 }).unique().notNull(),
+
+        // creator of the template
+        creator: char('creator', { length: 36 })
+                .notNull()
+                .references(() => user.id),
+
+        // current status of the template
+        status: sqlEnum('status', statusEnum).notNull().default('draft'),
+
+        // the time at which the template expires
+        expiresAt: bigint('expires_at', {
+                mode: 'number',
+        }).notNull(),
+        });
+
+        export const templateTableRelations = relations(templateTable, ({ one }) => ({
+        // creator of the template
+        creator: one(user, {
+                fields: [templateTable.creator],
+                references: [user.id],
+        }),
+        }));
+        ```
+
+## API
+
+- file structure:
+        - one file per endpoint (query, mutation, or subscription), e.g. `get-templates.query.ts`, `create-template.mutation.ts`, `template-created.subscription.ts`
+        - one single file for the module's API gateway, e.g. `template.api.ts` for the `template` module
+        - one barrel file `api/index.ts` re-exporting ONLY the gateway definition, NOT the individual endpoints themselves
+
+- gateway API file:
+        - the gateway API file should import all endpoints from the module
+        - export a single gateway created using the `endpoints()` provider, imported from `@api/providers/server`
+
+- barrel file:
+        - should NOT re-export individual endpoint definitions
+        - should ONLY export the module's API gateway, e.g. `export * from './template.api';`
+
+- enpoint input:
+        - should be primitive zod schemas, without any specific constrains like `.uuid()` or `.email()`
+
+   
+
+## Direct endpoints (queries & mutations, NOT subscriptions):
+
+- structure:
+        - always use the correct method chaining pattern: `protectedEndpoint.input().mutation()` or `protectedEndpoint.input().query()`
+        - NEVER use a wrong object parameter pattern, e.g. a `handler` property
+
+- input definition:
+        - define inputs using zod schema, e.g. `.input(z.object({...}))`
+        - place each input on a new line for readability
+
+- callback structure:
+        - always wrap callbacks with `queryMutationCallback`
+        - access user via `ctx.session.user`, not directly from parameters
+        - destructure input parameters in the function signature
+
+- permission handling:
+        - use `ensurePermission()` from `@guard/providers` instead of `hasPermission()`, e.g. `ensurePermission({ user, resource, action, resourceId? })`
+        - resources should be strings matching module names, e.g. 'template'
+
+- error handling:
+        - use `catchError()` from `@errors/utils/catch-error.util` for database operations
+        - return errors using `Error()` from `@errors/utils`
+        - return success using `Success()` from `@errors/utils`
+        - NEVER return custom success/error objects, or any other custom objects
+
+- import pattern:
+        - import `protectedEndpoint` from `@api/providers/server`
+        - import `queryMutationCallback` from `@api/providers/server`
+        - import `db` from `@db/providers/server`
+        - import `Error, Success` from `@errors/utils`
+        - import `catchError` from `@errors/utils`
+
+- event emission:
+        - use `emit()` without await (it's not a Promise), e.g. `emit({ event: 'eventName', payload: data })`
+
+- database:
+        - import any required tables from '../../../bases/db/db.tables'
+
+
+
+## Query endpoints:
+
+follow this template:
+
+        ``` ts
+        import { Error, Success } from '@errors/utils';
+
+        import { protectedEndpoint } from '@api/providers/server';
+
+        import { z } from 'zod';
+
+        import { ensurePermission } from '@guard/providers';
+
+        import { db } from '@db/providers/server';
+
+        import { and, eq, like } from 'drizzle-orm';
+
+        import { userMatcherEnum } from '../enums';
+
+        import { catchError } from '@errors/utils/catch-error.util';
+        import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
+
+        export const searchTemplates = protectedEndpoint
+        .input(
+                z.object({
+                search: z.string(),
+                creator: userMatcherEnum,
+                }),
+        )
+        .query(
+                queryMutationCallback(
+                async ({
+                        ctx: {
+                        session: { user },
+                        },
+                        input: { search, creator },
+                }) => {
+                        // if searching for templates from anyone
+                        // ensure user has permission to read everyone's templates
+                        if (creator === 'anyone') {
+                        ensurePermission({
+                                user,
+                                resource: 'template',
+                                action: 'read',
+                        });
+                        }
+
+                        // get the templates matching the search query
+                        const { data: templates, error } = await catchError(
+                        db.query.templateTable.findMany({
+                                where: (record) =>
+                                and(
+                                        like(record.name, `%${search}%`),
+                                        creator === 'anyone'
+                                        ? undefined
+                                        : eq(record.creator, user.id),
+                                ),
+                        }),
+                        );
+
+                        if (error) return Error();
+
+                        // return the templates matching the search query
+                        return Success(templates);
+                },
+                ),
+        );
+        ```
+
+
+## Mutation endpoints
+
+follow this template:
+
+        ``` ts
+        import { Error, Success } from '@errors/utils';
+
+        import { protectedEndpoint } from '@api/providers/server';
+
+        import { z } from 'zod';
+
+        import { ensurePermission } from '@guard/providers';
+
+        import { db } from '@db/providers/server';
+
+        import { catchError } from '@errors/utils/catch-error.util';
+
+        import { v4 as uuidv4 } from 'uuid';
+
+        import { emit } from '@events/providers';
+
+        import { templateTable } from '../db';
+        import type { TemplateStatus } from '../enums';
+        import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
+
+        // mutation to create a template
+        export const createTemplate = protectedEndpoint
+        .input(z.object({ name: z.string() }))
+        .mutation(
+                queryMutationCallback(
+                async ({
+                        ctx: {
+                        session: { user },
+                        },
+                        input: { name },
+                }) => {
+                        // ensure user has permission to create a template
+                        ensurePermission({
+                        user,
+                        resource: 'template',
+                        action: 'create',
+                        });
+
+                        // generate a unique id for the template
+                        const id = uuidv4();
+
+                        // set the current user as the creator of the template
+                        const creator = user.id;
+
+                        // set the initial template status to draft
+                        const status: TemplateStatus = 'draft';
+
+                        // create the template object
+                        const template = { id, name, creator, status };
+
+                        // insert the template into db
+                        const { error } = await catchError(
+                        db.insert(templateTable).values(template),
+                        );
+
+                        // if insertion failed, return the error
+                        if (error) {
+                        if (error === 'DUPLICATE_ENTRY') return Error('DUPLICATE');
+
+                        return Error();
+                        }
+                        // otherwise...
+
+                        // emit a template-created event
+                        emit({ event: 'templateCreated', payload: template });
+
+                        return Success();
+                },
+                ),
+        );
+        ```
+
+
+## Subscription endpoints
+
+        - use the `subscribe` function imported from '@api/providers/server'
+        - call it using the event name as a string literal and the callback function to apply to the event instance: `subscribe('eventName', callback)`
+   
+follow this template:
+
+        ``` ts
+        import { protectedEndpoint, subscribe } from '@api/providers/server';
+
+        import { z } from 'zod';
+
+        import { ensurePermission } from '@guard/providers';
+
+        import { userMatcherEnum } from '../enums';
+
+        // subscription to notify when a template is created
+        export const onTemplateCreated = protectedEndpoint
+        .input(
+                z.object({
+                creator: userMatcherEnum,
+                }),
+        )
+        .subscription(
+                subscribe(
+                'templateCreated',
+                ({
+                        ctx: {
+                        session: { user },
+                        },
+                        input: { creator },
+                        data: template,
+                }) => {
+                        // if searching for templates from anyone
+                        // ensure user has permission to read everyone's templates
+                        if (creator === 'anyone')
+                        ensurePermission({
+                                user,
+                                resource: 'template',
+                                action: 'read',
+                        });
+
+                        // return the created template
+                        return template;
+                },
+                ),
+        );
+        ```  
+
+       
+## API routers
+
+follow this template: 
+
+        ``` ts
+        import { endpoints } from '@api/providers/server';
+
+        // queries
+        import { searchTemplates } from './search-templates.query';
+        import { getRandomTemplate } from './get-random-template.query';
+        import { getTemplatesStats } from './get-templates-stats.query';
+
+        // mutations
+        import { createTemplate } from './create-template.mutation';
+        import { updateTemplateStatus } from './update-template-status.mutation';
+        import { deleteTemplate } from './delete-template.mutation';
+        import { toggleRandomTemplateService } from './toggle-random-template-service.mutation';
+        import { getBpi } from './get-bpi.mutation';
+
+        // subscriptions
+        import { onTemplateCreated } from './template-created.subscription';
+        import { onTemplateStatusUpdated } from '@src/template/api/template-status-updated.subscription';
+        import { onTemplateDeleted } from '@src/template/api/template-deleted.subscription';
+        import { onTemplatesStatsChanged } from './templates-stats-changed.subscription';
+        import { getIsRandomServiceActive } from './get-is-random-service-active.query';
+
+        export const template = endpoints({
+        // queries
+        searchTemplates,
+        getRandomTemplate,
+        getTemplatesStats,
+        getIsRandomServiceActive,
+
+        // mutations
+        createTemplate,
+        updateTemplateStatus,
+        deleteTemplate,
+        toggleRandomTemplateService,
+        getBpi,
+
+        // subscriptions
+        onTemplateCreated,
+        onTemplateStatusUpdated,
+        onTemplateDeleted,
+        onTemplatesStatsChanged,
+        });
+        ```
+
+
+## React components
+
+follow this template: 
+
+        ``` ts
+        import { ReactElement } from 'react';
+
+        import { Card, CardDescription, CardHeader, CardTitle } from '@ui/card';
+
+        // card shown when a user tries to access a non-found private page
+        export function NotFoundCard(): ReactElement {
+        return (
+                <Card className="mx-auto max-w-96">
+                <CardHeader>
+                        <CardTitle>Page not found</CardTitle>
+
+                        <CardDescription>
+                        The page you were looking for could not be found. Please
+                        double check the URL.
+                        </CardDescription>
+                </CardHeader>
+                </Card>
+        );
+        }
+        ```
+
+
+## Core configurations
+
+follow this template:
+
+        ``` ts
+        import { boolean } from '@db/sql';
+
+        // template core configuration
+        export const templateCoreConf = {
+        // wether the random template service is deterministic or actually random
+        randomTemplateDeterministic: boolean(
+                'random_template_deterministic',
+        ).notNull(),
+        };
+        ```
+
+
+## Custom configurations
+
+follow this template:
+
+        ``` ts
+        import { boolean } from '@db/sql';
+
+        // template custom configuration
+        export const templateCustomConf = {
+        // wether the random template service is active
+        randomTemplateServiceActive: boolean(
+                'random_template_service_active',
+        ).notNull(),
+        };
+        ```
+
+        
+## Constants
+
+follow this template: 
+
+        ``` ts
+        // key used to store session id in browser session storage
+        export const sessionIdStorageKey = 'session_id';
+        ```   
+        
+        
+## Enums
+
+follow this template: 
+
+        ``` ts
+        import { z } from 'zod';
+
+        // template status enum
+        export const templateStatusEnum = z.enum(['draft', 'finished']);
+
+        // template status type
+        export type TemplateStatus = z.infer<typeof templateStatusEnum>;
+        ```
+
+        
+## Events
+
+- create individual event files with the naming pattern [event-name].event.ts
+- each event file should contain:
+        - a schema defined using zod (e.g., eventNameEvent) 
+                - camelCase
+                - NOT ending in "Schema"
+        - a type derived from the schema (e.g., EventNameEvent)
+                - PascalCase
+                - NOT ending in "Type"
+        - no type field in the schema objects
+- create a simple barrel file (index.ts) that only re-exports from individual event files
+- extend `app/events/app.events.ts` adding a line exporting the events implemented by the new module, e.g. `export * from '@src/template/events'`
+- do NOT create separate event-type files
+- keep event definitions simple and focused
+- avoid adding unnecessary fields to event schemas
+- ensure events contain all necessary data for subscribers
+- do NOT create event type enums:
+        - the module should NOT have event-type.enum.ts file explicitly defining event types
+        - events should be referenced by string literals in emit calls (e.g., `emit({ event: 'fileCreated', payload: file })`)
+- event emission:
+        - use the `emit` function imported from `@events/providers`
+        - format: `emit({ event: 'eventName', payload: data })`
+        - do NOT include a `type` property when calling `emitEvent`
+        
+each event file should follow this template: 
+
+        ``` ts
+        import { z } from 'zod';
+
+        import { templateStatusEnum } from '../enums/template-status.enum';
+
+        // template-created event schema
+        export const templateCreated = z.object({
+        id: z.string(),
+        name: z.string(),
+        creator: z.string(),
+        status: templateStatusEnum,
+        });
+
+        // template-created event type
+        export type TemplateCreatedEvent = z.infer<typeof templateCreated>;
+        ```
+
+
+## Guards (roles)
+
+        - filename extension should be `.role.ts`, not `.guard.ts` 
+
+follow this template: 
+
+        ``` ts
+        // template roles enum
+        export const templateRoles = [
+        'template_creator',
+        'template_reviewer',
+        'template_cleaner',
+        'template_service_admin',
+        ] as const;
+        ```
+
+
+## Hubs (listeners)
+
+        - filename extension should be `.listener.ts`, not `.hub.ts` 
+
+follow this template: 
+
+        ``` ts
+        import { throwAsync } from '@errors/utils';
+
+        import { emit } from '@events/providers';
+        import { listen } from '@events/providers/listen.provider';
+
+        import { getTemplatesStats } from '../providers/server';
+
+        // template-created listener
+        void listen('templateCreated', async () => {
+        // get the templates stats
+        const { data: templatesStats, error: templateStatsError } =
+                await getTemplatesStats();
+
+        if (templateStatsError) {
+                throwAsync('TEMPLATE_CREATED_LISTENER');
+
+                return;
+        }
+
+        // emit a template-stats-changed event with the updated values
+        emit({ event: 'templateStatsChanged', payload: templatesStats });
+        });
+        ```
+
+
+## Providers
+
+follow this template: 
+
+        ``` ts
+        import { Function } from '@errors/types';
+        import { Error, Success } from '@errors/utils';
+
+        import { count, eq } from 'drizzle-orm';
+
+        import { db } from '@db/providers/server';
+
+        import { user } from '@auth/db';
+
+        import { templateTable } from '@app/db';
+        import { TemplatesStats } from '@src/template/schemas';
+        import { catchError } from '@errors/utils/catch-error.util';
+
+        // get the templates stats
+        export const getTemplatesStats = (async () => {
+        // get the number of draft templates
+        const { data: draftTemplatesQueryData, error: draftTemplatesQueryError } =
+                await catchError(
+                db
+                        .select({ count: count() })
+                        .from(templateTable)
+                        .where(eq(templateTable.status, 'draft')),
+                );
+
+        if (draftTemplatesQueryError) return Error('DRAFT_TEMPLATES_QUERY');
+
+        const numDraftTemplates = draftTemplatesQueryData.at(0)?.count ?? 0;
+
+        // get the number of finished templates
+        const {
+                data: finishedTemplatesQueryData,
+                error: finishedTemplatesQueryError,
+        } = await catchError(
+                db
+                .select({ count: count() })
+                .from(templateTable)
+                .where(eq(templateTable.status, 'finished')),
+        );
+
+        if (finishedTemplatesQueryError) return Error('Finished_TEMPLATES_QUERY');
+
+        const numFinishedTemplates = finishedTemplatesQueryData.at(0)?.count ?? 0;
+
+        // get the number of templates per user
+        const {
+                data: templatesPerUserQueryData,
+                error: templatesPerUserQueryError,
+        } = await catchError(
+                db
+                .select({
+                        userId: user.id,
+                        templatesCount: count(templateTable.id),
+                })
+                .from(user)
+                .leftJoin(templateTable, eq(user.id, templateTable.creator))
+                .groupBy(user.id),
+        );
+
+        if (templatesPerUserQueryError) return Error('TEMPLATES_PER_USER_QUERY');
+
+        // get the number of creators
+        // (users who have at least one template)
+        const numCreators = templatesPerUserQueryData.filter(
+                (user) => user.templatesCount > 0,
+        ).length;
+
+        const templateStats = {
+                numDraftTemplates,
+                numFinishedTemplates,
+                numCreators,
+        };
+
+        // return the templates stats
+        return Success(templateStats);
+        }) satisfies Function<void, TemplatesStats>;
+        ```
+
+
+## Resources
+
+- one file per resource, e.g. `template.res.ts`
+- barrel file `res/index.ts`
+- extend `app/res/app.res.ts` adding a line exporting the resources implemented by the new module, e.g. `export * from '@src/template/res'`
+
+follow this template: 
+
+        ``` ts
+        import type { Resource } from '@guard/types';
+
+        type Data = {
+        id: string;
+
+        // id of the user who created the template
+        creator: string;
+        };
+
+        // actions that can be performed on a template resource
+        type Action =
+        | 'create'
+        | 'read'
+        | 'update_status'
+        | 'delete'
+        | 'toggle_random_template_service';
+
+        // template resource access control matrix
+        // top level keys are roles
+        // second level keys are actions
+        export const template: Resource<Data, Action> = {
+        template_creator: {
+                create: true,
+                read: ({ user, instance }) => user.id === instance.creator,
+                delete: ({ user, instance }) => user.id === instance.creator,
+        },
+
+        template_reviewer: {
+                read: true,
+                update_status: true,
+        },
+
+        template_cleaner: {
+                read: true,
+                delete: true,
+        },
+
+        template_service_admin: {
+                toggle_random_template_service: true,
+        },
+        };
+        ```
+
+
+## Schemas
+
+- only one schema definition per file, with its corresponding inferred type
+- as many files as schemas required
+
+follow this template: 
+
+        ``` ts
+        import { z } from 'zod';
+
+        // templates-stats schema
+        export const templatesStatsSchema = z.object({
+        numDraftTemplates: z.number(),
+        numFinishedTemplates: z.number(),
+        numCreators: z.number(),
+        });
+
+        // templates-stats type
+        export type TemplatesStats = z.infer<typeof templatesStatsSchema>;
+        ```
+
+
+
+
+## Types
+
+follow this template: 
+
+        ``` ts
+        import { templateTable } from '../db';
+
+        // template record type
+        export type TemplateRecord = typeof templateTable.$inferSelect;
+        ```
+
+## Utils
+
+follow this template: 
+
+        ``` ts
+        import { Role } from '@guard/schemas';
+
+        // utility function to get the template role name
+        // in a human readable format
+        export const templateRoleHumanReadable = (role: Role) => {
+        switch (role) {
+                case 'template_creator':
+                return 'creator';
+
+                case 'template_reviewer':
+                return 'reviewer';
+
+                default:
+                return null;
+        }
+        };
+        ```
+
+
+## Views (pages)
+
+for each implemented view, create a route file (described below) inside the existing `routes` directory at the same level as `app`, `bases` and `src`, as shown in the above diagram.
+
+        - use an appropriate location in the routes hierarchy, specially taking into account if the view should be private (inside `_private`) or public (inside `_public`)
+        - make sure this route is correctly imported and referenced in the implementation for corresponding view
+
+follow this template: 
+
+        ``` ts
+        import { ReactElement } from 'react';
+
+        import { Link, useLocation } from '@tanstack/react-router';
+
+        import { hasPermission } from '@guard/providers';
+
+        import { api, apiClientUtils } from '@api/providers/web';
+        import { Route } from '@routes/_public/templates/monitor.lazy';
+
+        import { Button } from '@ui/button';
+
+        import {
+        Card,
+        CardContent,
+        CardDescription,
+        CardFooter,
+        CardHeader,
+        CardTitle,
+        } from '@ui/card';
+
+        import { cn } from '@css/utils';
+
+        import { RefreshCw } from 'lucide-react';
+
+        import { Spinner } from '@ui/spinner';
+
+        import { Table, TableBody, TableCell, TableRow } from '@ui/table';
+
+        import { ShortInfoMessage } from '@shared/components/short-info-message.component';
+
+        // network access level, and public host+port from the web environment
+
+        // templates monitor view
+        export function TemplatesMonitorView(): ReactElement {
+        const { pathname } = useLocation();
+
+        // get current session, and log out function from route context
+        const {
+                auth: { logOut },
+                loggedInUser,
+        } = Route.useRouteContext();
+
+        // get templates stats
+        const { data: templatesStatsQuery } =
+                api.template.getTemplatesStats.useQuery();
+
+        // function to set templates stats
+        const { setData: setTemplatesStats } =
+                apiClientUtils.template.getTemplatesStats;
+
+        // get whether random template service is active
+        const { data: isRandomServiceActiveQuery } =
+                api.template.getIsRandomServiceActive.useQuery(undefined, {
+                enabled: !!loggedInUser,
+                });
+
+        const randomServiceAvailable =
+                isRandomServiceActiveQuery !== undefined &&
+                isRandomServiceActiveQuery.error === null &&
+                isRandomServiceActiveQuery.data;
+
+        // function to set whether random template service is active
+        const { setData: setIsRandomServiceActiveData } =
+                apiClientUtils.template.getIsRandomServiceActive;
+
+        // get random template
+        const {
+                // random template data
+                data: randomTemplate,
+
+                // function to refetch random template
+                refetch: refetchRandomTemplate,
+
+                // whether random template is being refetched
+                isRefetching: isRefetchingRandomTemplate,
+        } = api.template.getRandomTemplate.useQuery(undefined, {
+                // never consider random template stale
+                staleTime: Number.POSITIVE_INFINITY,
+
+                // only fetch random template if random template service is active
+                enabled: !!randomServiceAvailable,
+        });
+
+        // toggle random-template-service mutation
+        const { mutateAsync: toggleRandomTemplateService } =
+                api.template.toggleRandomTemplateService.useMutation();
+
+        // templates-stats-changed subscription
+        api.template.onTemplatesStatsChanged.useSubscription(undefined, {
+                onData: (newStats) => {
+                setTemplatesStats(undefined, (prevData) => {
+                        if (!prevData) return undefined;
+
+                        return {
+                        ...prevData,
+                        data: newStats,
+                        };
+                });
+                },
+        });
+
+        // function to toggle random template service
+        const handleToggleRandomTemplateService = async (active: boolean) => {
+                await toggleRandomTemplateService({
+                active,
+                });
+
+                setIsRandomServiceActiveData(undefined, (prevData) => {
+                if (!prevData) return undefined;
+
+                return {
+                        ...prevData,
+                        data: active,
+                };
+                });
+        };
+
+        const TemplateStats = () => {
+                //  if query result not available
+                if (!templatesStatsQuery)
+                return (
+                        <>
+                        <TableRow className="text-center italic">
+                                <TableCell colSpan={2}>
+                                Loading templates stats...
+                                </TableCell>
+                        </TableRow>
+
+                        <TableRow className="text-center italic">
+                                <TableCell colSpan={2}>
+                                <Spinner className="size-4" />
+                                </TableCell>
+                        </TableRow>
+                        </>
+                );
+
+                const { error: templateStatsError } = templatesStatsQuery;
+
+                if (templateStatsError)
+                return (
+                        <>
+                        <TableRow className="text-center italic">
+                                <TableCell colSpan={2}>
+                                sorry, an unexpected error occurred
+                                </TableCell>
+                        </TableRow>
+
+                        <TableRow className="text-center italic">
+                                <TableCell colSpan={2}>
+                                while loading our template stats
+                                </TableCell>
+                        </TableRow>
+                        </>
+                );
+
+                const { data: templateStatsData } = templatesStatsQuery;
+
+                const { numDraftTemplates, numFinishedTemplates, numCreators } =
+                templateStatsData;
+
+                const numTotalTemplates = numDraftTemplates + numFinishedTemplates;
+
+                // render in two rows
+                return (
+                <>
+                        {/* first row: templates */}
+                        <TableRow>
+                        <TableCell className="max-w-mi font-semibold">
+                                templates
+                        </TableCell>
+
+                        {/* show the total number of templates */}
+                        {/* broken down into draft and finished */}
+                        <TableCell>
+                                {numTotalTemplates} ({numDraftTemplates} draft,{' '}
+                                {numFinishedTemplates} finished)
+                        </TableCell>
+                        </TableRow>
+
+                        {/* second row: creators */}
+                        <TableRow>
+                        <TableCell className="max-w-mi font-semibold">
+                                creators
+                        </TableCell>
+
+                        {/* show the total number of creators */}
+                        <TableCell>{numCreators.toString()}</TableCell>
+                        </TableRow>
+                </>
+                );
+        };
+
+        // render templates monitor view
+        return (
+                <main className="container w-min pt-10">
+                <div className="min-h-24">
+                        <h1 className="mb-2 text-3xl font-medium">Template Monitor</h1>
+
+                        <>
+                        {/* if user is logged in */}
+                        {loggedInUser && (
+                                <p className="italic">
+                                yout can visit our private{' '}
+                                {/* link to template management */}
+                                <Link to="/template/manage">
+                                        <Button
+                                        variant="link"
+                                        className="h-0 px-0 italic"
+                                        >
+                                        Template Management
+                                        </Button>
+                                </Link>
+                                </p>
+                        )}
+                        </>
+                </div>
+
+                {/* card showing templates stats */}
+                <Card className="mx-auto mt-20 w-96">
+                        <CardHeader>
+                        <CardTitle className="">Watch</CardTitle>
+
+                        <CardDescription>
+                                Don&apos;t trust, verify !
+                        </CardDescription>
+                        </CardHeader>
+
+                        <CardContent>
+                        <Table>
+                                <TableBody>
+                                <TemplateStats />
+
+                                <TableRow>
+                                        {/* if user is not logged in */}
+                                        {!loggedInUser ? (
+                                        // show descriptive message
+                                        <TableCell
+                                                colSpan={2}
+                                                className="invisible"
+                                        >
+                                                requires log in
+                                        </TableCell>
+                                        ) : // if random service is off
+                                        !randomServiceAvailable ||
+                                        randomTemplate?.error ===
+                                        'SERVICE_INACTIVE' ? (
+                                        // show descriptive message
+                                        <TableCell className="italic" colSpan={2}>
+                                                Random service is off, you can{' '}
+                                                {/* if user has permission to toggle random template service */}
+                                                {hasPermission({
+                                                user: loggedInUser,
+                                                resource: 'template',
+                                                action: 'toggle_random_template_service',
+                                                }) ? (
+                                                // show a button to turn random template service on
+                                                <Button
+                                                        variant="link"
+                                                        className="h-0 px-0 italic"
+                                                        onClick={() =>
+                                                        void handleToggleRandomTemplateService(
+                                                                true,
+                                                        )
+                                                        }
+                                                >
+                                                        turn it on
+                                                </Button>
+                                                ) : (
+                                                // otherwise, ask user to contact admin
+                                                <>contact admin.</>
+                                                )}
+                                        </TableCell>
+                                        ) : // if random template is being fetched
+                                        randomTemplate === undefined ? (
+                                        // show a spinner
+                                        <TableCell className="flex items-center">
+                                                <Spinner className="size-4" />
+                                        </TableCell>
+                                        ) : // if no random template was found
+                                        randomTemplate.error === 'NOT_FOUND' ? (
+                                        <span>no template available</span>
+                                        ) : // if random template service failed for some unknown reason
+                                        randomTemplate.error ? (
+                                        <span>failed to fetch random template</span>
+                                        ) : (
+                                        // otherwise, show random template
+                                        <>
+                                                <TableCell className="font-semibold">
+                                                random
+                                                </TableCell>
+
+                                                <TableCell className="relative flex items-center justify-between gap-2 italic">
+                                                <span>
+                                                        &rdquo;
+                                                        {randomTemplate.data.name}
+                                                        &rdquo;
+                                                </span>
+
+                                                {/* button to refresh random template */}
+                                                <Button
+                                                        variant="ghost"
+                                                        size="icon"
+                                                        className="-my-10"
+                                                        onClick={() => {
+                                                        void refetchRandomTemplate();
+                                                        }}
+                                                >
+                                                        <RefreshCw
+                                                        className={cn(
+                                                                'size-4',
+                                                                isRefetchingRandomTemplate &&
+                                                                'animate-spin',
+                                                        )}
+                                                        />
+                                                </Button>
+                                                </TableCell>
+                                        </>
+                                        )}
+                                </TableRow>
+                                </TableBody>
+                        </Table>
+                        </CardContent>
+
+                        <CardFooter className="flex-col items-start justify-start">
+                        {/* if user is logged in */}
+                        {loggedInUser ? (
+                                <div className="flex items-center gap-2">
+                                <ShortInfoMessage>
+                                        you can {/* log out button */}
+                                        <Button
+                                        variant="link"
+                                        className="text-destructive h-0 px-0 italic"
+                                        onClick={() => void logOut()}
+                                        >
+                                        log out
+                                        </Button>{' '}
+                                        and stay here !
+                                </ShortInfoMessage>
+                                </div>
+                        ) : (
+                                <ShortInfoMessage>
+                                you can {/* link to log-in */}
+                                <Link
+                                        to="/auth/log-in"
+                                        search={{ returnTo: pathname }}
+                                >
+                                        <Button
+                                        variant="link"
+                                        className="h-0 px-0 italic"
+                                        >
+                                        log in
+                                        </Button>{' '}
+                                </Link>
+                                to see a random one
+                                </ShortInfoMessage>
+                        )}
+
+                        {/* if random service is on, and user is logged in, and has permission to toggle random template service */}
+                        {randomServiceAvailable &&
+                                loggedInUser &&
+                                hasPermission({
+                                user: loggedInUser,
+                                resource: 'template',
+                                action: 'toggle_random_template_service',
+                                }) && (
+                                <ShortInfoMessage>
+                                        or{' '}
+                                        {/* button to turn random template service off */}
+                                        <Button
+                                        variant="link"
+                                        className="text-destructive h-0 px-0 italic"
+                                        onClick={() =>
+                                                void handleToggleRandomTemplateService(
+                                                false,
+                                                )
+                                        }
+                                        >
+                                        turn off
+                                        </Button>{' '}
+                                        the random service
+                                </ShortInfoMessage>
+                                )}
+                        </CardFooter>
+                </Card>
+                </main>
+        );
+        }
+        ```
+
+
+## Routes
+
+        - filename extension should be `.lazy.tsx`
+
+follow this template: 
+
+        ``` ts
+        import { createLazyFileRoute } from '@tanstack/react-router';
+
+        import { TemplateManagementView } from '@src/template/views/private';
+
+        // template-management view
+        export const Route = createLazyFileRoute('/_private/template/manage')({
+        component: TemplateManagementView,
+        });
+        ```
+
+
+## Forms 
+
+- ALWAYS implement using `react-hook-form`, NEVER using manual form state management with useState
+   - leverage its built-in validation and error handling
+- use zod for form validation schemas
+   - define a schema that matches the form structure
+   - whenever a type from the schema is needed, use `z.infer<typeof schema>`
+- use FormField components from the shared UI
+   - wrap inputs with FormField, FormItem, FormControl, etc.
+   - use FormMessage for displaying validation errors
+- for select and custom inputs:
+   - use the appropriate FormControl wrappers
+   - ensure proper binding of form values to input components
+   - Handle controlled components correctly with field.onChange, field.value
+
+
+## Final review and fixing
+
+After creating all the needed files, review them and ensure:
+
+* the code is perfect
+* all imports are consistent and point to real files
+* everything follows all provided rules, e.g. UI and Typescript guidelines from [ui.rules.mdc](mdc:.cursor/rules/ui.rules.mdc) and [typescript.rules.mdc](mdc:.cursor/rules/typescript.rules.mdc)
+* the application runs successfully
+         

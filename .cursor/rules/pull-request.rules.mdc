@@ -1,0 +1,40 @@
+---
+description: Guidelines for creating and editing Pull Request on Github
+globs: 
+alwaysApply: false
+---
+## 📌 Repository Info
+
+- **Owner**: `Monsoft-Solutions`
+- **Repo**: `monsoft-crm`
+
+---
+
+## 📄 Use the Pull Request Template
+
+- Use the official template located at [pull_request_template.md](mdc:.github/PULL_REQUEST_TEMPLATE/pull_request_template.md)
+- Fill out each section accurately:
+  - **Description**: Brief summary of the change. Include the issue it addresses using `Fixes #123`
+  - **Type of Change**: Check the relevant options (e.g., bug fix, feature, breaking change)
+  - **Testing**: Explain how the change was tested or verified
+  - **Checklist**: Mark all completed items
+  - **Optional Sections**: Add screenshots or context as needed
+
+---
+
+## 🛠️ Implementation Clarity
+
+- Clearly describe:
+  - What was changed
+  - Why it was changed
+  - If it is a full implementation, partial work, or a piece of a larger feature
+- Reference important files, modules, or components if applicable
+
+---
+
+## ✅ Best Practices
+
+- Use clear, descriptive PR titles starting with a tag, e.g., `[BUG]`, `[FEATURE]`
+- Always link relevant issues using `Fixes #issue-number` to enable auto-closing
+- Ensure all CI tests pass before submitting
+- Do **not** mix unrelated changes in a single PR

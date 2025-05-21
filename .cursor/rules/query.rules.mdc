@@ -1,0 +1,70 @@
+---
+description: a standard format for query endpoint definition files
+globs: */src/*/api/*.query.ts
+---
+- follow this template: 
+
+```
+import { Error, Success } from '@errors/utils';
+
+import { protectedEndpoint } from '@api/providers/server';
+
+import { z } from 'zod';
+
+import { ensurePermission } from '@guard/providers';
+
+import { db } from '@db/providers/server';
+
+import { and, eq, like } from 'drizzle-orm';
+
+import { userMatcherEnum } from '../enums';
+
+import { catchError } from '@errors/utils/catch-error.util';
+import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
+
+export const searchTemplates = protectedEndpoint
+    .input(
+        z.object({
+            search: z.string(),
+            creator: userMatcherEnum,
+        }),
+    )
+    .query(
+        queryMutationCallback(
+            async ({
+                ctx: {
+                    session: { user },
+                },
+                input: { search, creator },
+            }) => {
+                // if searching for templates from anyone
+                // ensure user has permission to read everyone's templates
+                if (creator === 'anyone') {
+                    ensurePermission({
+                        user,
+                        resource: 'template',
+                        action: 'read',
+                    });
+                }
+
+                // get the templates matching the search query
+                const { data: templates, error } = await catchError(
+                    db.query.templateTable.findMany({
+                        where: (record) =>
+                            and(
+                                like(record.name, `%${search}%`),
+                                creator === 'anyone'
+                                    ? undefined
+                                    : eq(record.creator, user.id),
+                            ),
+                    }),
+                );
+
+                if (error) return Error();
+
+                // return the templates matching the search query
+                return Success(templates);
+            },
+        ),
+    );
+```

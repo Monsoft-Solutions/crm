@@ -1,0 +1,58 @@
+---
+description: a standard format for db table definition files
+globs: *
+---
+- use `bigint` for timestamps
+- define only one table per file, create as many files as tables required
+- leave blank new lines for easier reading, especially between import statements, and to separate table columns
+- add descriptive comments for the table and each column
+- import all utilities for creating tables and columns from `@db/sql` instead of `drizzle-orm` 
+- import any other required tables from '../../../bases/db/db.tables'
+
+
+- follow this template:
+
+```
+import { relations } from 'drizzle-orm';
+
+// import from the db base, not from drizzle
+import { char, enumType, sqlEnum, table, varchar, bigint } from '@db/sql';
+
+import { user } from '../../../bases/db/db.tables';
+
+import { templateStatusEnum } from '../enums';
+
+export const statusEnum = enumType(
+    'template_status',
+    templateStatusEnum.options,
+);
+
+// templates
+export const templateTable = table('template', {
+    id: char('id', { length: 36 }).primaryKey(),
+
+    // short name of the template
+    name: varchar('name', { length: 255 }).unique().notNull(),
+
+    // creator of the template
+    creator: char('creator', { length: 36 })
+        .notNull()
+        .references(() => user.id),
+
+    // current status of the template
+    status: sqlEnum('status', statusEnum).notNull().default('draft'),
+
+    // the time at which the template expires
+    expiresAt: bigint('expires_at', {
+        mode: 'number',
+    }).notNull(),
+});
+
+export const templateTableRelations = relations(templateTable, ({ one }) => ({
+    // creator of the template
+    creator: one(user, {
+        fields: [templateTable.creator],
+        references: [user.id],
+    }),
+}));
+```
