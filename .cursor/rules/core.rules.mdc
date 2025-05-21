@@ -1,6 +1,6 @@
 ---
 description: a standard format for core configuration definition files
-globs: */src/*/api/*.core.ts
+globs: */mods/*/api/*.core.ts
 ---
 ```
 import { boolean } from '@db/sql';

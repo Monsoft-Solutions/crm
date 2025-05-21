@@ -1,6 +1,6 @@
 ---
 description: a standard format for subscription endpoint definition filesd
-globs: */src/*/api/*.subscription.ts
+globs: */mods/*/api/*.subscription.ts
 ---
 - follow this template:
 

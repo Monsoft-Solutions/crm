@@ -57,7 +57,7 @@ NOTE: After creating the package.json, run `npm i` to install the needed depende
         "outDir": "./dist",
         "rootDir": "./src"
     },
-    "include": ["src/**/*"],
+    "include": ["mods/**/*"],
     "exclude": ["node_modules", "dist"]
 }
 

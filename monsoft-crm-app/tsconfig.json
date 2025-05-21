@@ -45,10 +45,10 @@
             "@shared/*": ["./shared/*"],
             "@slack/*": ["./bases/slack/*"],
             "@ui/*": ["./shared/ui/*"],
-            "@src/*": ["./src/*"],
+            "@mods/*": ["./mods/*"],
             "@web/*": ["./bases/web/*"],
             "@analytics/*": ["./bases/analytics/*"],
-            "@logger/*": ["./bases/logger/*"],
+            "@log/*": ["./bases/log/*"],
             "@email/*": ["./bases/email/*"]
         }
     }

@@ -54,7 +54,7 @@ alwaysApply: false
 7. **New Modules Guidelines**  
    - Always follow the guidelines defined in @module.rules.mdc
    - Carefully review the current architecture and the implemented features. Follow the guidelines and code styles defined in the project.
-   - Reference the template module at monsoft-crm-app/src/template for coding conventions and structure.
+   - Reference the template module at monsoft-crm-app/mods/template for coding conventions and structure.
    - Document any deviations from existing patterns and their justification.
 
 8. **Integration and Testing Strategy**  

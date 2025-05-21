@@ -1,6 +1,7 @@
 ---
 description: standard filesystem structure for app modules
-globs: */src/*/instructions/*.md
+globs: */mods/*/instructions/*.md
+alwaysApply: false
 ---
 # Module initialization rules
 
@@ -19,7 +20,7 @@ follow this structure for creating a module directory, where each of these subfo
             ├── routes/                         # client-side routes for rendering the different views
             │   ├── _private                    # private views
             │   └── _public                     # public views
-            └── src/                            # app modules, each module has its own subfolder 
+            └── mods/                            # app modules, each module has its own subfolder 
                 ├── <module>/                   # root of the given <module>
                 │   ├── README.md               # the README file describing the module's features
                 │   ├── api/                    # api endpoints: queries, mutations and subscriptions
@@ -105,8 +106,8 @@ for each of the following capabilities, if used by the module, integrate it in t
         - res   -> res/app.res.ts
         - seed  -> seed/app.seed.ts
 
-* do NOT create new files or folders for this, just extend the corresponding existing file by adding a new re-export line: `export * from '@src/<module>/<capability>'`
-* in the case of `db`, it should instead be `export * from '../../src/<module>/db'`
+* do NOT create new files or folders for this, just extend the corresponding existing file by adding a new re-export line: `export * from '@mods/<module>/<capability>'`
+* in the case of `db`, it should instead be `export * from '../../mods/<module>/db'`
 
 
 ## Module README
@@ -137,7 +138,7 @@ respect the code guidelines
 - use descriptive names that explain purpose
 - include JSDoc comments for functions
 - leave empty new lines for easier reading, as in the template files, specially for import statements
-- import definitions from other modules using `@src/<other-module>/<capability>`
+- import definitions from other modules using `@mods/<other-module>/<capability>`
 - do NOT include unused imports
 - avoid code duplication
 
@@ -497,8 +498,8 @@ follow this template:
 
         // subscriptions
         import { onTemplateCreated } from './template-created.subscription';
-        import { onTemplateStatusUpdated } from '@src/template/api/template-status-updated.subscription';
-        import { onTemplateDeleted } from '@src/template/api/template-deleted.subscription';
+        import { onTemplateStatusUpdated } from '@mods/template/api/template-status-updated.subscription';
+        import { onTemplateDeleted } from '@mods/template/api/template-deleted.subscription';
         import { onTemplatesStatsChanged } from './templates-stats-changed.subscription';
         import { getIsRandomServiceActive } from './get-is-random-service-active.query';
 
@@ -623,7 +624,7 @@ follow this template:
                 - NOT ending in "Type"
         - no type field in the schema objects
 - create a simple barrel file (index.ts) that only re-exports from individual event files
-- extend `app/events/app.events.ts` adding a line exporting the events implemented by the new module, e.g. `export * from '@src/template/events'`
+- extend `app/events/app.events.ts` adding a line exporting the events implemented by the new module, e.g. `export * from '@mods/template/events'`
 - do NOT create separate event-type files
 - keep event definitions simple and focused
 - avoid adding unnecessary fields to event schemas
@@ -720,7 +721,7 @@ follow this template:
         import { user } from '@auth/db';
 
         import { templateTable } from '@app/db';
-        import { TemplatesStats } from '@src/template/schemas';
+        import { TemplatesStats } from '@mods/template/schemas';
         import { catchError } from '@errors/utils/catch-error.util';
 
         // get the templates stats
@@ -792,7 +793,7 @@ follow this template:
 
 - one file per resource, e.g. `template.res.ts`
 - barrel file `res/index.ts`
-- extend `app/res/app.res.ts` adding a line exporting the resources implemented by the new module, e.g. `export * from '@src/template/res'`
+- extend `app/res/app.res.ts` adding a line exporting the resources implemented by the new module, e.g. `export * from '@mods/template/res'`
 
 follow this template: 
 
@@ -902,7 +903,7 @@ follow this template:
 
 ## Views (pages)
 
-for each implemented view, create a route file (described below) inside the existing `routes` directory at the same level as `app`, `bases` and `src`, as shown in the above diagram.
+for each implemented view, create a route file (described below) inside the existing `routes` directory at the same level as `app`, `bases` and `mods`, as shown in the above diagram.
 
         - use an appropriate location in the routes hierarchy, specially taking into account if the view should be private (inside `_private`) or public (inside `_public`)
         - make sure this route is correctly imported and referenced in the implementation for corresponding view
@@ -1309,7 +1310,7 @@ follow this template:
         ``` ts
         import { createLazyFileRoute } from '@tanstack/react-router';
 
-        import { TemplateManagementView } from '@src/template/views/private';
+        import { TemplateManagementView } from '@mods/template/views/private';
 
         // template-management view
         export const Route = createLazyFileRoute('/_private/template/manage')({

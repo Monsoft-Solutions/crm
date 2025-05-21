@@ -1,6 +1,6 @@
 ---
 description: a standard format for api definition files
-globs: */src/*/api/*.api.ts
+globs: */mods/*/api/*.api.ts
 ---
 - follow this template: 
 
@@ -21,8 +21,8 @@ import { getBpi } from './get-bpi.mutation';
 
 // subscriptions
 import { onTemplateCreated } from './template-created.subscription';
-import { onTemplateStatusUpdated } from '@src/template/api/template-status-updated.subscription';
-import { onTemplateDeleted } from '@src/template/api/template-deleted.subscription';
+import { onTemplateStatusUpdated } from '@mods/template/api/template-status-updated.subscription';
+import { onTemplateDeleted } from '@mods/template/api/template-deleted.subscription';
 import { onTemplatesStatsChanged } from './templates-stats-changed.subscription';
 import { getIsRandomServiceActive } from './get-is-random-service-active.query';
 

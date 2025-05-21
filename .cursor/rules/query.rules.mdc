@@ -1,6 +1,6 @@
 ---
 description: a standard format for query endpoint definition files
-globs: */src/*/api/*.query.ts
+globs: */mods/*/api/*.query.ts
 ---
 - follow this template: 
 

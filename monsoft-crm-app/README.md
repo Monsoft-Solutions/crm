@@ -97,7 +97,7 @@ Developed by [Monsoft Solutions](https://www.monsoftsolutions.com).
 ├── app/                     # main application code
 │   ├── server/              # express backend
 │   └── web/                 # react+vite frontend
-└── src/                     # core business logic
+└── mods/                     # core business logic
     ├── template/            # template feature
     │   ├── types/           # typescript types
     │   ├── schemas/         # zod schemas

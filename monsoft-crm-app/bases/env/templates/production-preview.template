@@ -1,0 +1,7 @@
+# PRODUCTION-PREVIEW ENVIRONMENT TEMPLATE
+
+# deployment
+MSS_DEPLOYMENT_TYPE=production-preview
+
+# network
+MSS_FQDN=${COOLIFY_FQDN}

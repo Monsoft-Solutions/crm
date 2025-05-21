@@ -1,6 +1,6 @@
 ---
 description: a standard format for react component definition files
-globs: */src/*/api/*.component.ts
+globs: */mods/*/api/*.component.ts
 ---
 - follow this template: 
 

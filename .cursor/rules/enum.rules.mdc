@@ -1,6 +1,6 @@
 ---
 description: a standard format for enum definition files
-globs: */src/*/api/*.enum.ts
+globs: */mods/*/api/*.enum.ts
 ---
 - follow this template: 
 

@@ -1,6 +1,6 @@
 ---
 description: a standard format for constant definition files
-globs: */src/*/api/*.constant.ts
+globs: */mods/*/api/*.constant.ts
 ---
 - follow this template: 
 

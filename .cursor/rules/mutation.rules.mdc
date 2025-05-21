@@ -1,6 +1,6 @@
 ---
 description: a standard format for mutation endpoint definition files
-globs: */src/*/api/*.mutation.ts
+globs: */mods/*/api/*.mutation.ts
 ---
 - follow this template:
 

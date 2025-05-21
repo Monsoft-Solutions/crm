@@ -1,0 +1,14 @@
+# LOCAL ENVIRONMENT TEMPLATE
+
+# deployment
+MSS_DEPLOYMENT_TYPE=local
+
+# network
+MSS_FQDN=http://localhost:80
+
+# database
+MSS_DATABASE_HOST=localhost
+MSS_DATABASE_PORT=3306
+MSS_DATABASE_NAME=modular
+MSS_DATABASE_USER=root
+MSS_DATABASE_PASS=db

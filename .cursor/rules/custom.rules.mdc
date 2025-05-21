@@ -1,6 +1,6 @@
 ---
 description: a standard format for custom configuration definition files
-globs: */src/*/api/*.custom.ts
+globs: */mods/*/api/*.custom.ts
 ---
 ```
 import { boolean } from '@db/sql';
