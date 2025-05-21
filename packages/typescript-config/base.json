@@ -1,0 +1,30 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+
+    "exclude": ["node_modules"],
+
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ES2021",
+        "moduleResolution": "bundler",
+
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowJs": true,
+        "allowImportingTsExtensions": true,
+
+        "outDir": "./bin/types",
+
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "removeComments": true,
+
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+
+        "declarationMap": true,
+        "preserveWatchOutput": true
+    }
+}
