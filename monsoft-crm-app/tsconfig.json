@@ -1,0 +1,55 @@
+{
+    "extends": "@repo/typescript-config/vite.json",
+
+    "include": ["**/*.ts", "**/*.tsx", "**/*.mts", "**/*.mjs"],
+
+    "exclude": ["bin"],
+
+    "compilerOptions": {
+        "module": "ESNext",
+        "target": "ES2021",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "allowJs": true,
+        "allowImportingTsExtensions": true,
+
+        "outDir": "./bin/types",
+        "noEmit": false,
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "removeComments": true,
+
+        "strict": true,
+        "noFallthroughCasesInSwitch": true,
+
+        "paths": {
+            "@api/*": ["./bases/api/*"],
+            "@app/*": ["./app/*"],
+            "@auth/*": ["./bases/auth/*"],
+            "@conf/*": ["./bases/conf/*"],
+            "@css/*": ["./bases/css/*"],
+            "@db/*": ["./bases/db/*"],
+            "@dev/*": ["./bases/dev/*"],
+            "@dist/*": ["./bases/dist/*"],
+            "@env/*": ["./bases/env/*"],
+            "@errors/*": ["./bases/errors/*"],
+            "@events/*": ["./bases/events/*"],
+            "@guard/*": ["./bases/guard/*"],
+            "@package/*": ["./bases/package/*"],
+            "@routes/*": ["./routes/*"],
+            "@seed/*": ["./bases/seed/*"],
+            "@shared/*": ["./shared/*"],
+            "@slack/*": ["./bases/slack/*"],
+            "@ui/*": ["./shared/ui/*"],
+            "@src/*": ["./src/*"],
+            "@web/*": ["./bases/web/*"],
+            "@analytics/*": ["./bases/analytics/*"],
+            "@logger/*": ["./bases/logger/*"],
+            "@email/*": ["./bases/email/*"]
+        }
+    }
+}

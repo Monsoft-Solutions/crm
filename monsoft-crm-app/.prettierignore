@@ -1,0 +1,11 @@
+# deps
+node_modules
+package.json
+package-lock.json
+
+# db
+drizzle
+
+# build
+bin
+
