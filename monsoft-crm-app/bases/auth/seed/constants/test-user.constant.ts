@@ -1,6 +1,6 @@
 import { InferInsertModel } from 'drizzle-orm';
 
-import { user } from '@db/db.tables';
+import { user } from '@db/db';
 
 export const testUser: InferInsertModel<typeof user> = {
     id: 'test-user-id',

@@ -1,13 +1,13 @@
 import { table, text } from '@db/sql';
 
-import { contactEmailAddressTable } from '@db/db.tables';
+import { contactEmailAddress } from '@db/db';
 
 export const contactEmailTable = table('contact_email', {
     id: text('id').primaryKey(),
 
     contactEmailAddressId: text('contact_email_address_id')
         .notNull()
-        .references(() => contactEmailAddressTable.id),
+        .references(() => contactEmailAddress.id),
 
     body: text('body').notNull(),
 });

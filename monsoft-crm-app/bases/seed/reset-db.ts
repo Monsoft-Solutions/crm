@@ -2,7 +2,7 @@ import { reset } from 'drizzle-seed';
 
 import { seeder } from './seeder';
 
-import * as schema from '@db/db.tables';
+import * as schema from '@db/db';
 
 // function used to clear the db
 export async function resetDb() {

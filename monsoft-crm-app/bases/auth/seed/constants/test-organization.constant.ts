@@ -1,4 +1,4 @@
-import { organization } from '@db/db.tables';
+import { organization } from '@db/db';
 
 import { InferInsertModel } from 'drizzle-orm';
 

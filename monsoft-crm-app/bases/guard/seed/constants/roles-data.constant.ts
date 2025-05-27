@@ -1,5 +1,5 @@
 import { InferInsertModel } from 'drizzle-orm';
 
-import { roleTable } from '@db/db.tables';
+import { roleTable } from '@db/db';
 
 export const rolesData: InferInsertModel<typeof roleTable>[] = [];

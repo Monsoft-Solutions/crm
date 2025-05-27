@@ -10,7 +10,7 @@ export default defineConfig({
     dbCredentials: dbConfig,
 
     // file exporting the full db schema
-    schema: 'bases/db/db.tables.ts',
+    schema: 'bases/db/db/index.ts',
 
     // migrations directory
     out,

@@ -7,7 +7,7 @@ import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
 import { db } from '@db/providers/server';
-import { brandTable } from '../db';
+import tables from '@db/db';
 
 import { createBrandSchema } from '../schemas';
 
@@ -26,7 +26,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
             const brand = { id, name, organizationId };
 
             const { error } = await catchError(
-                db.insert(brandTable).values(brand),
+                db.insert(tables.brand).values(brand),
             );
 
             if (error) return Error();

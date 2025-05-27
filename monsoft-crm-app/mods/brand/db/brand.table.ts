@@ -1,8 +1,8 @@
 import { table, text } from '@db/sql';
 
-import { organization } from '@db/db.tables';
+import { organization } from '@db/db';
 
-export const brandTable = table('brand', {
+export const brand = table('brand', {
     id: text('id').primaryKey(),
 
     organizationId: text('organization_id')

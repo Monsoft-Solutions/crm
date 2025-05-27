@@ -1,13 +1,13 @@
 import { table, text, int } from '@db/sql';
 
-import { brandTable } from '@db/db.tables';
+import { brand } from '@db/db';
 
 export const productTable = table('product', {
     id: text('id').primaryKey(),
 
     brandId: text('brand_id')
         .notNull()
-        .references(() => brandTable.id),
+        .references(() => brand.id),
 
     name: text('name').notNull(),
 

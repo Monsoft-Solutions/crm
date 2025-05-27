@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { char, enumType, sqlEnum, table, varchar } from '@db/sql';
 
-import { user } from '../../../bases/db/db.tables';
+import { user } from '@db/db';
 
 import { templateStatusEnum } from '../enums';
 

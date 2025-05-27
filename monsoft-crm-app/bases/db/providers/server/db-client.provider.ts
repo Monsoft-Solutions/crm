@@ -2,7 +2,7 @@ import { drizzle, Database, Pool } from '@db/sql';
 
 import { dbConnectionWithName } from './db-connection.provider';
 
-import * as schema from '../../db.tables';
+import * as schema from '../../db';
 
 const config = {
     logger: false,

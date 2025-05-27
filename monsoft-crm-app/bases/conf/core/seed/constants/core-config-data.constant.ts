@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { InferInsertModel } from 'drizzle-orm';
 
-import { coreConfTable } from '@db/db.tables';
+import { coreConfTable } from '@db/db';
 
 export const coreConfigData: InferInsertModel<typeof coreConfTable> = {
     id: 'core-config-id',
