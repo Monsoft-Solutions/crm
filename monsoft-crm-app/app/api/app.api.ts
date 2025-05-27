@@ -1,1 +1,2 @@
 export * from '@mods/template/api';
+export * from '@mods/brand/api';
