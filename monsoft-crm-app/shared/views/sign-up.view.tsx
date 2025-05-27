@@ -17,7 +17,7 @@ import { SignUpForm } from '@shared/components/sign-up-form.component';
 
 import { userLangEnumSchema } from '@auth/enum/user-lang.enum';
 
-import { authClient } from '@auth/providers/web/auth-client.provider';
+import { authClient } from '@auth/providers/web';
 
 const signUpFormSchemaValidated: typeof signUpFormSchema = z.object({
     firstName: z.string().min(1),

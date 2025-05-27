@@ -4,7 +4,7 @@ import { z } from 'zod';
 
 import { toast } from 'sonner';
 
-import { authClient } from '@auth/providers/web/auth-client.provider';
+import { authClient } from '@auth/providers/web';
 
 import { EmailVerificationFailedView } from '@shared/views/email-verification-failed.view';
 

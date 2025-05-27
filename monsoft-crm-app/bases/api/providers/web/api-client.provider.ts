@@ -13,7 +13,6 @@ import { api } from './api.provider';
 import { EventSourcePolyfill } from 'event-source-polyfill';
 globalThis.EventSource = EventSourcePolyfill as unknown as typeof EventSource;
 
-import { webApiHeaders } from './web-api-headers.util';
 import { apiPath } from '@api/constants';
 
 import { throwAsync } from '@errors/utils';
@@ -34,17 +33,7 @@ export const apiClient = api.createClient({
                 url: apiPath,
 
                 eventSourceOptions: () => {
-                    const {
-                        data: webApiHeadersData,
-                        error: webApiHeadersError,
-                    } = webApiHeaders();
-
-                    if (webApiHeadersError) throwAsync(webApiHeadersError);
-
-                    const headers = webApiHeadersError ? {} : webApiHeadersData;
-
                     return {
-                        headers,
                         heartbeatTimeout: Number.MAX_SAFE_INTEGER,
                     } as EventSourceInit;
                 },
@@ -52,17 +41,6 @@ export const apiClient = api.createClient({
 
             false: httpLink({
                 url: apiPath,
-
-                headers: () => {
-                    const {
-                        data: webApiHeadersData,
-                        error: webApiHeadersError,
-                    } = webApiHeaders();
-
-                    if (webApiHeadersError) throwAsync(webApiHeadersError);
-
-                    return webApiHeadersError ? {} : webApiHeadersData;
-                },
 
                 async fetch(url, options) {
                     const response = await fetch(url, options);

@@ -1,4 +1,4 @@
-import { authClient } from '@auth/providers/web/auth-client.provider';
+import { authClient } from '@auth/providers/web';
 
 import { FaGoogle } from 'react-icons/fa';
 

@@ -19,7 +19,7 @@ import { User } from '@guard/types';
 
 // import { trackLogin } from '@analytics/providers';
 
-import { authClient } from '@auth/providers/web/auth-client.provider';
+import { authClient } from '@auth/providers/web';
 
 // show devtools only in development
 const showDevTools = process.env.NODE_ENV === 'development';
