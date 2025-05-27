@@ -9,9 +9,6 @@ export const user = pgTable('user', {
     createdAt: timestamp('created_at').notNull(),
     updatedAt: timestamp('updated_at').notNull(),
     lastName: text('last_name'),
-    language: text('language'),
-    bookmarked: boolean('bookmarked'),
-    hasDoneTour: boolean('has_done_tour'),
 });
 
 export const session = pgTable('session', {

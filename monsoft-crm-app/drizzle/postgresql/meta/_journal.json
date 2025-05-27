@@ -15,6 +15,13 @@
       "when": 1748335337173,
       "tag": "0001_sharp_warpath",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1748353078232,
+      "tag": "0002_little_maginty",
+      "breakpoints": true
     }
   ]
 }
