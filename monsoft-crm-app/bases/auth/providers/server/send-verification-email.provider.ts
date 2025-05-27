@@ -29,7 +29,7 @@ export const sendVerificationEmail = (async ({
         subject,
         html: `<p>${text}</p>`,
         text,
-        react: <VerificationEmail url={url} language={language} />,
+        react: VerificationEmail({ url, language }),
     });
 
     return Success();
