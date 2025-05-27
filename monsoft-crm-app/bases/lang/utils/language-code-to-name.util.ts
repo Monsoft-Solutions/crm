@@ -1,6 +1,6 @@
-import { UserLang } from '@auth/enum/user-lang.enum';
+import { LangCode } from '@lang/enum';
 
-export const langMap = (lang: UserLang) => {
+export const langMap = (lang: LangCode) => {
     switch (lang) {
         case 'en':
             return 'English';

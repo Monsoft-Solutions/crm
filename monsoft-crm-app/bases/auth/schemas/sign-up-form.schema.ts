@@ -1,5 +1,6 @@
-import { userLangEnumSchema } from '@auth/enum/user-lang.enum';
 import { z } from 'zod';
+
+import { langCodeEnum } from '@lang/enum';
 
 // Sign up form schema
 export const signUpFormSchema = z.object({
@@ -11,7 +12,7 @@ export const signUpFormSchema = z.object({
 
     password: z.string(),
 
-    language: userLangEnumSchema,
+    language: langCodeEnum,
 });
 
 // Sign up form type

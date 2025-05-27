@@ -39,6 +39,7 @@
             "@errors/*": ["./bases/errors/*"],
             "@events/*": ["./bases/events/*"],
             "@guard/*": ["./bases/guard/*"],
+            "@lang/*": ["./bases/lang/*"],
             "@package/*": ["./bases/package/*"],
             "@routes/*": ["./routes/*"],
             "@seed/*": ["./bases/seed/*"],

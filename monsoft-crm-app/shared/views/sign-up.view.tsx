@@ -15,7 +15,7 @@ import {
 
 import { SignUpForm } from '@shared/components/sign-up-form.component';
 
-import { userLangEnumSchema } from '@auth/enum/user-lang.enum';
+import { langCodeEnum } from '@lang/enum';
 
 import { authClient } from '@auth/providers/web';
 
@@ -24,7 +24,7 @@ const signUpFormSchemaValidated: typeof signUpFormSchema = z.object({
     lastName: z.string().optional(),
     email: z.string().email(),
     password: z.string().min(6),
-    language: userLangEnumSchema,
+    language: langCodeEnum,
 });
 
 // Sign up view
