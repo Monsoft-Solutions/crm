@@ -19,7 +19,7 @@
         "check:env"    : "tsx bases/env/scripts/check-env-templates.script.ts",
         "check:all"    : "npm-run-all check:ts check:fmt check:lint check:env",
 
-        "auth:generate": "npx @better-auth/cli@latest generate --config=bases/auth/providers/server/auth-server.provider.ts --output=bases/auth/db/auth.table.ts --y",
+        "auth:generate": "npx @better-auth/cli@1.2.7 generate --config=bases/auth/providers/server/auth-server.provider.ts --output=bases/auth/db/auth.table.ts --y",
 
         "db:start"     : "su -s /bin/bash -c '/usr/sbin/mysqld --secure-file-priv=/var/lib/mysql-files' mysql &",
         "db:drop"      : "cd bases/db && tsx scripts/db-drop.ts  ",
