@@ -51,6 +51,9 @@ export default tseslint.config(
                     allowNumber: true,
                 },
             ],
+
+            // exhaustive switch
+            '@typescript-eslint/switch-exhaustiveness-check': 'error',
         },
     },
 
