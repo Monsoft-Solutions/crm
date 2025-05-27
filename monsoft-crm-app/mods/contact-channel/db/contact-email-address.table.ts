@@ -1,6 +1,7 @@
+import { relations } from 'drizzle-orm';
 import { table, text } from '@db/sql';
 
-import { contact } from '@db/db';
+import { contact, contactEmail } from '@db/db';
 
 export const contactEmailAddress = table('contact_email_address', {
     id: text('id').primaryKey(),
@@ -11,3 +12,10 @@ export const contactEmailAddress = table('contact_email_address', {
 
     emailAddress: text('email_address').notNull(),
 });
+
+export const contactEmailAddressRelations = relations(
+    contactEmailAddress,
+    ({ many }) => ({
+        contactEmails: many(contactEmail),
+    }),
+);
