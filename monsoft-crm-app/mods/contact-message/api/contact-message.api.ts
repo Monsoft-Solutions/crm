@@ -5,6 +5,7 @@ import { getContactEmails } from './get-contact-emails.query';
 
 // mutations
 import { sendEmailToContact } from './send-email-to-contact.mutation';
+import { sendSmsToContact } from './send-sms-to-contact.mutation';
 
 // subscriptions
 
@@ -14,6 +15,7 @@ export const contactMessage = endpoints({
 
     // mutations
     sendEmailToContact,
+    sendSmsToContact,
 
     // subscriptions
 });
