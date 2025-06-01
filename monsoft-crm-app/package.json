@@ -187,6 +187,8 @@
         "resend": "4.3.0 || email (resend)",
         "@react-email/components": "0.0.36",
 
+        "twilio": "5.3.5 || sms (twilio)",
+
         "stripe": "18.0.0 || payments (stripe)",
 
         "@sentry/react": "8.54.0",
