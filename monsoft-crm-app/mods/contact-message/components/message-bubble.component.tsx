@@ -21,8 +21,8 @@ import { MessageBubbleProps } from '../schemas';
 import { contactMessageStatusToIcon } from '@mods/contact-channel/utils';
 
 export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
-    ({ content, direction, createdAt, channelType, status }, ref) => {
-        const lines = content.split('\n');
+    ({ body, direction, createdAt, channelType, status }, ref) => {
+        const lines = body.split('\n');
 
         const ChannelIcon = communicationChannelTypeToIcon(channelType);
 
@@ -37,7 +37,7 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                         {lines.map((line, i) => (
                             <span key={i}>
                                 {line}
-                                {i < content.length - 1 && <br />}
+                                {i < lines.length - 1 && <br />}
                             </span>
                         ))}
                     </p>

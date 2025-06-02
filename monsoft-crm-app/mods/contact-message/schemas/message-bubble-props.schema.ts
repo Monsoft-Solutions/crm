@@ -11,7 +11,7 @@ export const messageBubblePropsSchema = z.object({
     id: z.string(),
     channelType: contactChannelTypeEnum,
     direction: contactMessageDirectionEnum,
-    content: z.string(),
+    body: z.string(),
     createdAt: z.number(),
     status: contactMessageStatusEnum,
 });
