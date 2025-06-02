@@ -1,5 +1,3 @@
-'use client';
-
 import { ComponentPropsWithoutRef, ElementRef, forwardRef } from 'react';
 import * as ScrollAreaPrimitive from '@radix-ui/react-scroll-area';
 
@@ -7,26 +5,41 @@ import { cn } from '@css/utils';
 
 const ScrollArea = forwardRef<
     ElementRef<typeof ScrollAreaPrimitive.Root>,
-    ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root>
->(({ className, children, ...props }, ref) => (
-    <ScrollAreaPrimitive.Root
-        ref={ref}
-        className={cn('relative overflow-hidden', className)}
-        {...props}
-    >
-        <ScrollAreaPrimitive.Viewport className="h-full w-full rounded-[inherit]">
-            {children}
-        </ScrollAreaPrimitive.Viewport>
-        <ScrollBar />
-        <ScrollAreaPrimitive.Corner />
-    </ScrollAreaPrimitive.Root>
-));
+    ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.Root> & {
+        viewportClassName?: string;
+        showThumb?: boolean;
+    }
+>(
+    (
+        { className, viewportClassName, children, showThumb = true, ...props },
+        ref,
+    ) => (
+        <ScrollAreaPrimitive.Root
+            ref={ref}
+            className={cn('relative overflow-hidden', className)}
+            {...props}
+        >
+            <ScrollAreaPrimitive.Viewport
+                className={cn(
+                    'h-full w-full rounded-[inherit] [&>div]:!block',
+                    viewportClassName,
+                )}
+            >
+                {children}
+            </ScrollAreaPrimitive.Viewport>
+            <ScrollBar visible={showThumb} />
+            <ScrollAreaPrimitive.Corner />
+        </ScrollAreaPrimitive.Root>
+    ),
+);
 ScrollArea.displayName = ScrollAreaPrimitive.Root.displayName;
 
 const ScrollBar = forwardRef<
     ElementRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>,
-    ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar>
->(({ className, orientation = 'vertical', ...props }, ref) => (
+    ComponentPropsWithoutRef<typeof ScrollAreaPrimitive.ScrollAreaScrollbar> & {
+        visible?: boolean;
+    }
+>(({ className, orientation = 'vertical', visible = true, ...props }, ref) => (
     <ScrollAreaPrimitive.ScrollAreaScrollbar
         ref={ref}
         orientation={orientation}
@@ -40,7 +53,9 @@ const ScrollBar = forwardRef<
         )}
         {...props}
     >
-        <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
+        {visible && (
+            <ScrollAreaPrimitive.ScrollAreaThumb className="bg-border relative flex-1 rounded-full" />
+        )}
     </ScrollAreaPrimitive.ScrollAreaScrollbar>
 ));
 ScrollBar.displayName = ScrollAreaPrimitive.ScrollAreaScrollbar.displayName;
