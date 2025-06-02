@@ -36,6 +36,13 @@
       "when": 1748787788833,
       "tag": "0004_wet_phalanx",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1748863866432,
+      "tag": "0005_serious_stone_men",
+      "breakpoints": true
     }
   ]
 }
