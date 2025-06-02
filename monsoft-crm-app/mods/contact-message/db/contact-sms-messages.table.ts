@@ -3,11 +3,11 @@ import { table, text, boolean, timestamp, enumType } from '@db/sql';
 
 import { contactPhoneNumber } from '@db/db';
 
-import { contactSmsMessageDirectionEnum } from '../enums';
+import { contactMessageDirectionEnum } from '../enums';
 
 export const contactSmsMessageDirection = enumType(
     'contact_sms_message_direction',
-    contactSmsMessageDirectionEnum.options,
+    contactMessageDirectionEnum.options,
 );
 
 export const contactSmsMessage = table('contact_sms_message', {
