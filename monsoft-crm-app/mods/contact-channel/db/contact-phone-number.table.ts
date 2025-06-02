@@ -15,7 +15,12 @@ export const contactPhoneNumber = table('contact_phone_number', {
 
 export const contactPhoneNumberRelations = relations(
     contactPhoneNumber,
-    ({ many }) => ({
+    ({ one, many }) => ({
+        contact: one(contact, {
+            fields: [contactPhoneNumber.contactId],
+            references: [contact.id],
+        }),
+
         contactSmsMessages: many(contactSmsMessage),
     }),
 );
