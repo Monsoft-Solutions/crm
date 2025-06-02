@@ -57,6 +57,13 @@
       "when": 1748865664908,
       "tag": "0007_flippant_dust",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1748866609736,
+      "tag": "0008_wild_goliath",
+      "breakpoints": true
     }
   ]
 }

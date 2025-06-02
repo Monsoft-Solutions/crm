@@ -1,7 +1,14 @@
 import { relations } from 'drizzle-orm';
-import { table, text, boolean, timestamp } from '@db/sql';
+import { table, text, boolean, timestamp, enumType } from '@db/sql';
 
 import { contactPhoneNumber } from '@db/db';
+
+import { contactSmsMessageDirectionEnum } from '../enums';
+
+export const contactSmsMessageDirection = enumType(
+    'contact_sms_message_direction',
+    contactSmsMessageDirectionEnum.options,
+);
 
 export const contactSmsMessage = table('contact_sms_message', {
     id: text('id').primaryKey(),
@@ -9,6 +16,8 @@ export const contactSmsMessage = table('contact_sms_message', {
     contactPhoneNumberId: text('contact_phone_number_id')
         .notNull()
         .references(() => contactPhoneNumber.id),
+
+    direction: contactSmsMessageDirection('direction').notNull(),
 
     body: text('body').notNull(),
 

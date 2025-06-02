@@ -41,14 +41,13 @@ export const sendSmsToContact = (async ({ contactPhoneNumberId, body }) => {
 
     const id = uuidv4();
 
-    const contactSms = {
-        id,
-        contactPhoneNumberId,
-        body,
-    };
-
     const { error: dbError } = await catchError(
-        db.insert(tables.contactSmsMessage).values(contactSms),
+        db.insert(tables.contactSmsMessage).values({
+            id,
+            contactPhoneNumberId,
+            direction: 'outbound',
+            body,
+        }),
     );
 
     if (dbError) return Error();

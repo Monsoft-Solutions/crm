@@ -27,6 +27,7 @@ void listen('smsReceived', async ({ from, body }) => {
         db.insert(tables.contactSmsMessage).values({
             id,
             contactPhoneNumberId,
+            direction: 'inbound',
             body,
         }),
     );
