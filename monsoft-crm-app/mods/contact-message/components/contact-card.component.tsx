@@ -1,0 +1,138 @@
+import { forwardRef } from 'react';
+
+import { timeToAgo } from '@shared/utils/tmp';
+
+import { cn } from '@css/utils';
+
+import { Check } from 'lucide-react';
+
+import { Badge } from '@ui/badge.ui';
+
+import { ContactAvatar } from './contact-avatar.component';
+
+import { api } from '@api/providers/web';
+import { intToOneDigitStr } from '@shared/utils/number';
+
+export const ContactCard = forwardRef<
+    HTMLDivElement,
+    {
+        contactId: string;
+        expanded?: boolean;
+        active?: boolean;
+        onSelect?: () => void;
+        isMobileView?: boolean;
+    }
+>(
+    (
+        {
+            contactId,
+            expanded = true,
+            active = false,
+            onSelect,
+            isMobileView = false,
+        },
+        ref,
+    ) => {
+        const { data: contactCardSummaryQuery } =
+            api.contactMessage.getContactSummary.useQuery({
+                contactId,
+            });
+
+        if (!contactCardSummaryQuery) return;
+        if (contactCardSummaryQuery.error) return;
+
+        const contactCardSummary = contactCardSummaryQuery.data;
+
+        const {
+            lastMessage,
+            lastActivityTimestamp,
+            numUnreadMessages,
+            contact,
+        } = contactCardSummary;
+
+        const contactName = `${contact.firstName} ${contact.lastName}`;
+
+        // Get the last message content preview (similar to WhatsApp)
+        const lastMessageContent = lastMessage?.body ?? '';
+        const truncatedMessageContent =
+            lastMessageContent.length > 40
+                ? lastMessageContent.substring(0, 40) + '...'
+                : lastMessageContent;
+
+        return (
+            <div
+                ref={ref}
+                className={cn(
+                    'relative flex cursor-pointer items-center border-b border-gray-100 px-3 py-3 transition-colors',
+                    // WhatsApp style hover and active states
+                    'hover:bg-gray-50',
+                    active && 'bg-blue-50',
+                )}
+                onClick={() => {
+                    onSelect?.();
+                }}
+                data-testid="contact-card"
+            >
+                {/* Avatar with online indicator */}
+                <div className="relative flex-shrink-0">
+                    <ContactAvatar
+                        name={contactName}
+                        className={cn(
+                            'border border-gray-200',
+                            isMobileView ? 'h-12 w-12' : 'h-11 w-11',
+                        )}
+                    />
+                </div>
+
+                {expanded && (
+                    <div className="ml-3 min-w-0 flex-1 overflow-hidden pr-1">
+                        {/* Top row: Contact name and time */}
+                        <div className="flex w-full items-center justify-between">
+                            <p className="max-w-[70%] truncate font-medium text-gray-900">
+                                {contactName}
+                            </p>
+
+                            <div className="flex flex-shrink-0 items-center gap-1">
+                                {/* Last message time in WhatsApp style */}
+                                {
+                                    <span className="min-w-[40px] text-right text-xs text-gray-500">
+                                        {timeToAgo(lastActivityTimestamp)}
+                                    </span>
+                                }
+                            </div>
+                        </div>
+
+                        {/* Bottom row: Message preview and badges */}
+                        <div className="mt-0.5 flex w-full items-center justify-between">
+                            {/* Last message preview with truncation */}
+                            <div className="flex min-w-0 max-w-[60%] items-center gap-1">
+                                {/* Check mark for outbound messages (like WhatsApp) */}
+                                {lastMessage &&
+                                    lastMessage.direction === 'outbound' && (
+                                        <Check className="size-3.5 flex-shrink-0 stroke-blue-500" />
+                                    )}
+
+                                {/* Message preview */}
+                                <p className="truncate text-xs text-gray-500">
+                                    {truncatedMessageContent ||
+                                        'No messages yet'}
+                                </p>
+                            </div>
+
+                            <div className="ml-1 flex flex-shrink-0 items-center gap-1">
+                                {/* Unread count badge in WhatsApp style */}
+                                {numUnreadMessages > 0 && (
+                                    <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-green-500 p-0 text-xs text-white">
+                                        {intToOneDigitStr(numUnreadMessages)}
+                                    </Badge>
+                                )}
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        );
+    },
+);
+
+ContactCard.displayName = 'ContactCard';
