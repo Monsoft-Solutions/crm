@@ -15,9 +15,11 @@ export function Attach({
     className,
     disabled,
     setAttachment,
+    asChild,
     ...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & {
     setAttachment: (file: File[]) => void;
+    asChild?: boolean;
 }) {
     const hiddenFileInput = useRef<HTMLInputElement>(null);
 
@@ -50,23 +52,27 @@ export function Attach({
     };
 
     return (
-        <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Attach file"
-            onClick={() => {
-                // clear previously selected files, if any
-                if (hiddenFileInput.current) hiddenFileInput.current.value = '';
+        <>
+            <Button
+                asChild={asChild}
+                variant="ghost"
+                size="icon"
+                aria-label="Attach file"
+                onClick={() => {
+                    // clear previously selected files, if any
+                    if (hiddenFileInput.current)
+                        hiddenFileInput.current.value = '';
 
-                // open file selection dialog
-                hiddenFileInput.current?.click();
-            }}
-            className={cn('', className)}
-            disabled={disabled}
-            type="button"
-            {...props}
-        >
-            {children}
+                    // open file selection dialog
+                    hiddenFileInput.current?.click();
+                }}
+                className={cn('', className)}
+                disabled={disabled}
+                type="button"
+                {...props}
+            >
+                {children}
+            </Button>
 
             <input
                 type="file"
@@ -77,6 +83,6 @@ export function Attach({
                     void handleFileChange(e);
                 }}
             />
-        </Button>
+        </>
     );
 }
