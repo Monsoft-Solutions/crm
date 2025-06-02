@@ -4,7 +4,7 @@ import { on } from 'events';
 
 import { emitter } from './emitter.provider';
 
-import { appEvents } from '@events/events';
+import { events } from '../constants';
 
 import { Events } from '@events/types';
 
@@ -17,7 +17,7 @@ export async function listen<E extends keyof Events>(
     options?: Parameters<typeof on>[2],
 ): Promise<void> {
     // get the event schema
-    const eventSchema = appEvents[event];
+    const eventSchema = events[event];
 
     // listen to the event
     for await (const [rawData] of on(emitter, event, options)) {

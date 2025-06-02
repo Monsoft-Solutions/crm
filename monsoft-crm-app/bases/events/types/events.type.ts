@@ -1,4 +1,4 @@
-import { appEvents } from '@events/events';
+import { events } from '../constants';
 
 // type describing all defined events
-export type Events = typeof appEvents;
+export type Events = typeof events;

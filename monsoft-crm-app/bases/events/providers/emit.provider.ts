@@ -7,7 +7,7 @@ import { emitter } from './emitter.provider';
 
 import { Events } from '@events/types';
 import { SyncReturn } from '@errors/types';
-import { appEvents } from '@events/events';
+import { events } from '../constants';
 
 // -------------------------------------------------------------------------
 
@@ -19,7 +19,7 @@ export const emit = <E extends keyof Events>({
     event: E;
     payload: z.infer<Events[E]>;
 }): SyncReturn => {
-    const eventSchema = appEvents[event];
+    const eventSchema = events[event];
 
     const parsingEventData = eventSchema.safeParse(payload);
 
