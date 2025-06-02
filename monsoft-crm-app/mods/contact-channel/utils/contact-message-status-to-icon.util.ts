@@ -11,5 +11,7 @@ export const contactMessageStatusToIcon = (status: ContactMessageStatus) => {
             return Check;
         case 'delivered':
             return CheckCheck;
+        case 'read':
+            return CheckCheck;
     }
 };
