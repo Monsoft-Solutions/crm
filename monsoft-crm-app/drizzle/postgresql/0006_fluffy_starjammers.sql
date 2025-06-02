@@ -1,0 +1,1 @@
+ALTER TABLE "contact_sms_message" ADD COLUMN "created_at" bigint DEFAULT (UNIX_TIMESTAMP(NOW()) * 1000) NOT NULL;

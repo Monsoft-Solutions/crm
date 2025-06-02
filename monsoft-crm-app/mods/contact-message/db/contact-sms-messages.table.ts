@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { table, text, boolean } from '@db/sql';
+import { table, text, boolean, timestamp } from '@db/sql';
 
 import { contactPhoneNumber } from '@db/db';
 
@@ -13,6 +13,8 @@ export const contactSmsMessage = table('contact_sms_message', {
     body: text('body').notNull(),
 
     isRead: boolean('is_read').notNull().default(false),
+
+    createdAt: timestamp('created_at').notNull(),
 });
 
 export const contactSmsMessageRelations = relations(
