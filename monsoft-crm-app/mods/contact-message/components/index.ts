@@ -1,1 +1,1 @@
-export * from './contact-avatar.component';
+export * from './chat-interface.component';
