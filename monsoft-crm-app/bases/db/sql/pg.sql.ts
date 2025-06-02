@@ -35,4 +35,4 @@ export const dialect = 'postgresql';
 export const timestamp = (name: string) =>
     bigint(name, {
         mode: 'number',
-    }).default(sql`(UNIX_TIMESTAMP(NOW()) * 1000)`);
+    }).default(sql`(EXTRACT(EPOCH FROM now()) * 1000)::bigint`);

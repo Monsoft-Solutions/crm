@@ -1,2 +1,0 @@
-CREATE TYPE "public"."contact_sms_message_direction" AS ENUM('inbound', 'outbound');--> statement-breakpoint
-ALTER TABLE "contact_sms_message" ADD COLUMN "direction" "contact_sms_message_direction" NOT NULL;

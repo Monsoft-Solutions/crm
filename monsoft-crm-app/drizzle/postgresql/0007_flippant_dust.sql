@@ -1,1 +1,0 @@
-ALTER TABLE "contact" ADD COLUMN "created_at" bigint DEFAULT (UNIX_TIMESTAMP(NOW()) * 1000) NOT NULL;

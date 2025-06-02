@@ -1,5 +1,5 @@
 {
-  "id": "e1f21715-5c8f-4d15-84bb-8fb7cd1b8b8c",
+  "id": "e2528d1c-447a-4cda-bdcb-dc2b997efded",
   "prevId": "227fd507-2610-4e2c-b863-8da3dddde5f6",
   "version": "7",
   "dialect": "postgresql",
@@ -957,6 +957,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "(EXTRACT(EPOCH FROM now()) * 1000)::bigint"
         }
       },
       "indexes": {},
@@ -1132,6 +1139,13 @@
           "primaryKey": false,
           "notNull": true
         },
+        "direction": {
+          "name": "direction",
+          "type": "contact_sms_message_direction",
+          "typeSchema": "public",
+          "primaryKey": false,
+          "notNull": true
+        },
         "body": {
           "name": "body",
           "type": "text",
@@ -1150,7 +1164,7 @@
           "type": "bigint",
           "primaryKey": false,
           "notNull": true,
-          "default": "(UNIX_TIMESTAMP(NOW()) * 1000)"
+          "default": "(EXTRACT(EPOCH FROM now()) * 1000)::bigint"
         }
       },
       "indexes": {},
@@ -1209,6 +1223,14 @@
       "values": [
         "draft",
         "finished"
+      ]
+    },
+    "public.contact_sms_message_direction": {
+      "name": "contact_sms_message_direction",
+      "schema": "public",
+      "values": [
+        "inbound",
+        "outbound"
       ]
     }
   },
