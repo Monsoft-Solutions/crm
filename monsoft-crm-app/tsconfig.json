@@ -45,6 +45,7 @@
             "@seed/*": ["./bases/seed/*"],
             "@shared/*": ["./shared/*"],
             "@slack/*": ["./bases/slack/*"],
+            "@sms/*": ["./bases/sms/*"],
             "@ui/*": ["./shared/ui/*"],
             "@mods/*": ["./mods/*"],
             "@web/*": ["./bases/web/*"],
