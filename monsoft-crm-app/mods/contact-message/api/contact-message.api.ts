@@ -2,6 +2,7 @@ import { endpoints } from '@api/providers/server';
 
 // queries
 import { getContactEmails } from './get-contact-emails.query';
+import { getContactMessages } from './get-contact-messages.query';
 
 // mutations
 import { sendEmailToContact } from './send-email-to-contact.mutation';
@@ -13,6 +14,7 @@ import { sendMessageToContact } from './send-message-to-contact.mutation';
 export const contactMessage = endpoints({
     // queries
     getContactEmails,
+    getContactMessages,
 
     // mutations
     sendEmailToContact,
