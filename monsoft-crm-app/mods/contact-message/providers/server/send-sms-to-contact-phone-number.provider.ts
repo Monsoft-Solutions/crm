@@ -11,7 +11,10 @@ import tables from '@db/db';
 
 import { getCoreConf } from '@conf/providers/server';
 
-export const sendSmsToContact = (async ({ contactPhoneNumberId, body }) => {
+export const sendSmsToContactPhoneNumber = (async ({
+    contactPhoneNumberId,
+    body,
+}) => {
     const { data: coreConf, error: coreConfError } = await getCoreConf();
 
     if (coreConfError) return Error();

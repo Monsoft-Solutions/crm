@@ -3,15 +3,15 @@ import { Error, Success } from '@errors/utils';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { sendSmsToContactSchema } from '../schemas';
-import { sendSmsToContact as sendSmsToContactProvider } from '../providers/server';
+import { sendSmsToContactPhoneNumberSchema } from '../schemas';
+import { sendSmsToContactPhoneNumber as sendSmsToContactPhoneNumberProvider } from '../providers/server';
 
-export const sendSmsToContact = protectedEndpoint
-    .input(sendSmsToContactSchema)
+export const sendSmsToContactPhoneNumber = protectedEndpoint
+    .input(sendSmsToContactPhoneNumberSchema)
     .mutation(
         queryMutationCallback(
             async ({ input: { contactPhoneNumberId, body } }) => {
-                const { error } = await sendSmsToContactProvider({
+                const { error } = await sendSmsToContactPhoneNumberProvider({
                     contactPhoneNumberId,
                     body,
                 });
