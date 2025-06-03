@@ -49,6 +49,29 @@ export function MessagesArea({ contactId }: { contactId: string }) {
         },
     );
 
+    api.contactMessage.onContactMessageStatusUpdated.useSubscription(
+        {
+            contactId,
+        },
+
+        {
+            onData: ({ id, status }) => {
+                setContactMessages({ contactId }, (prevData) =>
+                    !prevData || prevData.error
+                        ? prevData
+                        : {
+                              ...prevData,
+                              data: prevData.data.map((message) =>
+                                  message.id === id
+                                      ? { ...message, status }
+                                      : message,
+                              ),
+                          },
+                );
+            },
+        },
+    );
+
     if (!contactSmsMessagesQuery) return;
     if (contactSmsMessagesQuery.error) return;
     const messages = contactSmsMessagesQuery.data;
