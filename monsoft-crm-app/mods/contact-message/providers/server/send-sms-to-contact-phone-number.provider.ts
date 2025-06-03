@@ -36,17 +36,24 @@ export const sendSmsToContactPhoneNumber = (async ({
 
     const client = twilio(twilioSid, twilioToken);
 
-    await client.messages.create({
-        body,
-        from: twilioFrom,
-        to: phoneNumber,
-    });
+    const { data: message, error: messageError } = await catchError(
+        client.messages.create({
+            body,
+            from: twilioFrom,
+            to: phoneNumber,
+        }),
+    );
+
+    if (messageError) return Error();
+
+    const { sid } = message;
 
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
         db.insert(tables.contactSmsMessage).values({
             id,
+            sid,
             contactPhoneNumberId,
             direction: 'outbound',
             body,

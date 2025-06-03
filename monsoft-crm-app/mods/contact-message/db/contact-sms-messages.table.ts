@@ -21,6 +21,8 @@ export const contactSmsMessageStatus = enumType(
 export const contactSmsMessage = table('contact_sms_message', {
     id: text('id').primaryKey(),
 
+    sid: text('sid'),
+
     contactPhoneNumberId: text('contact_phone_number_id')
         .notNull()
         .references(() => contactPhoneNumber.id),
