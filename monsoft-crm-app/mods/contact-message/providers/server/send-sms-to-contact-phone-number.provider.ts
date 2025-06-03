@@ -49,5 +49,12 @@ export const sendSmsToContactPhoneNumber = (async ({
 
     if (dbError) return Error();
 
-    return Success();
-}) satisfies Function<{ contactPhoneNumberId: string; body: string }>;
+    const result = {
+        id,
+    };
+
+    return Success(result);
+}) satisfies Function<
+    { contactPhoneNumberId: string; body: string },
+    { id: string }
+>;
