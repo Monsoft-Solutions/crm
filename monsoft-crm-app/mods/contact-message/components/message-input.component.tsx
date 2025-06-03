@@ -177,7 +177,7 @@ export function MessageInput({
                                 disabled={isSending}
                             >
                                 <div className="flex items-center justify-center">
-                                    <ChannelIcon />
+                                    <ChannelIcon className="size-4" />
                                 </div>
                             </Button>
                         </DropdownMenuTrigger>
@@ -202,7 +202,7 @@ export function MessageInput({
                                             }}
                                             className="flex items-center gap-2 py-1.5"
                                         >
-                                            <ChannelIcon />
+                                            <ChannelIcon className="size-4" />
 
                                             <span className="text-xs font-medium">
                                                 {channelTooltip}

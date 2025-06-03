@@ -72,7 +72,7 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                                                     : 'text-blue-500',
                                             )}
                                         >
-                                            <ChannelIcon />
+                                            <ChannelIcon className="size-3.5" />
                                         </div>
                                     </TooltipTrigger>
 
@@ -87,7 +87,7 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
 
                         {direction === 'outbound' && (
                             <span className="opacity-70">
-                                <StatusIcon />
+                                <StatusIcon className="size-3.5" />
                             </span>
                         )}
                     </>
