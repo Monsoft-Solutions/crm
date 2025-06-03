@@ -1,0 +1,1 @@
+ALTER TYPE "public"."contact_sms_message_status" ADD VALUE 'read';
