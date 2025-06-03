@@ -4,6 +4,7 @@ import { z } from 'zod';
 export const smsReceived = z.object({
     from: z.string(),
     body: z.string(),
+    createdAt: z.number(),
 });
 
 // sms-received event type

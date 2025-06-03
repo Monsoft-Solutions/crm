@@ -24,6 +24,7 @@ export function twilioIncomingSmsWebhookHandler(server: express.Express) {
             payload: {
                 from: From,
                 body: Body,
+                createdAt: Date.now(),
             },
         });
 
