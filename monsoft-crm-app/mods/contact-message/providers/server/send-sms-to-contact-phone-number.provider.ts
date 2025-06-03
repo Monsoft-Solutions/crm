@@ -1,7 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import twilio from 'twilio';
-
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
@@ -9,18 +7,12 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { db } from '@db/providers/server';
 import tables from '@db/db';
 
-import { getCoreConf } from '@conf/providers/server';
+import { sendSms } from '@sms/providers';
 
 export const sendSmsToContactPhoneNumber = (async ({
     contactPhoneNumberId,
     body,
 }) => {
-    const { data: coreConf, error: coreConfError } = await getCoreConf();
-
-    if (coreConfError) return Error();
-
-    const { twilioSid, twilioToken, twilioFrom } = coreConf;
-
     const { data: contactPhoneNumber, error: contactPhoneNumberError } =
         await catchError(
             db.query.contactPhoneNumber.findFirst({
@@ -34,15 +26,10 @@ export const sendSmsToContactPhoneNumber = (async ({
 
     const { phoneNumber } = contactPhoneNumber;
 
-    const client = twilio(twilioSid, twilioToken);
-
-    const { data: message, error: messageError } = await catchError(
-        client.messages.create({
-            body,
-            from: twilioFrom,
-            to: phoneNumber,
-        }),
-    );
+    const { data: message, error: messageError } = await sendSms({
+        to: phoneNumber,
+        body,
+    });
 
     if (messageError) return Error();
 
