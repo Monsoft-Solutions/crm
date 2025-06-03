@@ -9,6 +9,7 @@ export const newContactMessage = z.object({
     channelType: contactChannelTypeEnum,
     direction: contactMessageDirectionEnum,
     body: z.string(),
+    createdAt: z.number(),
 });
 
 export type NewContactMessageEvent = z.infer<typeof newContactMessage>;
