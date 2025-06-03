@@ -6,7 +6,7 @@ import { contactMessageDirectionEnum } from '../enums';
 export const newContactMessage = z.object({
     id: z.string(),
     contactId: z.string(),
-    channel: contactChannelTypeEnum,
+    channelType: contactChannelTypeEnum,
     direction: contactMessageDirectionEnum,
     body: z.string(),
 });
