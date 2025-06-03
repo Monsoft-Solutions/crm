@@ -12,6 +12,7 @@ import { sendMessageToContact } from './send-message-to-contact.mutation';
 
 // subscriptions
 import { onNewContactMessage } from './new-contact-message.subscription';
+import { onContactMessageStatusUpdated } from './contact-message-status-updated.subscription';
 
 export const contactMessage = endpoints({
     // queries
@@ -26,4 +27,5 @@ export const contactMessage = endpoints({
 
     // subscriptions
     onNewContactMessage,
+    onContactMessageStatusUpdated,
 });
