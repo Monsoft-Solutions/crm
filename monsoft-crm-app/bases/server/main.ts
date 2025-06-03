@@ -26,7 +26,7 @@ import { authServer } from '../auth/providers/server';
 
 import { authPath } from '@auth/constants';
 
-import { twilioIncomingSmsWebhookHandler } from '../sms/providers';
+import { twilioWebhooksHandler } from '../sms/providers';
 
 export * from '@app/hub';
 
@@ -48,7 +48,7 @@ const server = express();
 // enable cors
 server.use(cors());
 
-twilioIncomingSmsWebhookHandler(server);
+twilioWebhooksHandler(server);
 
 // add trpc middleware
 server.use(apiPath, trpcMiddleware);

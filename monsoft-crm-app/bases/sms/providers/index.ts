@@ -1,1 +1,1 @@
-export * from './twilio-incoming-sms-webhook-handler.provider';
+export * from './twilio-webhooks-handler.provider';
