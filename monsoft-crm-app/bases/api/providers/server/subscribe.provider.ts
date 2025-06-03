@@ -1,12 +1,11 @@
+import { on } from 'events';
+
 import type { z } from 'zod';
 
+import { events } from '@events/constants';
+import { Events } from '@events/types';
+
 import { emitter } from '@events/providers/emitter.provider';
-// Use Node.js events directly without destructuring
-import events from 'events';
-
-import * as appEvents from '@app/events';
-
-type Events = typeof appEvents;
 
 // Utility to create a tRPC subscription listening to an event
 export function subscribe<Context, Input, E extends keyof Events, Output>(
@@ -34,8 +33,8 @@ export function subscribe<Context, Input, E extends keyof Events, Output>(
         ctx: Context;
         input: Input;
     }): AsyncGenerator<Output> {
-        for await (const [rawData] of events.on(emitter, event, { signal })) {
-            const { data } = appEvents[event].safeParse(rawData);
+        for await (const [rawData] of on(emitter, event, { signal })) {
+            const { data } = events[event].safeParse(rawData);
 
             if (!data) {
                 console.log(
