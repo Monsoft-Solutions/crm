@@ -1,1 +1,1 @@
-export const twilioIncomingSmsWebhookPath = '/twilio';
+export const twilioIncomingSmsWebhookPath = '/twilio-incoming-sms';
