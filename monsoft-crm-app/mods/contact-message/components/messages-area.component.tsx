@@ -2,7 +2,7 @@ import { ScrollArea } from '@ui/scroll-area.ui';
 
 import { MessageBubble } from './message-bubble.component';
 
-import { api } from '@api/providers/web';
+import { api, apiClientUtils } from '@api/providers/web';
 
 function formatMessageDate(date: Date) {
     const today = new Date();
@@ -22,6 +22,32 @@ export function MessagesArea({ contactId }: { contactId: string }) {
         api.contactMessage.getContactMessages.useQuery({
             contactId,
         });
+
+    const {
+        getContactMessages: { setData: setContactMessages },
+    } = apiClientUtils.contactMessage;
+
+    api.contactMessage.onNewContactMessage.useSubscription(
+        {
+            contactId,
+        },
+
+        {
+            onData: (data) => {
+                setContactMessages({ contactId }, (prevData) =>
+                    !prevData || prevData.error
+                        ? prevData
+                        : {
+                              ...prevData,
+                              data: [
+                                  ...prevData.data,
+                                  { ...data, status: 'queued' },
+                              ],
+                          },
+                );
+            },
+        },
+    );
 
     if (!contactSmsMessagesQuery) return;
     if (contactSmsMessagesQuery.error) return;
