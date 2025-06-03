@@ -17,12 +17,18 @@ export const sendSmsToContact = (async ({ contactId, body }) => {
     if (contactPhoneNumberError) return Error();
     if (!contactPhoneNumber) return Error();
 
-    const { error } = await sendSmsToContactPhoneNumber({
+    const { data, error } = await sendSmsToContactPhoneNumber({
         contactPhoneNumberId: contactPhoneNumber.id,
         body,
     });
 
     if (error) return Error();
 
-    return Success();
-}) satisfies Function<{ contactId: string; body: string }>;
+    const { id } = data;
+
+    const result = {
+        id,
+    };
+
+    return Success(result);
+}) satisfies Function<{ contactId: string; body: string }, { id: string }>;
