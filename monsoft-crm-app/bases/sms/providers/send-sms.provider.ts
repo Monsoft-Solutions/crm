@@ -6,6 +6,10 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { getCoreConf } from '@conf/providers/server';
 
+import { appUrl } from '@dist/constants';
+
+import { twilioStatusUpdateWebhookPath } from '@sms/constants';
+
 export const sendSms = (async ({ to, body }) => {
     const { data: coreConf, error: coreConfError } = await getCoreConf();
 
@@ -20,6 +24,7 @@ export const sendSms = (async ({ to, body }) => {
             body,
             from: twilioFrom,
             to,
+            statusCallback: `${appUrl}${twilioStatusUpdateWebhookPath}`,
         }),
     );
 
