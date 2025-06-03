@@ -11,6 +11,7 @@ import { sendSmsToContactPhoneNumber } from './send-sms-to-contact-phone-number.
 import { sendMessageToContact } from './send-message-to-contact.mutation';
 
 // subscriptions
+import { onNewContactMessage } from './new-contact-message.subscription';
 
 export const contactMessage = endpoints({
     // queries
@@ -24,4 +25,5 @@ export const contactMessage = endpoints({
     sendMessageToContact,
 
     // subscriptions
+    onNewContactMessage,
 });
