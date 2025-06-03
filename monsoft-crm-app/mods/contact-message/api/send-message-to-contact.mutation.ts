@@ -6,22 +6,42 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 import { sendMessageToContactSchema } from '../schemas';
 import { sendSmsToContact as sendSmsToContactProvider } from '../providers/server';
 
+const NOT_IMPLEMENTED_CHANNEL_TYPE = Error('NOT_IMPLEMENTED_CHANNEL_TYPE');
+
 export const sendMessageToContact = protectedEndpoint
     .input(sendMessageToContactSchema)
     .mutation(
         queryMutationCallback(
             async ({ input: { contactId, channelType, body } }) => {
-                if (channelType === 'sms') {
-                    const { error } = await sendSmsToContactProvider({
-                        contactId,
-                        body,
-                    });
+                switch (channelType) {
+                    case 'sms': {
+                        const { error } = await sendSmsToContactProvider({
+                            contactId,
+                            body,
+                        });
 
-                    if (error) return Error();
-                    return Success();
+                        if (error) return Error();
+                        break;
+                    }
+
+                    case 'email': {
+                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                    }
+
+                    case 'whatsapp': {
+                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                    }
+
+                    case 'instagram': {
+                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                    }
+
+                    case 'slack': {
+                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                    }
                 }
 
-                return Error('INVALID_CHANNEL_TYPE');
+                return Success();
             },
         ),
     );
