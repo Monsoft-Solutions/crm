@@ -31,7 +31,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
 
             if (error) return Error();
 
-            return Success();
+            return Success({ brandId: id });
         },
     ),
 );
