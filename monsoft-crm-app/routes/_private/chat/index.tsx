@@ -1,6 +1,6 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
-import { apiClientUtils } from '@api/providers/web';
+import { apiClientUtils, vanillaApi } from '@api/providers/web';
 
 export const Route = createFileRoute('/_private/chat/')({
     async loader() {
@@ -12,13 +12,21 @@ export const Route = createFileRoute('/_private/chat/')({
 
         const defaultBrandId = brandsIds.at(0);
 
+        if (!defaultBrandId) {
+            const result = await vanillaApi.brand.createBrand.mutate({
+                name: '',
+            });
+
+            const newBrandId = result.error ? '' : result.data.brandId;
+
+            return { defaultBrandId: newBrandId };
+        }
+
         return { defaultBrandId };
     },
 
     component: function Component() {
         const { defaultBrandId } = Route.useLoaderData();
-
-        if (!defaultBrandId) return;
 
         return (
             <Navigate
