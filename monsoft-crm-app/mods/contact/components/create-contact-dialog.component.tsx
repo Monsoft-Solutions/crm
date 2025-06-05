@@ -2,7 +2,7 @@ import { HTMLAttributes } from 'react';
 
 import { toast } from 'sonner';
 
-import { api } from '@api/providers/web';
+import { api, apiClientUtils } from '@api/providers/web';
 
 import { Plus } from 'lucide-react';
 
@@ -40,6 +40,9 @@ export function CreateContactDialog({
                 });
 
                 onClose?.();
+
+                await apiClientUtils.contact.getContactsIds.invalidate();
+
                 return;
             }}
             onClose={() => {
