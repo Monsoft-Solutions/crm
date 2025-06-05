@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 
 import { ChatInterface } from '@mods/contact-message/components';
 
-import { Route } from '@routes/_private/chat';
+import { Route } from '@routes/_private/brand/$brandId/chat';
 
 export function ChatView() {
     const navigate = Route.useNavigate();
