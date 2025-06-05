@@ -8,7 +8,7 @@ export const contactPhoneNumber = table('contact_phone_number', {
 
     contactId: text('contact_id')
         .notNull()
-        .references(() => contact.id),
+        .references(() => contact.id, { onDelete: 'cascade' }),
 
     phoneNumber: text('phone_number').notNull(),
 });
