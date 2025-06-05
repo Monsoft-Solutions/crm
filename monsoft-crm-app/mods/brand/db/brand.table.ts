@@ -7,7 +7,7 @@ export const brand = table('brand', {
 
     organizationId: text('organization_id')
         .notNull()
-        .references(() => organization.id),
+        .references(() => organization.id, { onDelete: 'cascade' }),
 
     name: text('name').notNull(),
 });
