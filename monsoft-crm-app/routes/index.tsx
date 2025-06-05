@@ -1,8 +1,9 @@
-import { createFileRoute, Navigate } from '@tanstack/react-router';
+import { createFileRoute, redirect } from '@tanstack/react-router';
 
 export const Route = createFileRoute('/')({
-    component: () => (
-        // automatically navigate the main view
-        <Navigate to="/chat" />
-    ),
+    beforeLoad: () => {
+        throw redirect({
+            to: '/chat',
+        });
+    },
 });
