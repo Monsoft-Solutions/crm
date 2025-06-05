@@ -1,4 +1,4 @@
-import { HTMLAttributes } from 'react';
+import { HTMLAttributes, useState } from 'react';
 
 import { z } from 'zod';
 
@@ -51,6 +51,13 @@ export function ContactDetailsDialog({
         defaultValues,
     });
 
+    const [isOpen, setIsOpen] = useState(false);
+
+    const handleOpenChange = (open: boolean) => {
+        if (!open) onClose?.();
+        setIsOpen(open);
+    };
+
     return (
         <ViewEditDialog
             title="Contact Details"
@@ -62,7 +69,8 @@ export function ContactDetailsDialog({
                     );
                 })();
             }}
-            onClose={onClose}
+            isOpen={isOpen}
+            handleOpenChange={handleOpenChange}
             initEditMode={true}
             newEntityCreation={newEntityCreation}
             render={({ isEditMode, setIsSubmitting }) => (
@@ -72,7 +80,7 @@ export function ContactDetailsDialog({
                     setIsSubmitting={setIsSubmitting}
                     onSubmit={async (data) => {
                         await onSubmit(data);
-                        onClose?.();
+                        handleOpenChange(false);
                     }}
                 />
             )}

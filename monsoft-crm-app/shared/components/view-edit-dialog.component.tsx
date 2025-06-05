@@ -16,14 +16,16 @@ export function ViewEditDialog({
     title,
     render,
     onSubmit,
-    onClose,
+    isOpen,
+    handleOpenChange,
     initEditMode = false,
     newEntityCreation = false,
     children,
 }: HTMLAttributes<HTMLDivElement> & {
     title: string;
     onSubmit?: () => void | Promise<void>;
-    onClose?: () => void;
+    isOpen: boolean;
+    handleOpenChange: (open: boolean) => void;
     render: ({
         isEditMode,
         setIsSubmitting,
@@ -35,8 +37,6 @@ export function ViewEditDialog({
     newEntityCreation?: boolean;
 }) {
     const [isEditMode, setIsEditMode] = useState(initEditMode);
-
-    const [isOpen, setIsOpen] = useState(false);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -53,11 +53,6 @@ export function ViewEditDialog({
         }
 
         handleOpenChange(false);
-    };
-
-    const handleOpenChange = (open: boolean) => {
-        if (!open) onClose?.();
-        setIsOpen(open);
     };
 
     return (
