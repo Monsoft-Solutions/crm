@@ -7,9 +7,10 @@ import { Route } from '@routes/_private/brand/$brandId/chat';
 export function ChatView() {
     const navigate = Route.useNavigate();
 
+    const { brandId } = Route.useParams();
+
     const { id: activeContactId } = Route.useSearch();
 
-    console.log('-->   ~ ChatView ~ activeContactId:', activeContactId);
     const setActiveContactId = useCallback(
         (id: string) => {
             // If id is empty string, we're clearing the contact selection (going back to list)
@@ -30,6 +31,7 @@ export function ChatView() {
     return (
         <div className="container absolute inset-0 p-0 py-2 sm:py-4 md:py-10">
             <ChatInterface
+                brandId={brandId}
                 activeContactId={activeContactId}
                 setActiveContactId={setActiveContactId}
             />

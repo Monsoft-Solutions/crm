@@ -10,12 +10,15 @@ import { ScrollArea } from '@ui/scroll-area.ui';
 import { ContactCard } from './contact-card.component';
 
 import { api } from '@api/providers/web';
+import { CreateContactDialog } from '@mods/contact/components/create-contact-dialog.component';
 
 export function ContactsList({
+    brandId,
     activeContactId,
     setActiveContactId,
     isMobileView = false,
 }: {
+    brandId: string;
     activeContactId?: string;
     setActiveContactId: (id: string) => void;
     isMobileView?: boolean;
@@ -33,7 +36,9 @@ export function ContactsList({
         setIsContactsExpanded((state) => !state);
     };
 
-    const { data: contactsIdsQuery } = api.contact.getContactsIds.useQuery();
+    const { data: contactsIdsQuery } = api.contact.getContactsIds.useQuery({
+        brandId,
+    });
 
     if (!contactsIdsQuery) return;
     if (contactsIdsQuery.error) return;
@@ -79,16 +84,7 @@ export function ContactsList({
                     {/* Actions section */}
                     <div className="flex items-center gap-2">
                         {/* New chat button (like WhatsApp) */}
-                        <Button
-                            variant="ghost"
-                            size="sm"
-                            // onClick={() => {
-                            //     setCreateContactDialogOpen(true);
-                            // }}
-                            className="h-9 w-9 flex-shrink-0 rounded-full bg-blue-50 p-0 text-blue-600 hover:bg-blue-100"
-                        >
-                            <Plus className="h-5 w-5" />
-                        </Button>
+                        <CreateContactDialog brandId={brandId} />
                     </div>
                 </div>
 
