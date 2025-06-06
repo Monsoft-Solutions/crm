@@ -51,7 +51,7 @@ export function ContactsList({
                 isMobileView
                     ? 'w-full' // Take full width on mobile
                     : isContactsExpanded
-                      ? 'w-100'
+                      ? 'w-72'
                       : 'w-[60px]',
             )}
         >
