@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react';
 
 import { cn } from '@css/utils';
 
-import { ChevronLeft, ChevronRight, Plus } from 'lucide-react';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 import { Button } from '@ui/button.ui';
 import { ScrollArea } from '@ui/scroll-area.ui';
@@ -106,17 +106,15 @@ export function ContactsList({
                                     try a different search term
                                 </p>
 
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="mt-4 rounded-full border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-100"
-                                    // onClick={() => {
-                                    //     setCreateContactDialogOpen(true);
-                                    // }}
-                                >
-                                    <Plus className="mr-1 h-4 w-4" />
-                                    Create New Contact
-                                </Button>
+                                <CreateContactDialog brandId={brandId}>
+                                    <Button
+                                        variant="outline"
+                                        size="sm"
+                                        className="mt-4 rounded-full border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                    >
+                                        Create New Contact
+                                    </Button>
+                                </CreateContactDialog>
                             </div>
                         ) : (
                             contacts.map((contact) => (
