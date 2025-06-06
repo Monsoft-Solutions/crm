@@ -86,7 +86,7 @@ export const VerificationEmail = ({
                         {/* Header */}
                         <Heading
                             as="h1"
-                            className="mb-16 mt-0 text-center text-2xl font-semibold"
+                            className="mt-0 mb-16 text-center text-2xl font-semibold"
                         >
                             {t.welcome}
                         </Heading>

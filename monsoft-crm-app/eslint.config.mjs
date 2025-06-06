@@ -95,10 +95,6 @@ export default tseslint.config(
 
             // vite
             '**/vite.config.*',
-
-            // tailwind
-            '**/postcss.config.*',
-            '**/tailwind.config.*',
         ],
     },
 );

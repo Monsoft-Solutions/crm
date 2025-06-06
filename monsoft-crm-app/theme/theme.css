@@ -1,0 +1,86 @@
+@import 'tailwindcss';
+
+@source "../routes/";
+@source "../shared/";
+@source "../mods/";
+
+@theme {
+    --color-primary: hsl(202 88% 45%);
+    --color-primary-foreground: hsl(355.7 100% 97.3%);
+    --color-secondary: hsl(240 4.8% 95.9%);
+    --color-secondary-foreground: hsl(240 5.9% 10%);
+    --color-background: hsl(0 0% 100%);
+    --color-foreground: hsl(240 10% 3.9%);
+    --color-card: hsl(0 0% 100%);
+    --color-card-foreground: hsl(240 10% 3.9%);
+    --color-popover: hsl(0 0% 100%);
+    --color-popover-foreground: hsl(240 10% 3.9%);
+    --color-muted: hsl(240 4.8% 95.9%);
+    --color-muted-foreground: hsl(240 3.8% 46.1%);
+    --color-accent: hsl(240 4.8% 95.9%);
+    --color-accent-foreground: hsl(240 5.9% 10%);
+    --color-destructive: hsl(0 84.2% 60.2%);
+    --color-destructive-foreground: hsl(0 0% 98%);
+    --color-border: hsl(240 5.9% 90%);
+    --color-input: hsl(240 5.9% 90%);
+    --color-ring: hsl(68.5% 0.169 237.323);
+    --radius-sm: 0.55rem;
+    --radius-md: 0.675rem;
+    --radius-lg: 0.8rem;
+    --shadow-floating: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px,
+        rgba(145, 158, 171, 0.12) 1px 6px 24px 0px;
+}
+
+@layer base {
+    * {
+        @apply border-border;
+    }
+    body {
+        @apply bg-background text-foreground;
+    }
+}
+
+@utility container {
+    margin-inline: auto;
+    padding-inline: 2rem;
+}
+
+@layer components {
+    .CollapsibleContent[data-state='closed'] {
+        max-height: 0;
+        animation: slideUp 100ms ease-out forwards;
+    }
+
+    @keyframes slideDown {
+        from {
+            max-height: 0;
+            opacity: 10%;
+            transform: translateY(-1rem);
+        }
+        to {
+            max-height: 1000px;
+        }
+    }
+
+    .CollapsibleContent[data-state='open'] {
+        max-height: 1000px;
+        animation: slideDown 100ms ease-out forwards;
+    }
+
+    @keyframes slideUp {
+        from {
+            max-height: 1000px;
+        }
+        to {
+            opacity: 10%;
+            transform: translateY(-1rem);
+            max-height: 0;
+        }
+    }
+}
+
+#app {
+    height: 100dvh;
+    overflow-x: hidden;
+    overflow-y: hidden;
+}

@@ -144,7 +144,7 @@ export function ContactsList({
                     variant="ghost"
                     size="icon"
                     onClick={toggleContacts}
-                    className="absolute right-0 top-24 z-50 hidden size-6 -translate-x-1/2 transform rounded-full border bg-white shadow-sm md:flex"
+                    className="absolute top-24 right-0 z-50 hidden size-6 -translate-x-1/2 transform rounded-full border bg-white shadow-sm md:flex"
                     aria-label={
                         isContactsExpanded
                             ? 'Collapse contacts'
