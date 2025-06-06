@@ -25,7 +25,7 @@ export const contactSmsMessage = table('contact_sms_message', {
 
     contactPhoneNumberId: text('contact_phone_number_id')
         .notNull()
-        .references(() => contactPhoneNumber.id),
+        .references(() => contactPhoneNumber.id, { onDelete: 'cascade' }),
 
     direction: contactSmsMessageDirection('direction').notNull(),
 

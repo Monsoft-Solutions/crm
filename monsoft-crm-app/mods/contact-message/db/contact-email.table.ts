@@ -8,7 +8,7 @@ export const contactEmail = table('contact_email', {
 
     contactEmailAddressId: text('contact_email_address_id')
         .notNull()
-        .references(() => contactEmailAddress.id),
+        .references(() => contactEmailAddress.id, { onDelete: 'cascade' }),
 
     body: text('body').notNull(),
 });

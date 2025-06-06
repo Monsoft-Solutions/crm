@@ -9,7 +9,7 @@ export const contact = table('contact', {
 
     brandId: text('brand_id')
         .notNull()
-        .references(() => brand.id),
+        .references(() => brand.id, { onDelete: 'cascade' }),
 
     firstName: text('first_name').notNull(),
 

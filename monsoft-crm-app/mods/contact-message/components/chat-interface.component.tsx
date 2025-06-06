@@ -9,9 +9,11 @@ import { MessagesArea } from './messages-area.component';
 import { MessageInput } from './message-input.component';
 
 export function ChatInterface({
+    brandId,
     activeContactId,
     setActiveContactId,
 }: {
+    brandId: string;
     activeContactId?: string;
     setActiveContactId: (id: string) => void;
 }) {
@@ -24,6 +26,7 @@ export function ChatInterface({
             {/* Show contacts list on desktop (width > 800) or when no active contact on mobile */}
             {(width > 800 || (isMobileView && !activeContactId)) && (
                 <ContactsList
+                    brandId={brandId}
                     activeContactId={activeContactId}
                     setActiveContactId={setActiveContactId}
                     isMobileView={isMobileView}
