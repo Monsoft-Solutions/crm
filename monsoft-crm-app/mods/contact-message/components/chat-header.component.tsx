@@ -68,7 +68,7 @@ export function ChatHeader({
 
                 <div className="relative">
                     <ContactAvatar name={contactName} />
-                    <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border border-white bg-green-500"></span>
+                    <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border border-white bg-green-500"></span>
                 </div>
 
                 <div className="ml-3 grow overflow-hidden">

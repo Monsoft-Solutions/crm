@@ -4,6 +4,8 @@ import fs from 'fs';
 
 import reactPlugin from '@vitejs/plugin-react';
 import tsrPlugin from '@tanstack/router-plugin/vite';
+import tailwindcssPlugin from '@tailwindcss/vite';
+
 // import { sentryVitePlugin } from '@sentry/vite-plugin';
 
 import path from 'path';
@@ -58,6 +60,9 @@ const tsrOptions = tsrPlugin({
     addExtensions: true,
 });
 
+// tailwindcss plugin options
+const tailwindcssOptions = tailwindcssPlugin();
+
 // sentry plugin options
 // const sentryPlugin = sentryVitePlugin({
 //     org: 'monsoft-solutions',
@@ -68,6 +73,7 @@ export default defineConfig({
     plugins: [
         reactOptions,
         tsrOptions,
+        tailwindcssOptions,
         // sentryPlugin
     ],
 

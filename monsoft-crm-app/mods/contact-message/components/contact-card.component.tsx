@@ -105,7 +105,7 @@ export const ContactCard = forwardRef<
                         {/* Bottom row: Message preview and badges */}
                         <div className="mt-0.5 flex w-full items-center justify-between">
                             {/* Last message preview with truncation */}
-                            <div className="flex min-w-0 max-w-[60%] items-center gap-1">
+                            <div className="flex max-w-[60%] min-w-0 items-center gap-1">
                                 {/* Check mark for outbound messages (like WhatsApp) */}
                                 {lastMessage &&
                                     lastMessage.direction === 'outbound' && (

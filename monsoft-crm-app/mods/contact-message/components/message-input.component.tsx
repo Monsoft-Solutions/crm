@@ -135,7 +135,7 @@ export function MessageInput({
                         <>
                             <Badge
                                 variant="default"
-                                className="absolute -right-0.5 -top-0.5 flex size-4 cursor-default items-center justify-center rounded-full px-0 py-0 text-[10px]"
+                                className="absolute -top-0.5 -right-0.5 flex size-4 cursor-default items-center justify-center rounded-full px-0 py-0 text-[10px]"
                             >
                                 {numAttachments > 9 ? '9+' : numAttachments}
                             </Badge>
@@ -143,7 +143,7 @@ export function MessageInput({
                             <Button
                                 variant="destructive"
                                 size="icon"
-                                className="absolute left-0 top-0 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 p-0 shadow-sm"
+                                className="absolute top-0 left-0 h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 p-0 shadow-sm"
                                 onClick={() => {
                                     setAttachments([]);
                                 }}
@@ -247,7 +247,7 @@ export function MessageInput({
                             <Button
                                 variant="destructive"
                                 size="icon"
-                                className="absolute -right-1 -top-1 h-4 w-4 rounded-full p-0 opacity-90 shadow group-hover:opacity-100"
+                                className="absolute -top-1 -right-1 h-4 w-4 rounded-full p-0 opacity-90 shadow group-hover:opacity-100"
                                 onClick={() => {
                                     removeAttachment(file.name);
                                 }}

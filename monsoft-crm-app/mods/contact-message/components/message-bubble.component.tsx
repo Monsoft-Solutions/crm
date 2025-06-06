@@ -33,7 +33,7 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
         const messageBubbleContent = (
             <div className="w-full p-3 pb-2">
                 <div>
-                    <p className="break-words text-sm leading-relaxed">
+                    <p className="text-sm leading-relaxed break-words">
                         {lines.map((line, i) => (
                             <span key={i}>
                                 {line}
@@ -98,7 +98,7 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
         return (
             <div
                 className={cn(
-                    'relative min-w-[150px] max-w-[85%] overflow-hidden rounded-2xl transition-all',
+                    'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-2xl transition-all',
                     direction === 'outbound'
                         ? 'self-end bg-blue-50 shadow-sm hover:shadow'
                         : 'self-start bg-gray-100 text-gray-800 shadow-sm hover:shadow',

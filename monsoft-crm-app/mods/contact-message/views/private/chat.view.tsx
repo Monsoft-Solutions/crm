@@ -29,7 +29,7 @@ export function ChatView() {
     );
 
     return (
-        <div className="container absolute inset-0 p-0 py-2 sm:py-4 md:py-10">
+        <div className="absolute inset-0 container p-0 py-2 sm:py-4 md:py-10">
             <ChatInterface
                 brandId={brandId}
                 activeContactId={activeContactId}

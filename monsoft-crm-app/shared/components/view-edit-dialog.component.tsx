@@ -64,7 +64,7 @@ export function ViewEditDialog({
                     <DialogTitle className="text-left">{title}</DialogTitle>
 
                     {!newEntityCreation && (
-                        <div className="absolute right-14 top-2 z-10 flex items-center gap-2">
+                        <div className="absolute top-2 right-14 z-10 flex items-center gap-2">
                             <span className="text-sm font-medium transition-all duration-300">
                                 {isEditMode ? 'Edit Mode' : 'View Mode'}
                             </span>
