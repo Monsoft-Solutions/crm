@@ -64,4 +64,4 @@ export const setCustomConf = (async ({ organizationId, conf }) => {
     );
 
     return Success();
-}) satisfies Function<{ organizationId: string; conf: CustomConf }>;
+}) satisfies Function<{ organizationId: string; conf: Partial<CustomConf> }>;
