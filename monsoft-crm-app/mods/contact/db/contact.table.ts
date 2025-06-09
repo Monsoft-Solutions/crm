@@ -18,6 +18,11 @@ export const contact = table('contact', {
     createdAt: timestamp('created_at').notNull(),
 });
 
-export const contactTableRelations = relations(contact, ({ many }) => ({
+export const contactTableRelations = relations(contact, ({ one, many }) => ({
+    brand: one(brand, {
+        fields: [contact.brandId],
+        references: [brand.id],
+    }),
+
     contactPhoneNumbers: many(contactPhoneNumber),
 }));
