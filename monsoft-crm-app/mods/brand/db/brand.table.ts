@@ -10,4 +10,6 @@ export const brand = table('brand', {
         .references(() => organization.id, { onDelete: 'cascade' }),
 
     name: text('name').notNull(),
+
+    phoneNumber: text('phone_number').notNull(),
 });
