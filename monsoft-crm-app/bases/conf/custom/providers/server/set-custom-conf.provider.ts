@@ -20,7 +20,7 @@ export const setCustomConf = (async ({ organizationId, conf }) => {
     await db
         .update(customConfTable)
         .set(conf)
-        .where(eq(customConfTable.usage, 'current'));
+        .where(eq(customConfTable.organizationId, organizationId));
 
     // ensure custom conf cache is available
     await serverQueryClient.ensureQueryData({
