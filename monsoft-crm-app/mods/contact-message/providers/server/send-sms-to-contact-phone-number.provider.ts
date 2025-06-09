@@ -7,7 +7,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { db } from '@db/providers/server';
 import tables from '@db/db';
 
-import { sendSms } from '@sms/providers';
+import { sendBrandSms } from '@mods/brand/providers';
 
 export const sendSmsToContactPhoneNumber = (async ({
     contactPhoneNumberId,
@@ -17,6 +17,13 @@ export const sendSmsToContactPhoneNumber = (async ({
         await catchError(
             db.query.contactPhoneNumber.findFirst({
                 where: (record, { eq }) => eq(record.id, contactPhoneNumberId),
+                with: {
+                    contact: {
+                        with: {
+                            brand: true,
+                        },
+                    },
+                },
             }),
         );
 
@@ -24,10 +31,13 @@ export const sendSmsToContactPhoneNumber = (async ({
 
     if (contactPhoneNumber === undefined) return Error();
 
-    const { phoneNumber } = contactPhoneNumber;
+    const { contact, phoneNumber: toPhoneNumber } = contactPhoneNumber;
 
-    const { data: message, error: messageError } = await sendSms({
-        to: phoneNumber,
+    const { brandId } = contact;
+
+    const { data: message, error: messageError } = await sendBrandSms({
+        brandId,
+        to: toPhoneNumber,
         body,
     });
 
