@@ -127,6 +127,13 @@
       "when": 1749465446430,
       "tag": "0017_true_thunderbolt",
       "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1749467188281,
+      "tag": "0018_bouncy_thaddeus_ross",
+      "breakpoints": true
     }
   ]
 }

@@ -14,6 +14,8 @@ export const getTwilioClientOrg = (async ({ organizationId }) => {
 
     const { twilioSid, twilioToken } = customConf;
 
+    if (!twilioSid || !twilioToken) return Error('TWILIO_CUSTOM_CONF_NOT_SET');
+
     const client = twilio(twilioSid, twilioToken);
 
     return Success(client);
