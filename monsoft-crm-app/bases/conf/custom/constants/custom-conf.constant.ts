@@ -1,9 +1,13 @@
-import * as appCustom from '@app/conf/custom';
-
 import { Conf } from '@conf/types';
 
+import * as appCustom from '@app/conf/custom';
+
+const modulesCustomConf = {
+    ...appCustom,
+};
+
 // full app custom configuration
-export const appCustomConf = Object.entries(appCustom).reduce(
+export const customConf = Object.entries(modulesCustomConf).reduce(
     (acc, [, moduleConf]) => ({
         ...acc,
         ...moduleConf,

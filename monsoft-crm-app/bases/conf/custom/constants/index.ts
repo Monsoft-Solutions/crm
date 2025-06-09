@@ -1,1 +1,1 @@
-export * from './app-custom-conf.constant';
+export * from './custom-conf.constant';

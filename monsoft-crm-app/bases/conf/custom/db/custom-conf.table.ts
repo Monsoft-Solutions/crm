@@ -2,7 +2,7 @@ import { char, enumType, sqlEnum, table, varchar } from '@db/sql';
 
 import { usageSchema } from '../../schemas';
 
-import { appCustomConf } from '../constants';
+import { customConf } from '../constants';
 import { organization } from '@auth/db';
 
 export const customConfUsageEnum = enumType(
@@ -18,5 +18,5 @@ export const customConfTable = table('custom_conf', {
     name: varchar('name', { length: 255 }).unique().notNull(),
     usage: sqlEnum('usage', customConfUsageEnum).unique(),
 
-    ...appCustomConf,
+    ...customConf,
 });
