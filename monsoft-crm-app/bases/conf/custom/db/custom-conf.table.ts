@@ -8,6 +8,7 @@ export const customConfTable = table('custom_conf', {
 
     organizationId: char('organization_id', { length: 36 })
         .notNull()
+        .unique()
         .references(() => organization.id),
 
     ...customConf,
