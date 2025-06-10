@@ -27,6 +27,7 @@
         "noFallthroughCasesInSwitch": true,
 
         "paths": {
+            "@ai/*": ["./bases/ai/*"],
             "@api/*": ["./bases/api/*"],
             "@app/*": ["./app/*"],
             "@auth/*": ["./bases/auth/*"],
