@@ -1,8 +1,6 @@
 import { Function } from '@errors/types';
 import { Success } from '@errors/utils';
 
-import { eq } from 'drizzle-orm';
-
 import { serverQueryClient } from '@api/providers/server';
 
 import { db } from '@db/providers/server';
@@ -17,10 +15,7 @@ import { getCoreConfFromDb } from './get-core-conf-from-db.provider';
 
 // Set core configuration
 export const setCoreConf = (async ({ conf }) => {
-    await db
-        .update(coreConfTable)
-        .set(conf)
-        .where(eq(coreConfTable.usage, 'current'));
+    await db.update(coreConfTable).set(conf);
 
     // ensure core conf cache is available
     await serverQueryClient.ensureQueryData({

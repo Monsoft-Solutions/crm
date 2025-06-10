@@ -1,6 +1,12 @@
+import { z } from 'zod';
+
+import { v4 as uuidv4 } from 'uuid';
+
 import { betterAuth } from 'better-auth';
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
-import { organization } from 'better-auth/plugins';
+import { createAuthMiddleware, organization } from 'better-auth/plugins';
+
+import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
 
@@ -15,6 +21,10 @@ import bcrypt from 'bcryptjs';
 import { sendVerificationEmail as sendVerificationEmailUtil } from './send-verification-email.provider';
 
 import { GoogleProfile } from '@auth/types';
+
+import tables from '@db/db';
+
+import { createTwilioSubaccount } from '@sms/providers';
 
 export const authServer = betterAuth({
     basePath: authPath,
@@ -78,6 +88,63 @@ export const authServer = betterAuth({
                 url,
             });
         },
+    },
+
+    hooks: {
+        after: createAuthMiddleware(async (ctx) => {
+            const { path } = ctx;
+
+            switch (path) {
+                case '/organization/create': {
+                    const bodySchema = z.object({
+                        slug: z.string(),
+                    });
+
+                    const parsedBody = bodySchema.safeParse(ctx.body).data;
+
+                    if (!parsedBody) return;
+
+                    const { slug } = parsedBody;
+
+                    const { data: organization, error: organizationError } =
+                        await catchError(
+                            db.query.organization.findFirst({
+                                where: (record, { eq }) =>
+                                    eq(record.slug, slug),
+                            }),
+                        );
+
+                    if (organizationError) return;
+
+                    if (!organization) return;
+
+                    const { id: organizationId, name: organizationName } =
+                        organization;
+
+                    const {
+                        data: twilioSubaccount,
+                        error: twilioSubaccountError,
+                    } = await createTwilioSubaccount({
+                        friendlyName: organizationName,
+                    });
+
+                    if (twilioSubaccountError) return;
+
+                    const { sid: twilioSid, token: twilioToken } =
+                        twilioSubaccount;
+
+                    await db.insert(tables.customConfTable).values({
+                        id: uuidv4(),
+                        organizationId,
+
+                        twilioSid,
+                        twilioToken,
+                    });
+
+                    break;
+                }
+            }
+        }),
     },
 });
 

@@ -1,5 +1,7 @@
 import { ReactElement } from 'react';
 
+import { v4 as uuidv4 } from 'uuid';
+
 import { createRootRoute, Outlet } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/router-devtools';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools/production';
@@ -115,7 +117,7 @@ const getLoggedInUser = (async () => {
             const { data: newOrganization, error: createOrganizationError } =
                 await authClient.organization.create({
                     name: `${rawUser.name}'s Organization`,
-                    slug: `${rawUser.name.replace(' ', '-').toLowerCase()}-org`,
+                    slug: `${rawUser.name.replace(' ', '-').toLowerCase()}-org-${uuidv4()}`,
                 });
 
             if (createOrganizationError) {

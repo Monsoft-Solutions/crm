@@ -1,0 +1,1 @@
+ALTER TABLE "custom_conf" ADD CONSTRAINT "custom_conf_organization_id_unique" UNIQUE("organization_id");

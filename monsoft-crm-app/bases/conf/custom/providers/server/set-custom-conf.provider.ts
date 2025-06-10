@@ -1,7 +1,7 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Function } from '@errors/types';
 import { Success } from '@errors/utils';
-
-import { eq } from 'drizzle-orm';
 
 import { serverQueryClient } from '@api/providers/server';
 
@@ -17,10 +17,21 @@ import { getCustomConfFromDb } from './get-custom-conf-from-db.provider';
 
 // Set Custom configuration
 export const setCustomConf = (async ({ organizationId, conf }) => {
+    const id = uuidv4();
+
     await db
-        .update(customConfTable)
-        .set(conf)
-        .where(eq(customConfTable.usage, 'current'));
+        .insert(customConfTable)
+        .values({
+            id,
+            organizationId,
+            ...conf,
+        })
+        .onConflictDoUpdate({
+            target: [customConfTable.organizationId],
+            set: {
+                ...conf,
+            },
+        });
 
     // ensure custom conf cache is available
     await serverQueryClient.ensureQueryData({
@@ -64,4 +75,4 @@ export const setCustomConf = (async ({ organizationId, conf }) => {
     );
 
     return Success();
-}) satisfies Function<{ organizationId: string; conf: CustomConf }>;
+}) satisfies Function<{ organizationId: string; conf: Partial<CustomConf> }>;

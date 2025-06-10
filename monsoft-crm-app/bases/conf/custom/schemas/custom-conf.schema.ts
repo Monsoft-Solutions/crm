@@ -2,11 +2,11 @@ import { createSelectSchema } from 'drizzle-zod';
 
 import { table } from '@db/sql';
 
-import { appCustomConf } from '../constants';
+import { customConf } from '../constants';
 import { z } from 'zod';
 
 const auxTable = table('', {
-    ...appCustomConf,
+    ...customConf,
 });
 
 export const customConfSchema = z.object({

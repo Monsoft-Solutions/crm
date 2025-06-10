@@ -8,36 +8,26 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 // Auxiliary function to get Custom configuration from db, without caching
 export const getCustomConfFromDb = (async ({ organizationId }) => {
-    const { data: currentAndNextConfs, error } = await catchError(
-        db.query.customConfTable.findMany({
-            where: (record, { and, eq, isNotNull }) =>
-                and(
-                    eq(record.organizationId, organizationId),
-                    isNotNull(record.usage),
-                ),
+    const { data: customConfWithMetadata, error } = await catchError(
+        db.query.customConfTable.findFirst({
+            where: (record, { eq }) =>
+                eq(record.organizationId, organizationId),
         }),
     );
 
     // if some error occurred while fetching the Custom configuration
     if (error) return Error();
 
-    const currentConf = currentAndNextConfs.find(
-        ({ usage }) => usage === 'current',
-    );
-    const nextConf = currentAndNextConfs.find(({ usage }) => usage === 'next');
+    if (customConfWithMetadata === undefined) return Error('NO_CUSTOM_CONF');
 
-    const activeConfWithMetadata = currentConf ?? nextConf;
-
-    if (activeConfWithMetadata === undefined) return Error('NO_ACTIVE_CONF');
-
-    const parsingActiveConfWithoutMetadata = customConfSchema.safeParse(
-        activeConfWithMetadata,
+    const parsingCustomConfWithoutMetadata = customConfSchema.safeParse(
+        customConfWithMetadata,
     );
 
-    if (!parsingActiveConfWithoutMetadata.success)
-        return Error('PARSING_ACTIVE');
+    if (!parsingCustomConfWithoutMetadata.success)
+        return Error('PARSING_CUSTOM_CONF');
 
-    const { data } = parsingActiveConfWithoutMetadata;
+    const { data } = parsingCustomConfWithoutMetadata;
 
     return Success(data);
 }) satisfies Function<{ organizationId: string }, CustomConf>;

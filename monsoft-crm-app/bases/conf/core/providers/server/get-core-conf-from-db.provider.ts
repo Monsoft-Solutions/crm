@@ -8,32 +8,22 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 // Auxiliary function to get core configuration from db, without caching
 export const getCoreConfFromDb = (async () => {
-    const { data: currentAndNextConfs, error } = await catchError(
-        db.query.coreConfTable.findMany({
-            where: ({ usage }, { isNotNull }) => isNotNull(usage),
-        }),
+    const { data: coreConfWithMetadata, error } = await catchError(
+        db.query.coreConfTable.findFirst(),
     );
 
     // if some error occurred while fetching the core configuration
     if (error) return Error();
 
-    const currentConf = currentAndNextConfs.find(
-        ({ usage }) => usage === 'current',
-    );
-    const nextConf = currentAndNextConfs.find(({ usage }) => usage === 'next');
+    if (coreConfWithMetadata === undefined) return Error('NO_CORE_CONF');
 
-    const activeConfWithMetadata = currentConf ?? nextConf;
+    const parsingCoreConfWithoutMetadata =
+        coreConfSchema.safeParse(coreConfWithMetadata);
 
-    if (activeConfWithMetadata === undefined) return Error('NO_ACTIVE_CONF');
+    if (!parsingCoreConfWithoutMetadata.success)
+        return Error('PARSING_CORE_CONF');
 
-    const parsingActiveConfWithoutMetadata = coreConfSchema.safeParse(
-        activeConfWithMetadata,
-    );
-
-    if (!parsingActiveConfWithoutMetadata.success)
-        return Error('PARSING_ACTIVE');
-
-    const { data } = parsingActiveConfWithoutMetadata;
+    const { data } = parsingCoreConfWithoutMetadata;
 
     return Success(data);
 }) satisfies Function<void, CoreConf>;

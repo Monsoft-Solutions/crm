@@ -9,6 +9,8 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 import { db } from '@db/providers/server';
 import tables from '@db/db';
 
+import { getTwilioClientOrg } from '@sms/providers';
+
 import { createBrandSchema } from '../schemas';
 
 export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
@@ -23,7 +25,41 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
         }) => {
             const id = uuidv4();
 
-            const brand = { id, name, organizationId };
+            const { data: client, error: clientError } =
+                await getTwilioClientOrg({
+                    organizationId,
+                });
+
+            if (clientError) return Error();
+
+            const availableTwilioNumbers = await client
+                .availablePhoneNumbers('US')
+                .local.list({
+                    smsEnabled: true,
+                    limit: 1,
+                });
+
+            const firstAvailableNumber = availableTwilioNumbers.at(0);
+
+            if (!firstAvailableNumber)
+                return Error('NO_PHONE_NUMBER_AVAILABLE');
+
+            const { phoneNumber } = firstAvailableNumber;
+
+            if (!phoneNumber) return Error('NO_PHONE_NUMBER_AVAILABLE');
+
+            const purchasedNumber = await client.incomingPhoneNumbers.create({
+                phoneNumber,
+            });
+
+            const brandPhoneNumber = purchasedNumber.phoneNumber;
+
+            const brand = {
+                id,
+                organizationId,
+                name,
+                phoneNumber: brandPhoneNumber,
+            };
 
             const { error } = await catchError(
                 db.insert(tables.brand).values(brand),

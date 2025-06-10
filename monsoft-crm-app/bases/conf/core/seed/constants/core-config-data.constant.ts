@@ -6,8 +6,7 @@ import { coreConfTable } from '@db/db';
 
 export const coreConfigData: InferInsertModel<typeof coreConfTable> = {
     id: 'core-config-id',
-    name: 'core config',
-    usage: 'current',
+
     randomTemplateDeterministic: true,
 
     resendApiKey: z.string().parse(process.env.MSS_RESEND_API_KEY),
