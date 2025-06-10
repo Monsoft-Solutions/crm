@@ -41,23 +41,21 @@ export function TemplatesMonitorView(): ReactElement {
     } = Route.useRouteContext();
 
     // get templates stats
-    const { data: templatesStatsQuery } =
-        api.template.getTemplatesStats.useQuery();
+    const {
+        data: templatesStats,
+        error: templatesStatsError,
+        isLoading: isLoadingTemplatesStats,
+    } = api.template.getTemplatesStats.useQuery();
 
     // function to set templates stats
     const { setData: setTemplatesStats } =
         apiClientUtils.template.getTemplatesStats;
 
     // get whether random template service is active
-    const { data: isRandomServiceActiveQuery } =
+    const { data: isRandomServiceActive } =
         api.template.getIsRandomServiceActive.useQuery(undefined, {
             enabled: !!loggedInUser,
         });
-
-    const randomServiceAvailable =
-        isRandomServiceActiveQuery !== undefined &&
-        isRandomServiceActiveQuery.error === null &&
-        isRandomServiceActiveQuery.data;
 
     // function to set whether random template service is active
     const { setData: setIsRandomServiceActiveData } =
@@ -67,6 +65,12 @@ export function TemplatesMonitorView(): ReactElement {
     const {
         // random template data
         data: randomTemplate,
+
+        // random template error
+        error: randomTemplateError,
+
+        // whether random template is being loaded
+        isLoading: isLoadingRandomTemplate,
 
         // function to refetch random template
         refetch: refetchRandomTemplate,
@@ -78,12 +82,8 @@ export function TemplatesMonitorView(): ReactElement {
         staleTime: Number.POSITIVE_INFINITY,
 
         // only fetch random template if random template service is active
-        enabled: !!randomServiceAvailable,
+        enabled: !!isRandomServiceActive,
     });
-
-    // toggle random-template-service mutation
-    const { mutateAsync: toggleRandomTemplateService } =
-        api.template.toggleRandomTemplateService.useMutation();
 
     // templates-stats-changed subscription
     api.template.onTemplatesStatsChanged.useSubscription(undefined, {
@@ -101,7 +101,7 @@ export function TemplatesMonitorView(): ReactElement {
 
     // function to toggle random template service
     const handleToggleRandomTemplateService = async (active: boolean) => {
-        await toggleRandomTemplateService({
+        await api.template.toggleRandomTemplateService.mutate({
             active,
         });
 
@@ -117,7 +117,7 @@ export function TemplatesMonitorView(): ReactElement {
 
     const TemplateStats = () => {
         //  if query result not available
-        if (!templatesStatsQuery)
+        if (isLoadingTemplatesStats)
             return (
                 <>
                     <TableRow className="text-center italic">
@@ -134,9 +134,7 @@ export function TemplatesMonitorView(): ReactElement {
                 </>
             );
 
-        const { error: templateStatsError } = templatesStatsQuery;
-
-        if (templateStatsError)
+        if (templatesStatsError)
             return (
                 <>
                     <TableRow className="text-center italic">
@@ -153,10 +151,8 @@ export function TemplatesMonitorView(): ReactElement {
                 </>
             );
 
-        const { data: templateStatsData } = templatesStatsQuery;
-
         const { numDraftTemplates, numFinishedTemplates, numCreators } =
-            templateStatsData;
+            templatesStats;
 
         const numTotalTemplates = numDraftTemplates + numFinishedTemplates;
 
@@ -241,9 +237,8 @@ export function TemplatesMonitorView(): ReactElement {
                                         requires log in
                                     </TableCell>
                                 ) : // if random service is off
-                                !randomServiceAvailable ||
-                                  randomTemplate?.error ===
-                                      'SERVICE_INACTIVE' ? (
+                                !isRandomServiceActive ||
+                                  randomTemplateError === 'SERVICE_INACTIVE' ? (
                                     // show descriptive message
                                     <TableCell className="italic" colSpan={2}>
                                         Random service is off, you can{' '}
@@ -271,16 +266,16 @@ export function TemplatesMonitorView(): ReactElement {
                                         )}
                                     </TableCell>
                                 ) : // if random template is being fetched
-                                randomTemplate === undefined ? (
+                                isLoadingRandomTemplate ? (
                                     // show a spinner
                                     <TableCell className="flex items-center">
                                         <Spinner className="size-4" />
                                     </TableCell>
                                 ) : // if no random template was found
-                                randomTemplate.error === 'NOT_FOUND' ? (
+                                randomTemplateError === 'NOT_FOUND' ? (
                                     <span>no template available</span>
                                 ) : // if random template service failed for some unknown reason
-                                randomTemplate.error ? (
+                                randomTemplateError ? (
                                     <span>failed to fetch random template</span>
                                 ) : (
                                     // otherwise, show random template
@@ -292,7 +287,7 @@ export function TemplatesMonitorView(): ReactElement {
                                         <TableCell className="relative flex items-center justify-between gap-2 italic">
                                             <span>
                                                 &rdquo;
-                                                {randomTemplate.data.name}
+                                                {randomTemplate.name}
                                                 &rdquo;
                                             </span>
 
@@ -356,7 +351,7 @@ export function TemplatesMonitorView(): ReactElement {
                     )}
 
                     {/* if random service is on, and user is logged in, and has permission to toggle random template service */}
-                    {randomServiceAvailable &&
+                    {isRandomServiceActive &&
                         loggedInUser &&
                         hasPermission({
                             user: loggedInUser,

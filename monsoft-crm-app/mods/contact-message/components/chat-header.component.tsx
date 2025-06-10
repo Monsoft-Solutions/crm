@@ -17,15 +17,18 @@ export function ChatHeader({
     isMobileView = false,
     onBackToList,
 }: ChatHeaderProps) {
-    const { data: activeContactQuery } =
-        api.contactMessage.getContactSummary.useQuery({
-            contactId: activeContactId,
-        });
+    const {
+        data: activeContact,
+        error: activeContactError,
+        isLoading: isLoadingActiveContact,
+    } = api.contactMessage.getContactSummary.useQuery({
+        contactId: activeContactId,
+    });
 
-    if (!activeContactQuery) return;
-    if (activeContactQuery.error) return;
+    if (isLoadingActiveContact) return;
+    if (activeContactError) return;
 
-    const contactSummary = activeContactQuery.data;
+    const contactSummary = activeContact;
 
     const { contact } = contactSummary;
 
