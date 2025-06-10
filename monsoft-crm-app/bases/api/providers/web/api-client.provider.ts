@@ -7,7 +7,7 @@ import {
     unstable_httpSubscriptionLink,
 } from '@trpc/react-query';
 
-import { api } from './api.provider';
+import { trpcReact } from './trpc-react.provider';
 
 // polyfill EventSource
 import { EventSourcePolyfill } from 'event-source-polyfill';
@@ -18,7 +18,7 @@ import { apiPath } from '@api/constants';
 import { throwAsync } from '@errors/utils';
 
 // tRPC client
-export const apiClient = api.createClient({
+export const apiClient = trpcReact.createClient({
     links: [
         // adds pretty logs to your console in development and logs errors in production
         loggerLink({

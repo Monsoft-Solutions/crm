@@ -18,15 +18,11 @@ export function CreateContactDialog({
     brandId: string;
     onClose?: () => void;
 }) {
-    const { mutateAsync: createContact } =
-        api.contact.createContact.useMutation();
-
     return (
         <ContactDetailsDialog
             brandId={brandId}
             onSubmit={async (data) => {
-                const createContactResult = await createContact(data);
-                const { error } = createContactResult;
+                const { error } = await api.contact.createContact.mutate(data);
 
                 if (error) {
                     toast.error('Failed to create contact', {

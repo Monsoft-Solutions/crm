@@ -36,13 +36,16 @@ export function ContactsList({
         setIsContactsExpanded((state) => !state);
     };
 
-    const { data: contactsIdsQuery } = api.contact.getContactsIds.useQuery({
+    const {
+        data: contacts,
+        error: contactsError,
+        isLoading: isLoadingContacts,
+    } = api.contact.getContactsIds.useQuery({
         brandId,
     });
 
-    if (!contactsIdsQuery) return;
-    if (contactsIdsQuery.error) return;
-    const contacts = contactsIdsQuery.data;
+    if (isLoadingContacts) return;
+    if (contactsError) return;
 
     return (
         <div

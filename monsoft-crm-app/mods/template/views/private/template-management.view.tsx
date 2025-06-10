@@ -96,11 +96,14 @@ export function TemplateManagementView(): ReactElement {
         : 'me';
 
     // found templates
-    const { data: matchingTemplatesQuery } =
-        api.template.searchTemplates.useQuery({
-            search,
-            creator: searchTemplatesCreatorMatcher,
-        });
+    const {
+        data: matchingTemplates,
+        error: matchingTemplatesError,
+        isLoading: isLoadingMatchingTemplates,
+    } = api.template.searchTemplates.useQuery({
+        search,
+        creator: searchTemplatesCreatorMatcher,
+    });
 
     // function to update matching templates
     const { setData: setMatchingTemplates } =
@@ -154,18 +157,6 @@ export function TemplateManagementView(): ReactElement {
         );
     };
 
-    // create-template mutation
-    const { mutateAsync: createTemplate } =
-        api.template.createTemplate.useMutation();
-
-    // update-template-status mutation
-    const { mutateAsync: updateTemplateStatus } =
-        api.template.updateTemplateStatus.useMutation();
-
-    // delete-template mutation
-    const { mutateAsync: deleteTemplate } =
-        api.template.deleteTemplate.useMutation();
-
     // template-created subscription
     api.template.onTemplateCreated.useSubscription(
         { creator: searchTemplatesCreatorMatcher },
@@ -207,7 +198,7 @@ export function TemplateManagementView(): ReactElement {
 
     // function to handle the add-template form submission
     const onSubmit = async (values: AddTemplateForm) => {
-        const { error } = await createTemplate(values);
+        const { error } = await api.template.createTemplate.mutate(values);
 
         // if successfully created,
         if (!error) {
@@ -242,7 +233,7 @@ export function TemplateManagementView(): ReactElement {
 
     // function to toggle a template status
     const onToggleStatus = async (template: TemplateRecord) => {
-        const { error } = await updateTemplateStatus({
+        const { error } = await api.template.updateTemplateStatus.mutate({
             id: template.id,
             status: template.status === 'draft' ? 'finished' : 'draft',
         });
@@ -265,17 +256,15 @@ export function TemplateManagementView(): ReactElement {
 
     // function to delete a template
     const onDelete = async (template: TemplateRecord) => {
-        await deleteTemplate({
+        await api.template.deleteTemplate.mutate({
             id: template.id,
         });
     };
 
-    const { mutateAsync: getBpi } = api.template.getBpi.useMutation();
-
     // function to set the template name to the current bpi
     const setTemplateNameToBpi = async () => {
         setIsFetchingBpi(true);
-        const bpiResponse = await getBpi();
+        const bpiResponse = await api.template.getBpi.mutate();
         setIsFetchingBpi(false);
 
         const { error: bpiError } = bpiResponse;
@@ -434,7 +423,7 @@ export function TemplateManagementView(): ReactElement {
                         <Table>
                             <TableBody>
                                 {/* if the matching templates are being fetched */}
-                                {matchingTemplatesQuery === undefined ? (
+                                {isLoadingMatchingTemplates ? (
                                     // show a loading spinner
                                     <TableRow
                                         key={'empty'}
@@ -445,7 +434,7 @@ export function TemplateManagementView(): ReactElement {
                                         </TableCell>
                                     </TableRow>
                                 ) : // if no template search failed
-                                matchingTemplatesQuery.error ? (
+                                matchingTemplatesError ? (
                                     // show a descriptive message
                                     <TableRow
                                         key={'empty'}
@@ -456,7 +445,7 @@ export function TemplateManagementView(): ReactElement {
                                         </TableCell>
                                     </TableRow>
                                 ) : // if no matching templates found
-                                matchingTemplatesQuery.data.length === 0 ? (
+                                matchingTemplates.length === 0 ? (
                                     // show a descriptive message
                                     <TableRow
                                         key={'empty'}
@@ -468,67 +457,63 @@ export function TemplateManagementView(): ReactElement {
                                     </TableRow>
                                 ) : (
                                     // otherwise, show the matching templates as a table
-                                    matchingTemplatesQuery.data.map(
-                                        (template) => (
-                                            <TableRow key={template.id}>
-                                                <TableCell className="flex items-center justify-between">
-                                                    <span>{template.name}</span>
+                                    matchingTemplates.map((template) => (
+                                        <TableRow key={template.id}>
+                                            <TableCell className="flex items-center justify-between">
+                                                <span>{template.name}</span>
 
-                                                    <div className="flex gap-2">
-                                                        {/* if user has permission to update this template's status */}
-                                                        {hasPermission({
-                                                            user: loggedInUser,
-                                                            resource:
-                                                                'template',
-                                                            action: 'update_status',
-                                                            instance: template,
-                                                        }) && (
-                                                            // show a button to toggle the template status
-                                                            <Button
-                                                                variant="outline"
-                                                                size="icon"
-                                                                className="rounded-full"
-                                                                onClick={() =>
-                                                                    void onToggleStatus(
-                                                                        template,
-                                                                    )
-                                                                }
-                                                            >
-                                                                {template.status ===
-                                                                'draft' ? (
-                                                                    <NotepadTextDashed className="size-4 stroke-slate-500" />
-                                                                ) : (
-                                                                    <ClipboardCheck className="size-4 stroke-green-500" />
-                                                                )}
-                                                            </Button>
-                                                        )}
+                                                <div className="flex gap-2">
+                                                    {/* if user has permission to update this template's status */}
+                                                    {hasPermission({
+                                                        user: loggedInUser,
+                                                        resource: 'template',
+                                                        action: 'update_status',
+                                                        instance: template,
+                                                    }) && (
+                                                        // show a button to toggle the template status
+                                                        <Button
+                                                            variant="outline"
+                                                            size="icon"
+                                                            className="rounded-full"
+                                                            onClick={() =>
+                                                                void onToggleStatus(
+                                                                    template,
+                                                                )
+                                                            }
+                                                        >
+                                                            {template.status ===
+                                                            'draft' ? (
+                                                                <NotepadTextDashed className="size-4 stroke-slate-500" />
+                                                            ) : (
+                                                                <ClipboardCheck className="size-4 stroke-green-500" />
+                                                            )}
+                                                        </Button>
+                                                    )}
 
-                                                        {/* if user has permission to delete this template */}
-                                                        {hasPermission({
-                                                            user: loggedInUser,
-                                                            resource:
-                                                                'template',
-                                                            action: 'delete',
-                                                            instance: template,
-                                                        }) && (
-                                                            // show a button to delete the template
-                                                            <Button
-                                                                variant="ghost"
-                                                                size="icon"
-                                                                onClick={() =>
-                                                                    void onDelete(
-                                                                        template,
-                                                                    )
-                                                                }
-                                                            >
-                                                                <Trash2 className="stroke-destructive size-4" />
-                                                            </Button>
-                                                        )}
-                                                    </div>
-                                                </TableCell>
-                                            </TableRow>
-                                        ),
-                                    )
+                                                    {/* if user has permission to delete this template */}
+                                                    {hasPermission({
+                                                        user: loggedInUser,
+                                                        resource: 'template',
+                                                        action: 'delete',
+                                                        instance: template,
+                                                    }) && (
+                                                        // show a button to delete the template
+                                                        <Button
+                                                            variant="ghost"
+                                                            size="icon"
+                                                            onClick={() =>
+                                                                void onDelete(
+                                                                    template,
+                                                                )
+                                                            }
+                                                        >
+                                                            <Trash2 className="stroke-destructive size-4" />
+                                                        </Button>
+                                                    )}
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                    ))
                                 )}
                             </TableBody>
                         </Table>

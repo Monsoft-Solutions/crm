@@ -41,9 +41,6 @@ export function MessageInput({
     activeContactId?: string;
     initText?: string;
 }) {
-    const { mutateAsync: sendMessageAsync } =
-        api.contactMessage.sendMessageToContact.useMutation();
-
     const [newMessage, setNewMessage] = useState('');
 
     const [attachments, setAttachments] = useState<File[]>([]);
@@ -56,12 +53,12 @@ export function MessageInput({
     const sendMessage = useCallback(async () => {
         if (activeContactId === undefined) return;
 
-        await sendMessageAsync({
+        await api.contactMessage.sendMessageToContact.mutate({
             contactId: activeContactId,
             channelType: selectedChannel,
             body: newMessage,
         });
-    }, [activeContactId, selectedChannel, newMessage, sendMessageAsync]);
+    }, [activeContactId, selectedChannel, newMessage]);
 
     const removeAttachment = useCallback((name: string) => {
         setAttachments((prev) => {

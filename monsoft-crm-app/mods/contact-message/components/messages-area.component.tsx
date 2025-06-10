@@ -18,10 +18,13 @@ function formatMessageDate(date: Date) {
 }
 
 export function MessagesArea({ contactId }: { contactId: string }) {
-    const { data: contactSmsMessagesQuery } =
-        api.contactMessage.getContactMessages.useQuery({
-            contactId,
-        });
+    const {
+        data: messages,
+        error: messagesError,
+        isLoading: isLoadingMessages,
+    } = api.contactMessage.getContactMessages.useQuery({
+        contactId,
+    });
 
     const {
         getContactMessages: { setData: setContactMessages },
@@ -72,9 +75,8 @@ export function MessagesArea({ contactId }: { contactId: string }) {
         },
     );
 
-    if (!contactSmsMessagesQuery) return;
-    if (contactSmsMessagesQuery.error) return;
-    const messages = contactSmsMessagesQuery.data;
+    if (isLoadingMessages) return;
+    if (messagesError) return;
 
     const messagesByDate = messages.reduce<Record<string, typeof messages>>(
         (groups, message) => {

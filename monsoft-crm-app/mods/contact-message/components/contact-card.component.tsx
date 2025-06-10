@@ -33,15 +33,16 @@ export const ContactCard = forwardRef<
         },
         ref,
     ) => {
-        const { data: contactCardSummaryQuery } =
-            api.contactMessage.getContactSummary.useQuery({
-                contactId,
-            });
+        const {
+            data: contactCardSummary,
+            error: contactCardSummaryError,
+            isLoading: isLoadingContactCardSummary,
+        } = api.contactMessage.getContactSummary.useQuery({
+            contactId,
+        });
 
-        if (!contactCardSummaryQuery) return;
-        if (contactCardSummaryQuery.error) return;
-
-        const contactCardSummary = contactCardSummaryQuery.data;
+        if (isLoadingContactCardSummary) return;
+        if (contactCardSummaryError) return;
 
         const {
             lastMessage,
