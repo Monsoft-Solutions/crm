@@ -1,9 +1,13 @@
 import express from 'express';
 
-import { twilioIncomingSmsWebhookHandler } from './twilio-incoming-sms-webhook-handler.provider';
-import { twilioStatusUpdatedWebhookHandler } from './twilio-status-updated-webhook-handler.provider';
+import { twilioEventWebhookHandler } from './twilio-event-webhook-handler.provider';
+
+import { ensureTwilioSinks } from './ensure-twilio-sinks.provider';
 
 export function twilioWebhooksHandler(server: express.Express) {
-    twilioIncomingSmsWebhookHandler(server);
-    twilioStatusUpdatedWebhookHandler(server);
+    twilioEventWebhookHandler(server);
+
+    void (async () => {
+        await ensureTwilioSinks();
+    })();
 }
