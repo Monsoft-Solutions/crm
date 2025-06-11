@@ -38,6 +38,6 @@ export const createTwilioSink = async ({
     await twilioClient.events.v1.subscriptions.create({
         sinkSid: sink.sid,
         description: 'SMS events',
-        types: twilioEventTypeEnum.options,
+        types: twilioEventTypeEnum.options.map((type) => ({ type })),
     });
 };
