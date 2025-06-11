@@ -26,6 +26,8 @@ import tables from '@db/db';
 
 import { createTwilioSubaccount } from '@sms/providers';
 
+import { createTwilioOrgSink } from '@sms/providers/create-twilio-org-sink.provider';
+
 export const authServer = betterAuth({
     basePath: authPath,
 
@@ -139,6 +141,10 @@ export const authServer = betterAuth({
 
                         twilioSid,
                         twilioToken,
+                    });
+
+                    await createTwilioOrgSink({
+                        organizationId,
                     });
 
                     break;
