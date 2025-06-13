@@ -21,7 +21,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                     user: { organizationId },
                 },
             },
-            input: { name },
+            input: { name, phoneNumber },
         }) => {
             const id = uuidv4();
 
@@ -31,22 +31,6 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 });
 
             if (clientError) return Error();
-
-            const availableTwilioNumbers = await client
-                .availablePhoneNumbers('US')
-                .local.list({
-                    smsEnabled: true,
-                    limit: 1,
-                });
-
-            const firstAvailableNumber = availableTwilioNumbers.at(0);
-
-            if (!firstAvailableNumber)
-                return Error('NO_PHONE_NUMBER_AVAILABLE');
-
-            const { phoneNumber } = firstAvailableNumber;
-
-            if (!phoneNumber) return Error('NO_PHONE_NUMBER_AVAILABLE');
 
             const purchasedNumber = await client.incomingPhoneNumbers.create({
                 phoneNumber,
