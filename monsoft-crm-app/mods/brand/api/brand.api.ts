@@ -2,7 +2,7 @@ import { endpoints } from '@api/providers/server';
 
 // queries
 import { getBrand } from './get-brand.query';
-import { getBrandsIds } from './get-brands-ids.query';
+import { getBrands } from './get-brands.query';
 import { getAvailablePhoneNumbers } from './get-available-phone-numbers.query';
 
 // mutations
@@ -13,7 +13,7 @@ import { createBrand } from './create-brand.mutation';
 export const brand = endpoints({
     // queries
     getBrand,
-    getBrandsIds,
+    getBrands,
     getAvailablePhoneNumbers,
 
     // mutations

@@ -19,12 +19,12 @@ export function ChatInterface({
 }) {
     const [ref, { width }] = useMeasure<HTMLDivElement>();
 
-    const isMobileView = width <= 640;
+    const isMobileView = width <= 800;
 
     return (
         <Card ref={ref} className="flex h-full w-full overflow-hidden p-0">
             {/* Show contacts list on desktop (width > 800) or when no active contact on mobile */}
-            {(width > 800 || (isMobileView && !activeContactId)) && (
+            {(!isMobileView || !activeContactId) && (
                 <ContactsList
                     brandId={brandId}
                     activeContactId={activeContactId}

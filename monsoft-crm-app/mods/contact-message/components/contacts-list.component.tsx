@@ -1,5 +1,7 @@
 import { useCallback, useState } from 'react';
 
+import { useNavigate } from '@tanstack/react-router';
+
 import { cn } from '@css/utils';
 
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -11,6 +13,13 @@ import { ContactCard } from './contact-card.component';
 
 import { api } from '@api/providers/web';
 import { CreateContactDialog } from '@mods/contact/components/create-contact-dialog.component';
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from '@shared/ui/select.ui';
 
 export function ContactsList({
     brandId,
@@ -23,7 +32,25 @@ export function ContactsList({
     setActiveContactId: (id: string) => void;
     isMobileView?: boolean;
 }) {
+    const navigate = useNavigate();
+
     const [isContactsExpanded, setIsContactsExpanded] = useState(true);
+
+    const {
+        data: brands,
+        error: brandsError,
+        isLoading: isLoadingBrands,
+    } = api.brand.getBrands.useQuery();
+
+    const setActiveBrandId = useCallback(
+        async (brandId: string) => {
+            await navigate({
+                to: '/chat/$brandId',
+                params: { brandId },
+            });
+        },
+        [navigate],
+    );
 
     const handleContactSelect = useCallback(
         (contactId: string) => {
@@ -46,6 +73,9 @@ export function ContactsList({
 
     if (isLoadingContacts) return;
     if (contactsError) return;
+
+    if (isLoadingBrands) return;
+    if (brandsError) return;
 
     return (
         <div
@@ -71,16 +101,36 @@ export function ContactsList({
                     )}
                 >
                     {/* App title or user profile section */}
-                    <div className="flex items-center">
+                    <div className="flex grow items-center">
                         <h2
                             className={cn(
-                                'text-lg font-semibold',
+                                'w-full text-lg font-semibold',
                                 !isContactsExpanded &&
                                     !isMobileView &&
                                     'hidden',
                             )}
                         >
-                            Chats
+                            <Select
+                                value={brandId}
+                                onValueChange={(value) => {
+                                    void setActiveBrandId(value);
+                                }}
+                            >
+                                <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select a brand" />
+                                </SelectTrigger>
+
+                                <SelectContent>
+                                    {brands.map((brand) => (
+                                        <SelectItem
+                                            key={brand.id}
+                                            value={brand.id}
+                                        >
+                                            {brand.name}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
                         </h2>
                     </div>
 
@@ -98,7 +148,7 @@ export function ContactsList({
                     viewportClassName="block"
                 >
                     <div className={cn('flex flex-col', isContactsExpanded)}>
-                        {contacts.length === 0 ? (
+                        {contacts.length === 0 && isContactsExpanded ? (
                             <div className="mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border border-gray-100 bg-gray-50 p-6 text-center">
                                 <p className="mb-1 font-medium text-gray-700">
                                     No contacts found
@@ -145,7 +195,7 @@ export function ContactsList({
                     variant="ghost"
                     size="icon"
                     onClick={toggleContacts}
-                    className="absolute top-24 right-0 z-50 hidden size-6 -translate-x-1/2 transform rounded-full border bg-white shadow-sm md:flex"
+                    className="absolute top-4.5 right-0 z-50 hidden size-6 translate-x-1/2 transform rounded-full border bg-white shadow-sm md:flex"
                     aria-label={
                         isContactsExpanded
                             ? 'Collapse contacts'
