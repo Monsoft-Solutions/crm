@@ -7,7 +7,9 @@ export function Main({ children }: { children: React.ReactNode }) {
 
     return (
         <main className="relative grow px-4 py-12">
-            <div className="relative h-full justify-center">{children}</div>
+            <div className="relative flex h-full items-center justify-center">
+                {children}
+            </div>
 
             <SidebarTrigger
                 className={cn(
