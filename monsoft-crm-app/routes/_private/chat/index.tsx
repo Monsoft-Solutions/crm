@@ -6,7 +6,7 @@ import { CreateBrandCard } from '@mods/brand/components/create-brand-card.compon
 
 export const Route = createFileRoute('/_private/chat/')({
     async loader() {
-        const result = await apiClientUtils.brand.getBrandsIds.ensureData();
+        const result = await apiClientUtils.brand.getBrands.ensureData();
 
         const brands = result.error ? [] : result.data;
 
