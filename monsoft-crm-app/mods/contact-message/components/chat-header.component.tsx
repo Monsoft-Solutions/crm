@@ -42,7 +42,7 @@ export function ChatHeader({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="mr-2 size-8 rounded-full p-0 hover:bg-gray-100 sm:hidden"
+                        className="mr-2 size-8 rounded-full p-0 hover:bg-gray-100"
                         onClick={(e) => {
                             e.preventDefault();
                             // Call the back function to clear the URL and return to contacts list
