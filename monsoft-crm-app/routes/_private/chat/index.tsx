@@ -1,6 +1,8 @@
 import { createFileRoute, Navigate } from '@tanstack/react-router';
 
-import { api, apiClientUtils } from '@api/providers/web';
+import { apiClientUtils } from '@api/providers/web';
+
+import { CreateBrandCard } from '@mods/brand/components/create-brand-card.component';
 
 export const Route = createFileRoute('/_private/chat/')({
     async loader() {
@@ -12,21 +14,13 @@ export const Route = createFileRoute('/_private/chat/')({
 
         const defaultBrandId = brandsIds.at(0);
 
-        if (!defaultBrandId) {
-            const result = await api.brand.createBrand.mutate({
-                name: '',
-            });
-
-            const newBrandId = result.error ? '' : result.data.brandId;
-
-            return { defaultBrandId: newBrandId };
-        }
-
         return { defaultBrandId };
     },
 
     component: function Component() {
         const { defaultBrandId } = Route.useLoaderData();
+
+        if (!defaultBrandId) return <CreateBrandCard />;
 
         return (
             <Navigate
