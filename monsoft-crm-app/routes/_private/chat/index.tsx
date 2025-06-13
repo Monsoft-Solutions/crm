@@ -30,7 +30,7 @@ export const Route = createFileRoute('/_private/chat/')({
 
         return (
             <Navigate
-                to="/brand/$brandId/chat"
+                to="/chat/$brandId"
                 params={{ brandId: defaultBrandId }}
             />
         );
