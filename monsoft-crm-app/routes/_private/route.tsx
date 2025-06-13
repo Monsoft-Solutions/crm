@@ -1,5 +1,11 @@
 import { createFileRoute, redirect, Outlet } from '@tanstack/react-router';
 
+import { SidebarProvider } from '@shared/ui/sidebar.ui';
+
+import { Navbar } from '@shared/components/navbar';
+
+import { Main } from '@shared/components/main.component';
+
 // private routes
 export const Route = createFileRoute('/_private')({
     beforeLoad: async ({
@@ -32,9 +38,13 @@ export const Route = createFileRoute('/_private')({
 
     component: function Component() {
         return (
-            <>
-                <Outlet />
-            </>
+            <SidebarProvider>
+                <Navbar />
+
+                <Main>
+                    <Outlet />
+                </Main>
+            </SidebarProvider>
         );
     },
 });
