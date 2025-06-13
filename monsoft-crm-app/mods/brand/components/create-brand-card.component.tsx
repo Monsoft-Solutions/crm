@@ -17,7 +17,7 @@ export function CreateBrandCard() {
     if (!availablePhoneNumbers) return null;
 
     return (
-        <Card className="container w-full max-w-md self-center">
+        <Card className="container w-full max-w-md">
             <CardHeader className="mb-4">
                 <CardTitle>Create Brand</CardTitle>
                 <CardDescription>
