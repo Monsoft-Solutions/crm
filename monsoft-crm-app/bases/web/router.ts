@@ -1,4 +1,4 @@
-import { createRouter } from '@tanstack/react-router';
+import { createRouter, ToOptions } from '@tanstack/react-router';
 
 // Import the generated route tree
 import { routeTree } from './routeTree.gen';
@@ -29,3 +29,5 @@ declare module '@tanstack/react-router' {
         router: typeof router;
     }
 }
+
+export type HRef = ToOptions['to'];

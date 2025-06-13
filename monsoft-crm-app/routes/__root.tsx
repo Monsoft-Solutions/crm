@@ -174,10 +174,10 @@ export const Route = createRootRoute({
                     <>
                         <ReactQueryDevtools
                             position="bottom"
-                            buttonPosition="top-left"
+                            buttonPosition="top-right"
                         />
 
-                        <TanStackRouterDevtools position="top-left" />
+                        <TanStackRouterDevtools position="top-right" />
                     </>
                 )}
             </>
