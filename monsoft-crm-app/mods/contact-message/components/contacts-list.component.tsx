@@ -98,7 +98,7 @@ export function ContactsList({
                     viewportClassName="block"
                 >
                     <div className={cn('flex flex-col', isContactsExpanded)}>
-                        {contacts.length === 0 ? (
+                        {contacts.length === 0 && isContactsExpanded ? (
                             <div className="mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border border-gray-100 bg-gray-50 p-6 text-center">
                                 <p className="mb-1 font-medium text-gray-700">
                                     No contacts found
