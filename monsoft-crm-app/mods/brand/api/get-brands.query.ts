@@ -7,18 +7,26 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 import { db } from '@db/providers/server';
 
 export const getBrands = protectedEndpoint.query(
-    queryMutationCallback(async () => {
-        const { error, data: brands } = await catchError(
-            db.query.brand.findMany({
-                columns: {
-                    id: true,
-                    name: true,
-                },
-            }),
-        );
+    queryMutationCallback(
+        async ({
+            ctx: {
+                session: { user },
+            },
+        }) => {
+            const { error, data: brands } = await catchError(
+                db.query.brand.findMany({
+                    columns: {
+                        id: true,
+                        name: true,
+                    },
+                    where: (record, { eq }) =>
+                        eq(record.organizationId, user.organizationId),
+                }),
+            );
 
-        if (error) return Error();
+            if (error) return Error();
 
-        return Success(brands);
-    }),
+            return Success(brands);
+        },
+    ),
 );
