@@ -24,7 +24,7 @@ import { User } from '@guard/types';
 import { authClient } from '@auth/providers/web';
 
 // show devtools only in development
-const showDevTools = process.env.NODE_ENV === 'development';
+const showDevTools = import.meta.env.MSS_CLIENT_DEV_TOOLS === 'T';
 
 // log-in method
 const logIn = async (credentials: LogInCredentials) => {
