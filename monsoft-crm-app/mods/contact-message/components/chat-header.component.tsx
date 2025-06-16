@@ -1,6 +1,7 @@
-import { ChevronLeft, Menu } from 'lucide-react';
+import { ChevronLeft, Menu, Info } from 'lucide-react';
 
 import { Button } from '@ui/button.ui';
+import { useSidebar } from '@shared/ui/sidebar.ui';
 
 import { ContactAvatar } from '@mods/contact/components';
 
@@ -17,6 +18,8 @@ export function ChatHeader({
     isMobileView = false,
     onBackToList,
 }: ChatHeaderProps) {
+    const { toggleSidebar } = useSidebar();
+
     const {
         data: activeContact,
         error: activeContactError,
@@ -84,6 +87,17 @@ export function ChatHeader({
                         <p className="text-xs text-gray-500">Online</p>
                     </div>
                 </div>
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
+                    onClick={() => {
+                        toggleSidebar();
+                    }}
+                >
+                    <Info className="h-4 w-4" />
+                </Button>
             </div>
         </div>
     );
