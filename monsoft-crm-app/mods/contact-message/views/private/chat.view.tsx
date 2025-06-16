@@ -29,7 +29,7 @@ export function ChatView() {
     );
 
     return (
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 py-2">
             <ChatInterface
                 brandId={brandId}
                 activeContactId={activeContactId}
