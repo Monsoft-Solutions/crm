@@ -6,6 +6,7 @@ import { getContact } from './get-contact.query';
 
 // mutations
 import { createContact } from './create-contact.mutation';
+import { updateContact } from './update-contact.mutation';
 
 // subscriptions
 
@@ -16,6 +17,7 @@ export const contact = endpoints({
 
     // mutations
     createContact,
+    updateContact,
 
     // subscriptions
 });
