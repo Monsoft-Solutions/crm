@@ -8,7 +8,7 @@ import { Check } from 'lucide-react';
 
 import { Badge } from '@ui/badge.ui';
 
-import { ContactAvatar } from './contact-avatar.component';
+import { ContactAvatar } from '@mods/contact/components';
 
 import { api } from '@api/providers/web';
 import { intToOneDigitStr } from '@shared/utils/number';
@@ -77,7 +77,9 @@ export const ContactCard = forwardRef<
                 {/* Avatar with online indicator */}
                 <div className="relative flex-shrink-0">
                     <ContactAvatar
-                        name={contactName}
+                        id={contactId}
+                        firstName={contact.firstName}
+                        lastName={contact.lastName}
                         className={cn(
                             'border border-gray-200',
                             isMobileView ? 'h-12 w-12' : 'h-11 w-11',
