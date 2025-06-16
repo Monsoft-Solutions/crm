@@ -2,6 +2,10 @@ import { useCallback } from 'react';
 
 import { ChatInterface } from '@mods/contact-message/components';
 
+import { SidebarProvider } from '@shared/ui/sidebar.ui';
+
+import { ContactInfoSidebar } from '@mods/contact/components';
+
 import { Route } from '@routes/_private/chat/$brandId';
 
 export function ChatView() {
@@ -29,12 +33,18 @@ export function ChatView() {
     );
 
     return (
-        <div className="absolute inset-0">
-            <ChatInterface
-                brandId={brandId}
-                activeContactId={activeContactId}
-                setActiveContactId={setActiveContactId}
-            />
-        </div>
+        <SidebarProvider className="" defaultOpen={false}>
+            <div className="grow py-2">
+                <ChatInterface
+                    brandId={brandId}
+                    activeContactId={activeContactId}
+                    setActiveContactId={setActiveContactId}
+                />
+            </div>
+
+            {activeContactId && (
+                <ContactInfoSidebar contactId={activeContactId} />
+            )}
+        </SidebarProvider>
     );
 }

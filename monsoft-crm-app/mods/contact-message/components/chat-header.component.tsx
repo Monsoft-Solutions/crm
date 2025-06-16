@@ -1,8 +1,9 @@
-import { ChevronLeft, Menu } from 'lucide-react';
+import { ChevronLeft, Menu, Info } from 'lucide-react';
 
 import { Button } from '@ui/button.ui';
+import { useSidebar } from '@shared/ui/sidebar.ui';
 
-import { ContactAvatar } from './contact-avatar.component';
+import { ContactAvatar } from '@mods/contact/components';
 
 import { api } from '@api/providers/web';
 
@@ -17,6 +18,8 @@ export function ChatHeader({
     isMobileView = false,
     onBackToList,
 }: ChatHeaderProps) {
+    const { toggleSidebar } = useSidebar();
+
     const {
         data: activeContact,
         error: activeContactError,
@@ -31,8 +34,6 @@ export function ChatHeader({
     const contactSummary = activeContact;
 
     const { contact } = contactSummary;
-
-    const contactName = `${contact.firstName} ${contact.lastName}`;
 
     return (
         <div className="flex h-16 items-center justify-between border-b bg-white px-3 shadow-sm sm:px-5">
@@ -70,18 +71,33 @@ export function ChatHeader({
                 )}
 
                 <div className="relative">
-                    <ContactAvatar name={contactName} />
+                    <ContactAvatar
+                        id={activeContactId}
+                        firstName={contact.firstName}
+                        lastName={contact.lastName}
+                    />
                     <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border border-white bg-green-500"></span>
                 </div>
 
                 <div className="ml-3 grow overflow-hidden">
                     <div className="flex flex-col">
                         <p className="truncate text-sm font-medium">
-                            {contactName}
+                            {contact.firstName} {contact.lastName}
                         </p>
                         <p className="text-xs text-gray-500">Online</p>
                     </div>
                 </div>
+
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    className="size-8"
+                    onClick={() => {
+                        toggleSidebar();
+                    }}
+                >
+                    <Info className="h-4 w-4" />
+                </Button>
             </div>
         </div>
     );
