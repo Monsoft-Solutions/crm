@@ -48,6 +48,7 @@
             "@slack/*": ["./bases/slack/*"],
             "@twilio/*": ["./bases/twilio/*"],
             "@sms/*": ["./bases/twilio/channels/sms/*"],
+            "@whatsapp/*": ["./bases/twilio/channels/whatsapp/*"],
             "@ui/*": ["./shared/ui/*"],
             "@mods/*": ["./mods/*"],
             "@web/*": ["./bases/web/*"],
