@@ -4,11 +4,11 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
 
-import { sendSms } from '@sms/providers';
-
 import { getTwilioClientOrg } from '@twilio/providers';
 
-export const sendBrandSms = (async ({ brandId, to, body }) => {
+import { sendWhatsapp } from '@whatsapp/providers';
+
+export const sendBrandWhatsapp = (async ({ brandId, to, body }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
@@ -27,7 +27,7 @@ export const sendBrandSms = (async ({ brandId, to, body }) => {
 
     if (clientError) return Error();
 
-    const { data: message, error: messageError } = await sendSms({
+    const { data: message, error: messageError } = await sendWhatsapp({
         client,
         from,
         to,

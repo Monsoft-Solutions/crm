@@ -9,7 +9,7 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 import { db } from '@db/providers/server';
 import tables from '@db/db';
 
-import { getTwilioClientOrg } from '@sms/providers';
+import { getTwilioClientOrg } from '@twilio/providers';
 
 import { createBrandSchema } from '../schemas';
 

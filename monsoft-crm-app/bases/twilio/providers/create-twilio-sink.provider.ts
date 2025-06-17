@@ -1,10 +1,10 @@
 import { Twilio } from 'twilio';
 
 import { appUrl } from '@dist/constants';
-import { twilioEventWebhookPath } from '@sms/constants';
+import { twilioEventWebhookPath } from '../constants';
 
 import { TwilioSinkConf } from '../types';
-import { twilioEventTypeEnum } from '@sms/enums';
+import { twilioEventTypeEnum } from '../enums';
 
 const twilioEventsUrl = `${appUrl}${twilioEventWebhookPath}`;
 

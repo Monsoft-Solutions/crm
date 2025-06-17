@@ -9,7 +9,7 @@ import { db } from '@db/providers/server';
 
 import tables from '@db/db';
 
-void listen('smsReceived', async ({ from, body, createdAt }) => {
+void listen('twilioMessageReceived', async ({ from, body, createdAt }) => {
     const id = uuidv4();
 
     const { data: contactPhoneNumber, error: contactPhoneNumberError } =

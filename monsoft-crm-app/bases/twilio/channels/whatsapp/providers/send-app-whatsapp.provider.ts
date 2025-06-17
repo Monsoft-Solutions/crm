@@ -1,13 +1,13 @@
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
-import { getTwilioClientMain } from './get-twilio-client-main.provider';
+import { getTwilioClientMain } from '@twilio/providers';
 
 import { getCoreConf } from '@conf/providers/server';
 
-import { sendSms } from './send-sms.provider';
+import { sendWhatsapp } from './send-whatsapp.provider';
 
-export const sendAppSms = (async ({ to, body }) => {
+export const sendAppWhatsapp = (async ({ to, body }) => {
     const { data: coreConf, error: coreConfError } = await getCoreConf();
 
     if (coreConfError) return Error();
@@ -18,7 +18,7 @@ export const sendAppSms = (async ({ to, body }) => {
 
     if (clientError) return Error();
 
-    const { data: message, error: messageError } = await sendSms({
+    const { data: message, error: messageError } = await sendWhatsapp({
         client,
         from: twilioFrom,
         to,

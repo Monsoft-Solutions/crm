@@ -1,2 +1,2 @@
 export * from '../../../mods/template/conf/custom';
-export * from '../../../bases/sms/conf/custom';
+export * from '../../../bases/twilio/conf/custom';

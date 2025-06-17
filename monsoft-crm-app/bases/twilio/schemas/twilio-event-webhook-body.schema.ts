@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { TwilioEventType } from '@sms/enums';
+import { TwilioEventType } from '../enums';
 
 const twilioEventSchema = z.discriminatedUnion('type', [
     z.object({

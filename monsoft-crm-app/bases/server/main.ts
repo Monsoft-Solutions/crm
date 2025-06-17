@@ -26,7 +26,7 @@ import { authServer } from '../auth/providers/server';
 
 import { authPath } from '@auth/constants';
 
-import { twilioWebhooksHandler } from '../sms/providers';
+import { twilioWebhooksHandler } from '../twilio/providers';
 
 export * from '@app/hub';
 
