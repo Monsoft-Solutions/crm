@@ -1,6 +1,6 @@
 // all defined events
 
-import * as smsEvents from '@sms/events';
+import * as smsEvents from '@twilio/events';
 
 import * as appEvents from '@app/events';
 

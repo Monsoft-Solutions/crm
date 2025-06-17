@@ -8,7 +8,7 @@ import { db } from '@db/providers/server';
 import tables from '@db/db';
 import { eq } from 'drizzle-orm';
 
-void listen('smsStatusUpdated', async ({ sid, status }) => {
+void listen('twilioMessageStatusUpdated', async ({ sid, status }) => {
     const { error: contactSmsMessageUpdateError } = await catchError(
         db
             .update(tables.contactSmsMessage)

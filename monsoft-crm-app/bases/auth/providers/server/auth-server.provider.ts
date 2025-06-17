@@ -24,9 +24,9 @@ import { GoogleProfile } from '@auth/types';
 
 import tables from '@db/db';
 
-import { createTwilioSubaccount } from '@sms/providers';
+import { createTwilioSubaccount } from '@twilio/providers';
 
-import { createTwilioOrgSink } from '@sms/providers/create-twilio-org-sink.provider';
+import { createTwilioOrgSink } from '@twilio/providers';
 
 export const authServer = betterAuth({
     basePath: authPath,

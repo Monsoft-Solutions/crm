@@ -1,7 +1,7 @@
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
-import { getTwilioClientMain } from './get-twilio-client-main.provider';
+import { getTwilioClientMain } from '@twilio/providers';
 
 import { getCoreConf } from '@conf/providers/server';
 

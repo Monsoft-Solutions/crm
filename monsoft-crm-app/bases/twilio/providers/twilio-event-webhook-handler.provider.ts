@@ -20,7 +20,7 @@ export function twilioEventWebhookHandler(server: express.Express) {
                     const { from, body } = event.data;
 
                     emit({
-                        event: 'smsReceived',
+                        event: 'twilioMessageReceived',
                         payload: {
                             from,
                             body,
@@ -35,7 +35,7 @@ export function twilioEventWebhookHandler(server: express.Express) {
                     const { messageSid } = event.data;
 
                     emit({
-                        event: 'smsStatusUpdated',
+                        event: 'twilioMessageStatusUpdated',
                         payload: {
                             sid: messageSid,
                             status: 'sent',
@@ -49,7 +49,7 @@ export function twilioEventWebhookHandler(server: express.Express) {
                     const { messageSid } = event.data;
 
                     emit({
-                        event: 'smsStatusUpdated',
+                        event: 'twilioMessageStatusUpdated',
                         payload: {
                             sid: messageSid,
                             status: 'delivered',

@@ -6,7 +6,7 @@ import { db } from '@db/providers/server';
 
 import { sendSms } from '@sms/providers';
 
-import { getTwilioClientOrg } from '@sms/providers';
+import { getTwilioClientOrg } from '@twilio/providers';
 
 export const sendBrandSms = (async ({ brandId, to, body }) => {
     const { data: brand, error: brandError } = await catchError(

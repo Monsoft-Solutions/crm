@@ -3,7 +3,7 @@ import { Error, Success } from '@errors/utils';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { getTwilioClientOrg } from '@sms/providers';
+import { getTwilioClientOrg } from '@twilio/providers';
 
 export const getAvailablePhoneNumbers = protectedEndpoint.query(
     queryMutationCallback(
