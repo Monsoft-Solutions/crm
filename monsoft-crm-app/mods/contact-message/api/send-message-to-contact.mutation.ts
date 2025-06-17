@@ -4,7 +4,10 @@ import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
 import { sendMessageToContactSchema } from '../schemas';
-import { sendSmsToContact as sendSmsToContactProvider } from '../providers/server';
+
+import { sendSmsToContact } from '../providers/server';
+import { sendAppWhatsappToContact } from '../providers/server';
+
 import { emit } from '@events/providers';
 
 const NOT_IMPLEMENTED_CHANNEL_TYPE = Error('NOT_IMPLEMENTED_CHANNEL_TYPE');
@@ -19,7 +22,7 @@ export const sendMessageToContact = protectedEndpoint
                 switch (channelType) {
                     case 'sms': {
                         const { data: smsMessage, error } =
-                            await sendSmsToContactProvider({
+                            await sendSmsToContact({
                                 contactId,
                                 body,
                             });
@@ -35,7 +38,16 @@ export const sendMessageToContact = protectedEndpoint
                     }
 
                     case 'whatsapp': {
-                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                        const { data: smsMessage, error } =
+                            await sendAppWhatsappToContact({
+                                contactId,
+                                body,
+                            });
+
+                        if (error) return Error();
+
+                        id = smsMessage.id;
+                        break;
                     }
 
                     case 'instagram': {
