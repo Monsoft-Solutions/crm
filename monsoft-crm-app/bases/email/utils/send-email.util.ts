@@ -20,9 +20,13 @@ export const sendEmail = (async (props: SendEmailProps) => {
 
     const resend = new Resend(resendApiKey);
 
-    const { error } = await resend.emails.send(props);
+    const { data, error } = await resend.emails.send(props);
 
     if (error) return Error();
 
-    return Success();
-}) satisfies Function<SendEmailProps>;
+    if (data === null) return Error();
+
+    const { id: sid } = data;
+
+    return Success({ sid });
+}) satisfies Function<SendEmailProps, { sid: string }>;
