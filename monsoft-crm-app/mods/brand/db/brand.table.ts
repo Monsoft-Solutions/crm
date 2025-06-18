@@ -12,4 +12,6 @@ export const brand = table('brand', {
     name: text('name').notNull(),
 
     phoneNumber: text('phone_number').notNull(),
+
+    domain: text('domain').notNull(),
 });

@@ -21,7 +21,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                     user: { organizationId },
                 },
             },
-            input: { name, phoneNumber },
+            input: { name, phoneNumber, domain },
         }) => {
             const id = uuidv4();
 
@@ -43,6 +43,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 organizationId,
                 name,
                 phoneNumber: brandPhoneNumber,
+                domain,
             };
 
             const { error } = await catchError(

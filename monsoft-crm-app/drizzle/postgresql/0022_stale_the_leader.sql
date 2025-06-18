@@ -1,0 +1,3 @@
+ALTER TABLE "brand" ADD COLUMN "domain" text NOT NULL DEFAULT '';
+
+ALTER TABLE "brand" ALTER COLUMN "domain" DROP DEFAULT;
