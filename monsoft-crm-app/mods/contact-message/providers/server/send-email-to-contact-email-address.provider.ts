@@ -37,7 +37,7 @@ export const sendEmailToContactEmailAddress = (async ({
 
     const { brandId } = contact;
 
-    const { error: sendEmailError } = await sendBrandEmail({
+    const { data: message, error: sendEmailError } = await sendBrandEmail({
         brandId,
         username,
         to: emailAddress,
@@ -47,11 +47,14 @@ export const sendEmailToContactEmailAddress = (async ({
 
     if (sendEmailError) return Error();
 
+    const { sid } = message;
+
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
         db.insert(tables.contactEmail).values({
             id,
+            sid,
             contactEmailAddressId,
             direction: 'outbound',
             body,
