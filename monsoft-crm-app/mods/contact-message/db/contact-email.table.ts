@@ -21,6 +21,8 @@ export const contactEmailStatus = enumType(
 export const contactEmail = table('contact_email', {
     id: text('id').primaryKey(),
 
+    sid: text('sid'),
+
     contactEmailAddressId: text('contact_email_address_id')
         .notNull()
         .references(() => contactEmailAddress.id, { onDelete: 'cascade' }),
