@@ -49,14 +49,13 @@ export const sendEmailToContactEmailAddress = (async ({
 
     const id = uuidv4();
 
-    const contactEmail = {
-        id,
-        contactEmailAddressId,
-        body,
-    };
-
     const { error: dbError } = await catchError(
-        db.insert(tables.contactEmail).values(contactEmail),
+        db.insert(tables.contactEmail).values({
+            id,
+            contactEmailAddressId,
+            direction: 'outbound',
+            body,
+        }),
     );
 
     if (dbError) return Error();

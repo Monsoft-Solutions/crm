@@ -162,6 +162,13 @@
       "when": 1750249340853,
       "tag": "0022_stale_the_leader",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1750253602489,
+      "tag": "0023_redundant_emma_frost",
+      "breakpoints": true
     }
   ]
 }
