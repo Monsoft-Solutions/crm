@@ -1,52 +1,45 @@
-import { v4 as uuidv4 } from 'uuid';
-
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
-import tables from '@db/db';
 
-import { sendEmail } from '@email/utils/send-email.util';
+import { sendEmailToContactEmailAddress } from './send-email-to-contact-email-address.provider';
 
-import { sendEmailToContactFromAddress } from '@mods/contact-message/constants';
-
-export const sendEmailToContact = (async ({ contactEmailAddressId, body }) => {
+export const sendEmailToContact = (async ({
+    contactId,
+    username,
+    subject,
+    body,
+}) => {
     const { data: contactEmailAddress, error: contactEmailAddressError } =
         await catchError(
             db.query.contactEmailAddress.findFirst({
-                where: (record, { eq }) => eq(record.id, contactEmailAddressId),
+                where: (record, { eq }) => eq(record.contactId, contactId),
             }),
         );
 
     if (contactEmailAddressError) return Error();
+    if (!contactEmailAddress) return Error();
 
-    if (contactEmailAddress === undefined) return Error();
+    const { id: contactEmailAddressId } = contactEmailAddress;
 
-    const { emailAddress } = contactEmailAddress;
-
-    const { error: sendEmailError } = await sendEmail({
-        from: sendEmailToContactFromAddress,
-        to: emailAddress,
-        subject: '',
-        text: body,
+    const { data, error } = await sendEmailToContactEmailAddress({
+        username,
+        contactEmailAddressId,
+        subject,
+        body,
     });
 
-    if (sendEmailError) return Error();
+    if (error) return Error();
 
-    const id = uuidv4();
-
-    const contactEmail = {
-        id,
-        contactEmailAddressId,
-        body,
-    };
-
-    const { error: dbError } = await catchError(
-        db.insert(tables.contactEmail).values(contactEmail),
-    );
-
-    if (dbError) return Error();
-
-    return Success();
-}) satisfies Function<{ contactEmailAddressId: string; body: string }>;
+    return Success(data);
+}) satisfies Function<
+    {
+        username: string;
+        contactId: string;
+        subject: string;
+        body: string;
+    },
+    { id: string }
+>;
