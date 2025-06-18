@@ -27,7 +27,7 @@ export const sendBrandEmail = (async ({
 
     const from = `${username}@${domain}`;
 
-    const { error: messageError } = await sendEmail({
+    const { data: messsage, error: messageError } = await sendEmail({
         from,
         to,
         subject,
@@ -36,7 +36,7 @@ export const sendBrandEmail = (async ({
 
     if (messageError) return Error();
 
-    return Success();
+    return Success(messsage);
 }) satisfies Function<
     {
         brandId: string;
