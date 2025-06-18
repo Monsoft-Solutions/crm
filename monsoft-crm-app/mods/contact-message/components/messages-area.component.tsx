@@ -113,7 +113,7 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                                     <MessageBubble
                                         key={message.id}
                                         id={message.id}
-                                        channelType="sms"
+                                        channelType={message.channelType}
                                         direction={message.direction}
                                         body={message.body}
                                         createdAt={message.createdAt}
