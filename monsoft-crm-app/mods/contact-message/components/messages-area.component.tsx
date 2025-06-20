@@ -92,39 +92,41 @@ export function MessagesArea({ contactId }: { contactId: string }) {
     );
 
     return (
-        <>
-            <ScrollArea className="scrollbar-thin flex-1 px-5 py-1">
-                <div className="flex flex-col gap-3 py-6">
-                    {Object.entries(messagesByDate).map(
-                        ([dateString, dateMessages]) => (
-                            <div
-                                key={dateString}
-                                className="flex flex-col gap-3"
-                            >
-                                <div className="my-3 flex justify-center">
-                                    <div className="rounded-full bg-gray-100 px-3 py-0.5 text-[10px] font-medium text-gray-500 shadow-sm">
-                                        {formatMessageDate(
-                                            new Date(dateString),
-                                        )}
+        <div className="relative grow">
+            <div className="absolute inset-0">
+                <ScrollArea className="h-full px-5 py-1">
+                    <div className="flex flex-col gap-3 py-6">
+                        {Object.entries(messagesByDate).map(
+                            ([dateString, dateMessages]) => (
+                                <div
+                                    key={dateString}
+                                    className="flex flex-col gap-3"
+                                >
+                                    <div className="my-3 flex justify-center">
+                                        <div className="rounded-full bg-gray-100 px-3 py-0.5 text-[10px] font-medium text-gray-500 shadow-sm">
+                                            {formatMessageDate(
+                                                new Date(dateString),
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
 
-                                {dateMessages.map((message) => (
-                                    <MessageBubble
-                                        key={message.id}
-                                        id={message.id}
-                                        channelType={message.channelType}
-                                        direction={message.direction}
-                                        body={message.body}
-                                        createdAt={message.createdAt}
-                                        status={message.status}
-                                    />
-                                ))}
-                            </div>
-                        ),
-                    )}
-                </div>
-            </ScrollArea>
-        </>
+                                    {dateMessages.map((message) => (
+                                        <MessageBubble
+                                            key={message.id}
+                                            id={message.id}
+                                            channelType={message.channelType}
+                                            direction={message.direction}
+                                            body={message.body}
+                                            createdAt={message.createdAt}
+                                            status={message.status}
+                                        />
+                                    ))}
+                                </div>
+                            ),
+                        )}
+                    </div>
+                </ScrollArea>
+            </div>
+        </div>
     );
 }
