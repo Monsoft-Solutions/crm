@@ -155,6 +155,27 @@
       "when": 1749564375816,
       "tag": "0021_secret_ink",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1750249340853,
+      "tag": "0022_stale_the_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1750253602489,
+      "tag": "0023_redundant_emma_frost",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1750255986851,
+      "tag": "0024_gigantic_devos",
+      "breakpoints": true
     }
   ]
 }

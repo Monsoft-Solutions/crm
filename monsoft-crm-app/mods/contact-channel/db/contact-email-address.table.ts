@@ -15,7 +15,13 @@ export const contactEmailAddress = table('contact_email_address', {
 
 export const contactEmailAddressRelations = relations(
     contactEmailAddress,
-    ({ many }) => ({
+
+    ({ one, many }) => ({
+        contact: one(contact, {
+            fields: [contactEmailAddress.contactId],
+            references: [contact.id],
+        }),
+
         contactEmails: many(contactEmail),
     }),
 );

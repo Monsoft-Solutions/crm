@@ -1,0 +1,1 @@
+ALTER TABLE "contact_email" ADD COLUMN "sid" text;

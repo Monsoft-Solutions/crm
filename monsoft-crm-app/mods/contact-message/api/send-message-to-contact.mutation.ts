@@ -5,8 +5,11 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 
 import { sendMessageToContactSchema } from '../schemas';
 
-import { sendSmsToContact } from '../providers/server';
-import { sendAppWhatsappToContact } from '../providers/server';
+import {
+    sendSmsToContact,
+    sendAppWhatsappToContact,
+    sendEmailToContact,
+} from '../providers/server';
 
 import { emit } from '@events/providers';
 
@@ -34,7 +37,19 @@ export const sendMessageToContact = protectedEndpoint
                     }
 
                     case 'email': {
-                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
+                        const { data: emailMessage, error } =
+                            await sendEmailToContact({
+                                username: 'hello',
+                                contactId,
+                                subject: '',
+                                body,
+                            });
+
+                        if (error) return Error();
+
+                        id = emailMessage.id;
+
+                        break;
                     }
 
                     case 'whatsapp': {
