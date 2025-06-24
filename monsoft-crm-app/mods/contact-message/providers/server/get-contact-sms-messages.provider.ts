@@ -9,22 +9,13 @@ import { db } from '@db/providers/server';
 import { contactSmsMessage } from '@db/db';
 
 export const getContactSmsMessages = (async ({ contactId }) => {
-    const { data: contactPhoneNumbers, error: contactPhoneNumbersError } =
-        await catchError(
-            db.query.contactPhoneNumber.findMany({
-                where: (record, { eq }) => eq(record.contactId, contactId),
-
-                with: {
-                    contactSmsMessages: true,
-                },
-            }),
-        );
-
-    if (contactPhoneNumbersError) return Error();
-
-    const smsMessages = contactPhoneNumbers.flatMap(
-        (phoneNumber) => phoneNumber.contactSmsMessages,
+    const { data: smsMessages, error: smsMessagesError } = await catchError(
+        db.query.contactSmsMessage.findMany({
+            where: (record, { eq }) => eq(record.contactId, contactId),
+        }),
     );
+
+    if (smsMessagesError) return Error();
 
     return Success(smsMessages);
 }) satisfies Function<
