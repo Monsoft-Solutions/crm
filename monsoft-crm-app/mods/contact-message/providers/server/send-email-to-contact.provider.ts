@@ -1,10 +1,13 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
+import tables from '@db/db';
 
-import { sendEmailToContactEmailAddress } from './send-email-to-contact-email-address.provider';
+import { sendBrandEmail } from '@mods/brand/providers/send-brand-email.provider';
 
 export const sendEmailToContact = (async ({
     contactId,
@@ -12,28 +15,58 @@ export const sendEmailToContact = (async ({
     subject,
     body,
 }) => {
-    const { data: contactEmailAddress, error: contactEmailAddressError } =
-        await catchError(
-            db.query.contactEmailAddress.findFirst({
-                where: (record, { eq }) => eq(record.contactId, contactId),
-            }),
-        );
+    const { data: contact, error: contactError } = await catchError(
+        db.query.contact.findFirst({
+            where: (record, { eq }) => eq(record.id, contactId),
+            with: {
+                emailAddresses: true,
+            },
+        }),
+    );
 
-    if (contactEmailAddressError) return Error();
-    if (!contactEmailAddress) return Error();
+    if (contactError) return Error();
+    if (!contact) return Error();
 
-    const { id: contactEmailAddressId } = contactEmailAddress;
+    const { brandId, emailAddresses } = contact;
 
-    const { data, error } = await sendEmailToContactEmailAddress({
+    const defaultContactEmailAddress = emailAddresses.at(0);
+
+    if (!defaultContactEmailAddress) return Error('NO_DEFAULT_EMAIL_ADDRESS');
+
+    const { emailAddress } = defaultContactEmailAddress;
+
+    const { data: message, error: messageError } = await sendBrandEmail({
+        brandId,
         username,
-        contactEmailAddressId,
         subject,
+        to: emailAddress,
         body,
     });
 
-    if (error) return Error();
+    if (messageError) return Error();
 
-    return Success(data);
+    const { sid } = message;
+
+    const id = uuidv4();
+
+    const { error: dbError } = await catchError(
+        db.insert(tables.contactEmail).values({
+            id,
+            sid,
+            contactId,
+            contactEmailAddress: emailAddress,
+            direction: 'outbound',
+            body,
+        }),
+    );
+
+    if (dbError) return Error();
+
+    const result = {
+        id,
+    };
+
+    return Success(result);
 }) satisfies Function<
     {
         username: string;

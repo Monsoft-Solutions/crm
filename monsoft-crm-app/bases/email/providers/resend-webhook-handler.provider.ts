@@ -39,21 +39,13 @@ export function resendWebhookHandler(server: express.Express) {
                 await catchError(
                     db.query.contactEmail.findFirst({
                         where: (record, { eq }) => eq(record.sid, sid),
-                        with: {
-                            contactEmailAddress: {
-                                with: {
-                                    contact: true,
-                                },
-                            },
-                        },
                     }),
                 );
 
             if (contactEmailError) return;
             if (!contactEmail) return;
 
-            const { id, contactEmailAddress } = contactEmail;
-            const { contactId } = contactEmailAddress;
+            const { id, contactId } = contactEmail;
 
             emit({
                 event: 'contactMessageStatusUpdated',

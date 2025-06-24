@@ -2,7 +2,12 @@ import { relations } from 'drizzle-orm';
 
 import { table, text, timestamp } from '@db/sql';
 
-import { brand, contactPhoneNumber, contactSmsMessage } from '@db/db';
+import {
+    brand,
+    contactPhoneNumber,
+    contactEmailAddress,
+    contactSmsMessage,
+} from '@db/db';
 
 export const contact = table('contact', {
     id: text('id').primaryKey(),
@@ -25,6 +30,8 @@ export const contactTableRelations = relations(contact, ({ one, many }) => ({
     }),
 
     phoneNumbers: many(contactPhoneNumber),
+
+    emailAddresses: many(contactEmailAddress),
 
     smsMessages: many(contactSmsMessage),
 }));

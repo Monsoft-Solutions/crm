@@ -9,24 +9,15 @@ import { db } from '@db/providers/server';
 import { contactEmail } from '@db/db';
 
 export const getContactEmailMessages = (async ({ contactId }) => {
-    const { data: contactEmailAddresses, error: contactEmailAddressesError } =
-        await catchError(
-            db.query.contactEmailAddress.findMany({
-                where: (record, { eq }) => eq(record.contactId, contactId),
-
-                with: {
-                    contactEmails: true,
-                },
-            }),
-        );
-
-    if (contactEmailAddressesError) return Error();
-
-    const emailMessages = contactEmailAddresses.flatMap(
-        (emailAddress) => emailAddress.contactEmails,
+    const { data: contactEmails, error: contactEmailsError } = await catchError(
+        db.query.contactEmail.findMany({
+            where: (record, { eq }) => eq(record.contactId, contactId),
+        }),
     );
 
-    return Success(emailMessages);
+    if (contactEmailsError) return Error();
+
+    return Success(contactEmails);
 }) satisfies Function<
     { contactId: string },
     InferSelectModel<typeof contactEmail>[]
