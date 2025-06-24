@@ -45,11 +45,11 @@ export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
 
     // TODO: use whatsapp-specific table
     const { error: dbError } = await catchError(
-        db.insert(tables.contactSmsMessage).values({
+        db.insert(tables.contactWhatsappMessage).values({
             id,
             sid,
             contactId,
-            contactPhoneNumber: defaultContactPhoneNumber,
+            contactWhatsappNumber: defaultContactPhoneNumber,
             direction: 'outbound',
             body,
         }),
