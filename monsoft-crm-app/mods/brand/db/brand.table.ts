@@ -1,6 +1,7 @@
+import { relations } from 'drizzle-orm';
 import { table, text } from '@db/sql';
 
-import { organization } from '@db/db';
+import { brandPhoneNumber, organization } from '@db/db';
 
 export const brand = table('brand', {
     id: text('id').primaryKey(),
@@ -11,7 +12,13 @@ export const brand = table('brand', {
 
     name: text('name').notNull(),
 
-    phoneNumber: text('phone_number').notNull(),
-
     domain: text('domain').notNull(),
 });
+
+export const brandRelations = relations(
+    brand,
+
+    ({ many }) => ({
+        phoneNumbers: many(brandPhoneNumber),
+    }),
+);

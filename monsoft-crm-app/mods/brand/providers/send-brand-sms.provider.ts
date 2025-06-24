@@ -12,6 +12,9 @@ export const sendBrandSms = (async ({ brandId, to, body }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
+            with: {
+                phoneNumbers: true,
+            },
         }),
     );
 
@@ -19,7 +22,11 @@ export const sendBrandSms = (async ({ brandId, to, body }) => {
 
     if (!brand) return Error();
 
-    const { organizationId, phoneNumber: from } = brand;
+    const { organizationId, phoneNumbers } = brand;
+
+    const defaultPhoneNumber = phoneNumbers.at(0)?.phoneNumber;
+
+    if (!defaultPhoneNumber) return Error();
 
     const { data: client, error: clientError } = await getTwilioClientOrg({
         organizationId,
@@ -29,7 +36,7 @@ export const sendBrandSms = (async ({ brandId, to, body }) => {
 
     const { data: message, error: messageError } = await sendSms({
         client,
-        from,
+        from: defaultPhoneNumber,
         to,
         body,
     });
