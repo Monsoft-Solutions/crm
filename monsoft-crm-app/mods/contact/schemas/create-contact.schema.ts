@@ -7,6 +7,8 @@ export const createContactSchema = z.object({
     lastName: z.string(),
 
     phoneNumber: z.string(),
+
+    emailAddress: z.string(),
 });
 
 export type CreateContact = z.infer<typeof createContactSchema>;
