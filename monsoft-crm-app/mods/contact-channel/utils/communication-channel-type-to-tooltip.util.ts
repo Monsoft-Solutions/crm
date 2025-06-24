@@ -11,9 +11,5 @@ export const communicationChannelTypeToTooltip = (
             return 'Email';
         case 'whatsapp':
             return 'WhatsApp';
-        case 'slack':
-            return 'Slack';
-        case 'instagram':
-            return 'Instagram';
     }
 };

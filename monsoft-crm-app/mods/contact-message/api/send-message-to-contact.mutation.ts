@@ -13,8 +13,6 @@ import {
 
 import { emit } from '@events/providers';
 
-const NOT_IMPLEMENTED_CHANNEL_TYPE = Error('NOT_IMPLEMENTED_CHANNEL_TYPE');
-
 export const sendMessageToContact = protectedEndpoint
     .input(sendMessageToContactSchema)
     .mutation(
@@ -62,14 +60,6 @@ export const sendMessageToContact = protectedEndpoint
 
                         id = smsMessage.id;
                         break;
-                    }
-
-                    case 'instagram': {
-                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
-                    }
-
-                    case 'slack': {
-                        return NOT_IMPLEMENTED_CHANNEL_TYPE;
                     }
                 }
 
