@@ -22,6 +22,7 @@ export const ContactDataSchemaWithConstrains: typeof createContactSchema =
         phoneNumber: z
             .string()
             .regex(/^\+\d+$/, 'must start with + followed by numbers only'),
+        emailAddress: z.string().email('invalid email address'),
     });
 
 export function ContactDetailsDialog({
@@ -43,6 +44,7 @@ export function ContactDetailsDialog({
         firstName: 'Jane',
         lastName: 'Doe',
         phoneNumber: '',
+        emailAddress: '',
     };
 
     const form = useForm<CreateContact>({

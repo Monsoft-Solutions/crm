@@ -39,7 +39,6 @@ export const sendMessageToContact = protectedEndpoint
                     case 'email': {
                         const { data: emailMessage, error } =
                             await sendEmailToContact({
-                                username: 'hello',
                                 contactId,
                                 subject: '',
                                 body,

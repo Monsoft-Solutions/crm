@@ -6,16 +6,17 @@ import { db } from '@db/providers/server';
 
 import { sendEmail } from '@email/utils';
 
-export const sendBrandEmail = (async ({
-    brandId,
-    username,
-    to,
-    subject,
-    body,
-}) => {
+export const sendBrandEmail = (async ({ brandId, to, subject, body }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
+            with: {
+                domains: {
+                    with: {
+                        emails: true,
+                    },
+                },
+            },
         }),
     );
 
@@ -23,12 +24,16 @@ export const sendBrandEmail = (async ({
 
     if (!brand) return Error();
 
-    const { domain } = brand;
+    const brandEmailAddresses = brand.domains.flatMap(({ domain, emails }) =>
+        emails.map(({ username }) => `${username}@${domain}`),
+    );
 
-    const from = `${username}@${domain}`;
+    const defaultEmailAddress = brandEmailAddresses.at(0);
+
+    if (!defaultEmailAddress) return Error('NO_DEFAULT_EMAIL_ADDRESS');
 
     const { data: messsage, error: messageError } = await sendEmail({
-        from,
+        from: defaultEmailAddress,
         to,
         subject,
         text: body,
@@ -40,7 +45,6 @@ export const sendBrandEmail = (async ({
 }) satisfies Function<
     {
         brandId: string;
-        username: string;
         to: string;
         subject: string;
         body: string;

@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { table, text, timestamp, enumType } from '@db/sql';
 
-import { contactPhoneNumber } from '@db/db';
+import { contact } from '@db/db';
 
 import {
     contactMessageDirectionEnum,
@@ -23,9 +23,11 @@ export const contactSmsMessage = table('contact_sms_message', {
 
     sid: text('sid'),
 
-    contactPhoneNumberId: text('contact_phone_number_id')
+    contactId: text('contact_id')
         .notNull()
-        .references(() => contactPhoneNumber.id, { onDelete: 'cascade' }),
+        .references(() => contact.id, { onDelete: 'cascade' }),
+
+    contactPhoneNumber: text('contact_phone_number').notNull(),
 
     direction: contactSmsMessageDirection('direction').notNull(),
 
@@ -39,9 +41,9 @@ export const contactSmsMessage = table('contact_sms_message', {
 export const contactSmsMessageRelations = relations(
     contactSmsMessage,
     ({ one }) => ({
-        contactPhoneNumber: one(contactPhoneNumber, {
-            fields: [contactSmsMessage.contactPhoneNumberId],
-            references: [contactPhoneNumber.id],
+        contact: one(contact, {
+            fields: [contactSmsMessage.contactId],
+            references: [contact.id],
         }),
     }),
 );

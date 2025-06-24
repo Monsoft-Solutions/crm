@@ -25,11 +25,7 @@ void listen('twilioMessageStatusUpdated', async ({ sid, status }) => {
             db.query.contactSmsMessage.findFirst({
                 where: (record, { eq }) => eq(record.sid, sid),
                 with: {
-                    contactPhoneNumber: {
-                        with: {
-                            contact: true,
-                        },
-                    },
+                    contact: true,
                 },
             }),
         );
@@ -37,8 +33,7 @@ void listen('twilioMessageStatusUpdated', async ({ sid, status }) => {
     if (contactSmsMessageError) return;
     if (!contactSmsMessage) return;
 
-    const { id, contactPhoneNumber } = contactSmsMessage;
-    const { contactId } = contactPhoneNumber;
+    const { id, contactId } = contactSmsMessage;
 
     emit({
         event: 'contactMessageStatusUpdated',

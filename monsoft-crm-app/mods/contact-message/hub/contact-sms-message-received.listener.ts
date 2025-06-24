@@ -22,12 +22,13 @@ void listen('twilioMessageReceived', async ({ from, body, createdAt }) => {
     if (contactPhoneNumberError) return;
     if (!contactPhoneNumber) return;
 
-    const { id: contactPhoneNumberId, contactId } = contactPhoneNumber;
+    const { contactId } = contactPhoneNumber;
 
     const { error: contactSmsMessageError } = await catchError(
         db.insert(tables.contactSmsMessage).values({
             id,
-            contactPhoneNumberId,
+            contactId,
+            contactPhoneNumber: from,
             direction: 'inbound',
             body,
         }),

@@ -16,19 +16,31 @@ export const createContact = protectedEndpoint
     .mutation(
         queryMutationCallback(
             async ({
-                input: { brandId, firstName, lastName, phoneNumber },
+                input: {
+                    brandId,
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    emailAddress,
+                },
             }) => {
-                const id = uuidv4();
+                const contactId = uuidv4();
 
-                const contact = { id, brandId, firstName, lastName };
+                const contact = { id: contactId, brandId, firstName, lastName };
 
                 const { error } = await catchError(
                     db.transaction(async (tx) => {
                         await tx.insert(tables.contact).values(contact);
                         await tx.insert(tables.contactPhoneNumber).values({
                             id: uuidv4(),
-                            contactId: id,
+                            contactId,
                             phoneNumber,
+                        });
+
+                        await tx.insert(tables.contactEmailAddress).values({
+                            id: uuidv4(),
+                            contactId,
+                            emailAddress,
                         });
                     }),
                 );

@@ -38,6 +38,7 @@ export function CreateBrandForm({
         defaultValues: {
             name: '',
             phoneNumber: availablePhoneNumbers[0],
+            domain: '',
         },
     });
 
@@ -79,6 +80,19 @@ export function CreateBrandForm({
                     render={({ field }) => (
                         <FormItem className="grow">
                             <InputAnimatedLabel label="Brand Name" {...field} />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="domain"
+                    render={({ field }) => (
+                        <FormItem className="grow">
+                            <InputAnimatedLabel
+                                label="Internet Domain"
+                                {...field}
+                            />
                         </FormItem>
                     )}
                 />

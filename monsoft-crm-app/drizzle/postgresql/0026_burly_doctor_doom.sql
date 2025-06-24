@@ -1,0 +1,1 @@
+ALTER TABLE "contact_sms_message" RENAME COLUMN "phone_number" TO "contact_phone_number";

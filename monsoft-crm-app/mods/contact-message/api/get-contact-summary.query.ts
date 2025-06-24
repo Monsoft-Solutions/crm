@@ -17,11 +17,7 @@ export const getContactSummary = protectedEndpoint
                     where: (record, { eq }) => eq(record.id, contactId),
 
                     with: {
-                        contactPhoneNumbers: {
-                            with: {
-                                contactSmsMessages: true,
-                            },
-                        },
+                        smsMessages: true,
                     },
                 }),
             );
@@ -29,17 +25,13 @@ export const getContactSummary = protectedEndpoint
             if (error) return Error();
             if (!rawContact) return Error();
 
-            const { id, firstName, lastName, contactPhoneNumbers } = rawContact;
+            const { id, firstName, lastName, smsMessages } = rawContact;
 
             const contact = {
                 id,
                 firstName,
                 lastName,
             };
-
-            const smsMessages = contactPhoneNumbers.flatMap(
-                (phoneNumber) => phoneNumber.contactSmsMessages,
-            );
 
             const numUnreadMessages = smsMessages.filter(
                 (smsMessage) => smsMessage.status !== 'read',
