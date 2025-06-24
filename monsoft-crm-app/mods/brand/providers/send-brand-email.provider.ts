@@ -13,7 +13,7 @@ export const sendBrandEmail = (async ({ brandId, to, subject, body }) => {
             with: {
                 domains: {
                     with: {
-                        emails: true,
+                        emailAddresses: true,
                     },
                 },
             },
@@ -24,8 +24,9 @@ export const sendBrandEmail = (async ({ brandId, to, subject, body }) => {
 
     if (!brand) return Error();
 
-    const brandEmailAddresses = brand.domains.flatMap(({ domain, emails }) =>
-        emails.map(({ username }) => `${username}@${domain}`),
+    const brandEmailAddresses = brand.domains.flatMap(
+        ({ domain, emailAddresses }) =>
+            emailAddresses.map(({ username }) => `${username}@${domain}`),
     );
 
     const defaultEmailAddress = brandEmailAddresses.at(0);

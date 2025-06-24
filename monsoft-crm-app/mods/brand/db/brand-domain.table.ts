@@ -22,6 +22,6 @@ export const brandDomainRelations = relations(
             references: [brand.id],
         }),
 
-        emails: many(brandEmailAddress),
+        emailAddresses: many(brandEmailAddress),
     }),
 );
