@@ -9,12 +9,7 @@ import tables from '@db/db';
 
 import { sendBrandEmail } from '@mods/brand/providers/send-brand-email.provider';
 
-export const sendEmailToContact = (async ({
-    contactId,
-    username,
-    subject,
-    body,
-}) => {
+export const sendEmailToContact = (async ({ contactId, subject, body }) => {
     const { data: contact, error: contactError } = await catchError(
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, contactId),
@@ -37,7 +32,6 @@ export const sendEmailToContact = (async ({
 
     const { data: message, error: messageError } = await sendBrandEmail({
         brandId,
-        username,
         subject,
         to: emailAddress,
         body,
@@ -69,7 +63,6 @@ export const sendEmailToContact = (async ({
     return Success(result);
 }) satisfies Function<
     {
-        username: string;
         contactId: string;
         subject: string;
         body: string;
