@@ -19,26 +19,25 @@ import {
     TextareaAutosize,
 } from '@ui/text-area-autosize.ui';
 
+import { Thumbnail } from '@shared/ui/thumbnail.ui';
 import { Attach } from '@ui/attach.ui';
 
 import { cn } from '@css/utils';
 
 import { api } from '@api/providers/web';
-import {
-    ContactChannelType,
-    contactChannelTypeEnum,
-} from '@mods/contact-channel/enums';
+
+import { ContactChannelType } from '@mods/contact-channel/enums';
+
 import {
     communicationChannelTypeToIcon,
     communicationChannelTypeToTooltip,
 } from '@mods/contact-channel/utils';
-import { Thumbnail } from '@shared/ui/thumbnail.ui';
 
 export function MessageInput({
     activeContactId,
     initText,
 }: {
-    activeContactId?: string;
+    activeContactId: string;
     initText?: string;
 }) {
     const [newMessage, setNewMessage] = useState('');
@@ -50,9 +49,12 @@ export function MessageInput({
     const [selectedChannel, setSelectedChannel] =
         useState<ContactChannelType>('sms');
 
-    const sendMessage = useCallback(async () => {
-        if (activeContactId === undefined) return;
+    const { data: availableContactChannels } =
+        api.contactChannel.getAvailableContactChannels.useQuery({
+            contactId: activeContactId,
+        });
 
+    const sendMessage = useCallback(async () => {
         await api.contactMessage.sendMessageToContact.mutate({
             contactId: activeContactId,
             channelType: selectedChannel,
@@ -108,6 +110,8 @@ export function MessageInput({
     );
 
     const ChannelIcon = communicationChannelTypeToIcon(selectedChannel);
+
+    if (!availableContactChannels) return null;
 
     return (
         <>
@@ -178,36 +182,33 @@ export function MessageInput({
                                 </div>
                             </Button>
                         </DropdownMenuTrigger>
+
                         <DropdownMenuContent align="end" className="min-w-32">
-                            {contactChannelTypeEnum.options.map(
-                                (channelType) => {
-                                    const ChannelIcon =
-                                        communicationChannelTypeToIcon(
-                                            channelType,
-                                        );
+                            {availableContactChannels.map((channelType) => {
+                                const ChannelIcon =
+                                    communicationChannelTypeToIcon(channelType);
 
-                                    const channelTooltip =
-                                        communicationChannelTypeToTooltip(
-                                            channelType,
-                                        );
-
-                                    return (
-                                        <DropdownMenuItem
-                                            key={channelType}
-                                            onClick={() => {
-                                                setSelectedChannel(channelType);
-                                            }}
-                                            className="flex items-center gap-2 py-1.5"
-                                        >
-                                            <ChannelIcon className="size-4" />
-
-                                            <span className="text-xs font-medium">
-                                                {channelTooltip}
-                                            </span>
-                                        </DropdownMenuItem>
+                                const channelTooltip =
+                                    communicationChannelTypeToTooltip(
+                                        channelType,
                                     );
-                                },
-                            )}
+
+                                return (
+                                    <DropdownMenuItem
+                                        key={channelType}
+                                        onClick={() => {
+                                            setSelectedChannel(channelType);
+                                        }}
+                                        className="flex items-center gap-2 py-1.5"
+                                    >
+                                        <ChannelIcon className="size-4" />
+
+                                        <span className="text-xs font-medium">
+                                            {channelTooltip}
+                                        </span>
+                                    </DropdownMenuItem>
+                                );
+                            })}
                         </DropdownMenuContent>
                     </DropdownMenu>
 
