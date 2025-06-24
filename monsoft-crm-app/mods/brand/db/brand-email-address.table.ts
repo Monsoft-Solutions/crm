@@ -17,7 +17,7 @@ export const brandEmailAddressRelations = relations(
     brandEmailAddress,
 
     ({ one }) => ({
-        brandDomain: one(brandDomain, {
+        domain: one(brandDomain, {
             fields: [brandEmailAddress.brandDomainId],
             references: [brandDomain.id],
         }),
