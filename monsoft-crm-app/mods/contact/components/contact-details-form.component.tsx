@@ -83,6 +83,23 @@ export function ContactDetailsForm({
                             </FormItem>
                         )}
                     />
+
+                    {/* Email */}
+                    <FormField
+                        control={form.control}
+                        name="emailAddress"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel
+                                    label="Email"
+                                    type="email"
+                                    {...field}
+                                    readOnly={!isEditMode}
+                                />
+                                <FormMessage />
+                            </FormItem>
+                        )}
+                    />
                 </div>
 
                 <button type="submit" className="hidden" />
