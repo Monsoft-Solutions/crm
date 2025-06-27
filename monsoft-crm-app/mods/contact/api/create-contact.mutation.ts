@@ -31,10 +31,12 @@ export const createContact = protectedEndpoint
                 const { error } = await catchError(
                     db.transaction(async (tx) => {
                         await tx.insert(tables.contact).values(contact);
+
                         await tx.insert(tables.contactPhoneNumber).values({
                             id: uuidv4(),
                             contactId,
                             phoneNumber,
+                            isDefault: 'true',
                         });
 
                         await tx.insert(tables.contactEmailAddress).values({

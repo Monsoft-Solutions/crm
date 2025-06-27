@@ -14,7 +14,9 @@ export const sendSmsToContact = (async ({ contactId, body }) => {
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, contactId),
             with: {
-                phoneNumbers: true,
+                phoneNumbers: {
+                    where: (record, { eq }) => eq(record.isDefault, 'true'),
+                },
             },
         }),
     );

@@ -1,7 +1,11 @@
 import { relations } from 'drizzle-orm';
-import { table, text } from '@db/sql';
+import { enumType, table, text } from '@db/sql';
 
 import { contact, contactSmsMessage } from '@db/db';
+
+export const isDefaultPhoneNumber = enumType('is_default_phone_number', [
+    'true',
+]);
 
 export const contactPhoneNumber = table('contact_phone_number', {
     id: text('id').primaryKey(),
@@ -11,6 +15,8 @@ export const contactPhoneNumber = table('contact_phone_number', {
         .references(() => contact.id, { onDelete: 'cascade' }),
 
     phoneNumber: text('phone_number').notNull(),
+
+    isDefault: isDefaultPhoneNumber('is_default').unique(),
 });
 
 export const contactPhoneNumberRelations = relations(
