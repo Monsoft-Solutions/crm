@@ -1,11 +1,15 @@
 import { Conf } from '@conf/types';
 
 import * as twilioCustom from '../../../twilio/conf/custom';
+import * as metaCustom from '@meta/conf/custom';
+
 import * as appCustom from '@app/conf/custom';
 
 const modulesCustomConf = {
-    ...appCustom,
     ...twilioCustom,
+    ...metaCustom,
+
+    ...appCustom,
 };
 
 // full app custom configuration

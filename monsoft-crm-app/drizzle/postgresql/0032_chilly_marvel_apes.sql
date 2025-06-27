@@ -1,0 +1,1 @@
+ALTER TABLE "custom_conf" ADD COLUMN "whatsapp_token" text;

@@ -47,6 +47,7 @@
             "@shared/*": ["./shared/*"],
             "@slack/*": ["./bases/slack/*"],
             "@twilio/*": ["./bases/twilio/*"],
+            "@meta/*": ["./bases/meta/*"],
             "@sms/*": ["./bases/twilio/channels/sms/*"],
             "@whatsapp/*": ["./bases/twilio/channels/whatsapp/*"],
             "@ui/*": ["./shared/ui/*"],
