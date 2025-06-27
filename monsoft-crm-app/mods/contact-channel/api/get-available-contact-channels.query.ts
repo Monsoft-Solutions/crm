@@ -55,7 +55,7 @@ export const getAvailableContactChannels = protectedEndpoint
                     switch (type) {
                         case 'sms': {
                             return (
-                                contactPhoneNumbers.length > 0 &&
+                                brandPhoneNumbers.length > 0 &&
                                 contactPhoneNumbers.length > 0
                             );
                         }
