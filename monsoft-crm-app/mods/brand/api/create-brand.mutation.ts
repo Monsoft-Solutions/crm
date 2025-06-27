@@ -21,7 +21,13 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                     user: { organizationId },
                 },
             },
-            input: { name, phoneNumber, domain },
+            input: {
+                name,
+                phoneNumber,
+                domain,
+                whatsappPhoneId,
+                whatsappPhoneNumber,
+            },
         }) => {
             const id = uuidv4();
 
@@ -50,6 +56,13 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                         id: uuidv4(),
                         brandId: id,
                         phoneNumber: brandPhoneNumber,
+                    });
+
+                    await tx.insert(tables.brandWhatsappNumber).values({
+                        id: uuidv4(),
+                        brandId: id,
+                        phoneId: whatsappPhoneId,
+                        phoneNumber: whatsappPhoneNumber,
                     });
 
                     const brandDomainId = uuidv4();
