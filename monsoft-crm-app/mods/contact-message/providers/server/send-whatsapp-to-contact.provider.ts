@@ -6,8 +6,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
 import tables from '@db/db';
-
-import { sendAppWhatsapp } from '@meta/channels/whatsapp/providers';
+import { sendBrandWhatsapp } from '@mods/brand/providers';
 
 export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
     // TODO: use whatsapp-specific numbers
@@ -29,13 +28,11 @@ export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
 
     if (!defaultContactPhoneNumber) return Error('NO_DEFAULT_PHONE_NUMBER');
 
-    // TODO: use send-brand-whatsapp and remove log
-    const { data: message, error: messageError } = await sendAppWhatsapp({
+    const { data: message, error: messageError } = await sendBrandWhatsapp({
+        brandId,
         to: defaultContactPhoneNumber,
         body,
     });
-
-    console.log('-->   ~ sendAppWhatsappToContact ~ brandId:', brandId);
 
     if (messageError) return Error();
 
@@ -43,7 +40,6 @@ export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
 
     const id = uuidv4();
 
-    // TODO: use whatsapp-specific table
     const { error: dbError } = await catchError(
         db.insert(tables.contactWhatsappMessage).values({
             id,
