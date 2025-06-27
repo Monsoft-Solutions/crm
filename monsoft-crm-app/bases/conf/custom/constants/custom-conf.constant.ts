@@ -13,4 +13,4 @@ export const customConf = Object.entries(modulesCustomConf).reduce(
         ...moduleConf,
     }),
     {},
-) as Conf<typeof appCustom>;
+) as Conf<typeof modulesCustomConf>;
