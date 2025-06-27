@@ -7,7 +7,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { db } from '@db/providers/server';
 import tables from '@db/db';
 
-import { sendAppWhatsapp } from '@twilio/channels/whatsapp/providers';
+import { sendAppWhatsapp } from '@meta/channels/whatsapp/providers';
 
 export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
     // TODO: use whatsapp-specific numbers

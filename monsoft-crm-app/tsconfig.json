@@ -49,7 +49,7 @@
             "@twilio/*": ["./bases/twilio/*"],
             "@meta/*": ["./bases/meta/*"],
             "@sms/*": ["./bases/twilio/channels/sms/*"],
-            "@whatsapp/*": ["./bases/twilio/channels/whatsapp/*"],
+            "@whatsapp/*": ["./bases/meta/channels/whatsapp/*"],
             "@ui/*": ["./shared/ui/*"],
             "@mods/*": ["./mods/*"],
             "@web/*": ["./bases/web/*"],

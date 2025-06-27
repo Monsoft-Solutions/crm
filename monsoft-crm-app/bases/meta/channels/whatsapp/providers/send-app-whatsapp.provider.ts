@@ -1,8 +1,6 @@
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
-import { getTwilioClientMain } from '@twilio/providers';
-
 import { getCoreConf } from '@conf/providers/server';
 
 import { sendWhatsapp } from './send-whatsapp.provider';
@@ -12,15 +10,11 @@ export const sendAppWhatsapp = (async ({ to, body }) => {
 
     if (coreConfError) return Error();
 
-    const { twilioFrom } = coreConf;
-
-    const { data: client, error: clientError } = await getTwilioClientMain();
-
-    if (clientError) return Error();
+    const { whatsappToken, whatsappFromPhoneId } = coreConf;
 
     const { data: message, error: messageError } = await sendWhatsapp({
-        client,
-        from: twilioFrom,
+        authToken: whatsappToken,
+        fromPhoneId: whatsappFromPhoneId,
         to,
         body,
     });
