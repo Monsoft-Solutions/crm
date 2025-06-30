@@ -17,12 +17,13 @@ export function twilioEventWebhookHandler(server: express.Express) {
         for (const event of parsedBody) {
             switch (event.type) {
                 case 'com.twilio.messaging.inbound-message.received': {
-                    const { from, body } = event.data;
+                    const { from, to, body } = event.data;
 
                     emit({
                         event: 'twilioMessageReceived',
                         payload: {
                             from,
+                            to,
                             body,
                             createdAt: Date.now(),
                         },
