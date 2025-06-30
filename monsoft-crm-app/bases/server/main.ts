@@ -27,6 +27,7 @@ import { authServer } from '../auth/providers/server';
 import { authPath } from '@auth/constants';
 
 import { twilioWebhooksHandler } from '../twilio/providers';
+import { metaWebhookHandler } from '../meta/providers';
 import { resendWebhookHandler } from '../email/providers';
 
 export * from '@app/hub';
@@ -50,6 +51,7 @@ const server = express();
 server.use(cors());
 
 twilioWebhooksHandler(server);
+metaWebhookHandler(server);
 resendWebhookHandler(server);
 
 // add trpc middleware

@@ -1,0 +1,88 @@
+import express from 'express';
+
+import { emit } from '@events/providers';
+
+import { metaEventWebhookPath } from '../constants';
+
+import {
+    metaEventWebhookBodyMessagesFieldChangeValueSchema,
+    metaEventWebhookBodySchema,
+} from '../schemas';
+
+export function metaWebhookHandler(server: express.Express) {
+    server.use(metaEventWebhookPath, express.urlencoded({ extended: false }));
+    server.use(metaEventWebhookPath, express.json());
+
+    // needed for verification in meta dashboard API setup
+    server.get(metaEventWebhookPath, function (req, res) {
+        if (
+            req.query['hub.mode'] == 'subscribe' &&
+            req.query['hub.verify_token'] == 'token'
+        ) {
+            res.send(req.query['hub.challenge']);
+        } else {
+            res.sendStatus(400);
+        }
+    });
+
+    server.post(metaEventWebhookPath, (req, res) => {
+        res.sendStatus(200);
+
+        const parsedBody = metaEventWebhookBodySchema.parse(req.body);
+
+        const { entry: entries } = parsedBody;
+
+        for (const entry of entries) {
+            const { changes } = entry;
+
+            for (const change of changes) {
+                const { field, value } = change;
+
+                if (field !== 'messages') continue;
+
+                const messagesFieldChangeValue =
+                    metaEventWebhookBodyMessagesFieldChangeValueSchema.safeParse(
+                        value,
+                    ).data;
+
+                if (!messagesFieldChangeValue) continue;
+
+                const {
+                    messaging_product,
+                    metadata,
+                    contacts,
+                    messages: rawMessages,
+                } = messagesFieldChangeValue;
+
+                if (messaging_product !== 'whatsapp') continue;
+
+                const { phone_number_id: toPhoneNumberId } = metadata;
+
+                const messages = rawMessages.map((message) => {
+                    const rawContact = contacts.at(0);
+
+                    const contactName = rawContact?.profile.name ?? '';
+
+                    const {
+                        from,
+                        text: { body },
+                    } = message;
+
+                    return {
+                        contactName,
+                        fromPhoneNumber: from,
+                        toPhoneNumberId,
+                        body,
+                    };
+                });
+
+                for (const message of messages) {
+                    emit({
+                        event: 'whatsappMessageReceivedEvent',
+                        payload: message,
+                    });
+                }
+            }
+        }
+    });
+}
