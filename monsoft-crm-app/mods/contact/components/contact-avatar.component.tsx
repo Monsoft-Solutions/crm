@@ -18,7 +18,8 @@ export function ContactAvatar({
 }) {
     const name = `${firstName} ${lastName}`;
 
-    const initials = `${firstName[0]}${lastName[0]}`.toUpperCase();
+    const initials =
+        `${firstName.at(0) ?? ''}${lastName.at(0) ?? ''}`.toUpperCase();
 
     const avatarColor = stringToColor(id);
 
