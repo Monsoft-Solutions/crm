@@ -11,6 +11,7 @@ const twilioEventSchema = z.discriminatedUnion('type', [
         data: z.object({
             messageSid: z.string(),
             from: z.string(),
+            to: z.string(),
             body: z.string(),
         }),
     }),
