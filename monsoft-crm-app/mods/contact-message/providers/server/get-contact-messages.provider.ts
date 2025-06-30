@@ -4,6 +4,7 @@ import { Error, Success } from '@errors/utils';
 import { MessageBubbleProps } from '@mods/contact-message/schemas';
 
 import { getContactSmsMessages } from './get-contact-sms-messages.provider';
+import { getContactWhatsappMessages } from './get-contact-whatsapp-messages.provider';
 import { getContactEmailMessages } from './get-contact-email-messages.provider';
 
 export const getContactMessages = (async ({ contactId }) => {
@@ -13,6 +14,15 @@ export const getContactMessages = (async ({ contactId }) => {
         });
 
     if (contactSmsMessagesError) return Error();
+
+    const {
+        data: contactWhatsappMessages,
+        error: contactWhatsappMessagesError,
+    } = await getContactWhatsappMessages({
+        contactId,
+    });
+
+    if (contactWhatsappMessagesError) return Error();
 
     const { data: contactEmailMessages, error: contactEmailMessagesError } =
         await getContactEmailMessages({
@@ -25,6 +35,11 @@ export const getContactMessages = (async ({ contactId }) => {
         ...(contactSmsMessages.map((message) => ({
             ...message,
             channelType: 'sms',
+        })) as MessageBubbleProps[]),
+
+        ...(contactWhatsappMessages.map((message) => ({
+            ...message,
+            channelType: 'whatsapp',
         })) as MessageBubbleProps[]),
 
         ...(contactEmailMessages.map((message) => ({
