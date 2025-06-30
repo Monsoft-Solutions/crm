@@ -4,7 +4,7 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { sendWhatsappResponseSchema } from '@meta/schemas/send-whatsapp-response.schema';
+import { sendWhatsappResponseSchema } from '@meta/schemas';
 
 export const sendWhatsapp = (async ({ authToken, fromPhoneId, to, body }) => {
     const { data: axiosRawData, error } = await catchError(
