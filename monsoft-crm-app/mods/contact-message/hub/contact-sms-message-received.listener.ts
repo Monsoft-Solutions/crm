@@ -70,6 +70,7 @@ void listen(
                     id: uuidv4(),
                     contactId,
                     phoneNumber: fromPhoneNumber,
+                    isDefault: 'true',
                 }),
             );
 
