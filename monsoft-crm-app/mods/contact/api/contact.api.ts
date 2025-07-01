@@ -9,6 +9,7 @@ import { createContact } from './create-contact.mutation';
 import { updateContact } from './update-contact.mutation';
 
 // subscriptions
+import { onNewContact } from './new-contact.subscription';
 
 export const contact = endpoints({
     // queries
@@ -20,4 +21,5 @@ export const contact = endpoints({
     updateContact,
 
     // subscriptions
+    onNewContact,
 });
