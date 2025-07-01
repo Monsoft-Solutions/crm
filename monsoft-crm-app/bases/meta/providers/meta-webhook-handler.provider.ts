@@ -8,6 +8,7 @@ import {
     metaEventWebhookBodySchema,
     metaEventWebhookBodyMessagesFieldChangeValueSchema,
     metaEventNewWhatsappMessagesSchema,
+    metaEventWhatsappMessagesStatusUpdateSchema,
 } from '../schemas';
 
 export function metaWebhookHandler(server: express.Express) {
@@ -84,6 +85,25 @@ export function metaWebhookHandler(server: express.Express) {
                             event: 'whatsappMessageReceivedEvent',
                             payload: message,
                         });
+                    }
+                } else {
+                    const messageStatusUpdates =
+                        metaEventWhatsappMessagesStatusUpdateSchema.safeParse(
+                            messagesFieldChangeValue,
+                        ).data;
+
+                    if (messageStatusUpdates) {
+                        const { statuses } = messageStatusUpdates;
+
+                        for (const status of statuses) {
+                            emit({
+                                event: 'whatsappMessageStatusUpdatedEvent',
+                                payload: {
+                                    sid: status.id,
+                                    status: status.status,
+                                },
+                            });
+                        }
                     }
                 }
             }
