@@ -1,15 +1,19 @@
 import { Conf } from '../../types';
 
-import * as appCore from '@app/conf/core';
 import * as emailCore from '../../../email/conf/core';
 import * as twilioCore from '../../../twilio/conf/core';
+import * as metaCore from '../../../meta/conf/core';
 import * as aiCore from '../../../ai/conf/core';
 
+import * as appCore from '@app/conf/core';
+
 const modulesCoreConf = {
-    ...appCore,
     ...emailCore,
     ...twilioCore,
+    ...metaCore,
     ...aiCore,
+
+    ...appCore,
 };
 
 // full app core configuration

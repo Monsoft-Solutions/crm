@@ -24,6 +24,7 @@ export const getAvailableContactChannels = protectedEndpoint
                         brand: {
                             with: {
                                 phoneNumbers: true,
+                                whatsappNumbers: true,
                                 domains: {
                                     with: {
                                         emailAddresses: true,
@@ -43,8 +44,11 @@ export const getAvailableContactChannels = protectedEndpoint
                 brand,
             } = contact;
 
-            const { phoneNumbers: brandPhoneNumbers, domains: brandDomains } =
-                brand;
+            const {
+                domains: brandDomains,
+                phoneNumbers: brandPhoneNumbers,
+                whatsappNumbers: brandWhatsappNumbers,
+            } = brand;
 
             const brandEmailAddresses = brandDomains.flatMap(
                 ({ emailAddresses }) => emailAddresses,
@@ -55,15 +59,15 @@ export const getAvailableContactChannels = protectedEndpoint
                     switch (type) {
                         case 'sms': {
                             return (
-                                contactPhoneNumbers.length > 0 &&
+                                brandPhoneNumbers.length > 0 &&
                                 contactPhoneNumbers.length > 0
                             );
                         }
 
                         case 'whatsapp':
                             return (
-                                contactPhoneNumbers.length > 0 &&
-                                brandPhoneNumbers.length > 0
+                                brandWhatsappNumbers.length > 0 &&
+                                contactPhoneNumbers.length > 0
                             );
 
                         case 'email':

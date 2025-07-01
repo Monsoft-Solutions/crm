@@ -4,7 +4,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { db } from '@db/providers/server';
 
-import { getTwilioClientOrg } from '@twilio/providers';
+import { getCustomConf } from '@conf/providers/server';
 
 import { sendWhatsapp } from '@whatsapp/providers';
 
@@ -13,7 +13,7 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body }) => {
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
             with: {
-                phoneNumbers: true,
+                whatsappNumbers: true,
             },
         }),
     );
@@ -22,21 +22,25 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body }) => {
 
     if (!brand) return Error();
 
-    const { organizationId, phoneNumbers } = brand;
+    const { organizationId, whatsappNumbers } = brand;
 
-    const defaultPhoneNumber = phoneNumbers.at(0)?.phoneNumber;
+    const defaultWhatsappNumber = whatsappNumbers.at(0);
 
-    if (!defaultPhoneNumber) return Error();
+    if (!defaultWhatsappNumber) return Error('NO_DEFAULT_WHATSAPP_NUMBER');
 
-    const { data: client, error: clientError } = await getTwilioClientOrg({
+    const { data: customConf, error: customConfError } = await getCustomConf({
         organizationId,
     });
 
-    if (clientError) return Error();
+    if (customConfError) return Error();
+
+    const { whatsappToken } = customConf;
+
+    if (!whatsappToken) return Error();
 
     const { data: message, error: messageError } = await sendWhatsapp({
-        client,
-        from: defaultPhoneNumber,
+        authToken: whatsappToken,
+        fromPhoneId: defaultWhatsappNumber.phoneId,
         to,
         body,
     });

@@ -15,6 +15,11 @@ export const coreConfigData: InferInsertModel<typeof coreConfTable> = {
     twilioToken: z.string().parse(process.env.MSS_TWILIO_TOKEN),
     twilioFrom: z.string().parse(process.env.MSS_TWILIO_FROM),
 
+    whatsappToken: z.string().parse(process.env.MSS_WHATSAPP_TOKEN),
+    whatsappFromPhoneId: z
+        .string()
+        .parse(process.env.MSS_WHATSAPP_FROM_PHONE_ID),
+
     langfuseBaseUrl: z.string().parse(process.env.LANGFUSE_BASE_URL),
     langfusePublicKey: z.string().parse(process.env.LANGFUSE_PUBLIC_KEY),
     langfuseSecretKey: z.string().parse(process.env.LANGFUSE_SECRET_KEY),

@@ -39,12 +39,12 @@ export function CreateBrandForm({
             name: '',
             phoneNumber: availablePhoneNumbers[0],
             domain: '',
+            whatsappPhoneId: '',
+            whatsappPhoneNumber: '',
         },
     });
 
     const handleSubmit = async (values: CreateBrand) => {
-        console.log(values);
-
         const { data: newBrand, error: newBrandError } =
             await api.brand.createBrand.mutate(values);
 
@@ -100,11 +100,39 @@ export function CreateBrandForm({
                 <div className="flex gap-4">
                     <FormField
                         control={form.control}
+                        name="whatsappPhoneId"
+                        render={({ field }) => (
+                            <FormItem className="grow">
+                                <InputAnimatedLabel
+                                    label="Whatsapp Phone ID"
+                                    {...field}
+                                />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="whatsappPhoneNumber"
+                        render={({ field }) => (
+                            <FormItem className="grow">
+                                <InputAnimatedLabel
+                                    label="Whatsapp Phone Number"
+                                    {...field}
+                                />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className="flex gap-4">
+                    <FormField
+                        control={form.control}
                         name="phoneNumber"
                         render={({ field }) => (
                             <FormItem className="grow">
                                 <FormLabel className="font-medium">
-                                    Phone Number
+                                    SMS Phone Number
                                 </FormLabel>
 
                                 <Select
