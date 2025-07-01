@@ -7,7 +7,7 @@ import { sendMessageToContactSchema } from '../schemas';
 
 import {
     sendSmsToContact,
-    sendAppWhatsappToContact,
+    sendWhatsappToContact,
     sendEmailToContact,
 } from '../providers/server';
 
@@ -51,7 +51,7 @@ export const sendMessageToContact = protectedEndpoint
 
                     case 'whatsapp': {
                         const { data: smsMessage, error } =
-                            await sendAppWhatsappToContact({
+                            await sendWhatsappToContact({
                                 contactId,
                                 body,
                             });

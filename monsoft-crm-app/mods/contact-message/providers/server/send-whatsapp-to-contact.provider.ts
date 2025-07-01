@@ -8,13 +8,15 @@ import { db } from '@db/providers/server';
 import tables from '@db/db';
 import { sendBrandWhatsapp } from '@mods/brand/providers';
 
-export const sendAppWhatsappToContact = (async ({ contactId, body }) => {
+export const sendWhatsappToContact = (async ({ contactId, body }) => {
     // TODO: use whatsapp-specific numbers
     const { data: contact, error: contactError } = await catchError(
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, contactId),
             with: {
-                phoneNumbers: true,
+                phoneNumbers: {
+                    where: (record, { eq }) => eq(record.isDefault, 'true'),
+                },
             },
         }),
     );
