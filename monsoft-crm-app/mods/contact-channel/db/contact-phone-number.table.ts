@@ -23,7 +23,7 @@ export const contactPhoneNumber = table(
         isDefault: isDefaultPhoneNumber('is_default'),
     },
 
-    (t) => [unique().on(t.contactId, t.isDefault).nullsNotDistinct()],
+    (t) => [unique().on(t.contactId, t.isDefault)],
 );
 
 export const contactPhoneNumberRelations = relations(

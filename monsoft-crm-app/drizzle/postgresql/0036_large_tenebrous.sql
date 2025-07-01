@@ -1,0 +1,2 @@
+ALTER TABLE "contact_phone_number" DROP CONSTRAINT "contact_phone_number_contact_id_is_default_unique";--> statement-breakpoint
+ALTER TABLE "contact_phone_number" ADD CONSTRAINT "contact_phone_number_contact_id_is_default_unique" UNIQUE("contact_id","is_default");
