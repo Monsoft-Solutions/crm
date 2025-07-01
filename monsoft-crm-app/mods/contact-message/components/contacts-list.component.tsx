@@ -11,8 +11,8 @@ import { ScrollArea } from '@ui/scroll-area.ui';
 
 import { ContactCard } from './contact-card.component';
 
-import { api } from '@api/providers/web';
 import { CreateContactDialog } from '@mods/contact/components/create-contact-dialog.component';
+
 import {
     Select,
     SelectContent,
@@ -20,6 +20,8 @@ import {
     SelectTrigger,
     SelectValue,
 } from '@shared/ui/select.ui';
+
+import { api, apiClientUtils } from '@api/providers/web';
 
 export function ContactsList({
     brandId,
@@ -70,6 +72,20 @@ export function ContactsList({
     } = api.contact.getContactsIds.useQuery({
         brandId,
     });
+
+    api.contact.onNewContact.useSubscription(
+        {
+            brandId,
+        },
+
+        {
+            async onData() {
+                await apiClientUtils.contact.getContactsIds.invalidate({
+                    brandId,
+                });
+            },
+        },
+    );
 
     if (isLoadingContacts) return;
     if (contactsError) return;
