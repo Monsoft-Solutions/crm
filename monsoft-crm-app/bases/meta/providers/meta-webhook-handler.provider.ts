@@ -5,8 +5,9 @@ import { emit } from '@events/providers';
 import { metaEventWebhookPath } from '../constants';
 
 import {
-    metaEventWebhookBodyMessagesFieldChangeValueSchema,
     metaEventWebhookBodySchema,
+    metaEventWebhookBodyMessagesFieldChangeValueSchema,
+    metaEventNewWhatsappMessagesSchema,
 } from '../schemas';
 
 export function metaWebhookHandler(server: express.Express) {
@@ -47,40 +48,43 @@ export function metaWebhookHandler(server: express.Express) {
 
                 if (!messagesFieldChangeValue) continue;
 
-                const {
-                    messaging_product,
-                    metadata,
-                    contacts,
-                    messages: rawMessages,
-                } = messagesFieldChangeValue;
+                const { messaging_product, metadata } =
+                    messagesFieldChangeValue;
 
                 if (messaging_product !== 'whatsapp') continue;
 
                 const { phone_number_id: toPhoneNumberId } = metadata;
 
-                const messages = rawMessages.map((message) => {
-                    const rawContact = contacts.at(0);
+                const newMessages =
+                    metaEventNewWhatsappMessagesSchema.safeParse(
+                        messagesFieldChangeValue,
+                    ).data;
 
-                    const contactName = rawContact?.profile.name ?? '';
+                if (newMessages) {
+                    const messages = newMessages.messages.map((message) => {
+                        const rawContact = newMessages.contacts.at(0);
 
-                    const {
-                        from,
-                        text: { body },
-                    } = message;
+                        const contactName = rawContact?.profile.name ?? '';
 
-                    return {
-                        contactName,
-                        fromPhoneNumber: from,
-                        toPhoneNumberId,
-                        body,
-                    };
-                });
+                        const {
+                            from,
+                            text: { body },
+                        } = message;
 
-                for (const message of messages) {
-                    emit({
-                        event: 'whatsappMessageReceivedEvent',
-                        payload: message,
+                        return {
+                            contactName,
+                            fromPhoneNumber: from,
+                            toPhoneNumberId,
+                            body,
+                        };
                     });
+
+                    for (const message of messages) {
+                        emit({
+                            event: 'whatsappMessageReceivedEvent',
+                            payload: message,
+                        });
+                    }
                 }
             }
         }

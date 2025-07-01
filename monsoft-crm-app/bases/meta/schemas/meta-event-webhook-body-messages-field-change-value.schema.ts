@@ -1,26 +1,13 @@
 import { z } from 'zod';
 
-export const metaEventWebhookBodyMessagesFieldChangeValueSchema = z.object({
-    messaging_product: z.string(),
+import { metaEventNewWhatsappMessagesSchema } from './meta-event-new-whatsapp-messages.schema';
 
-    metadata: z.object({
-        phone_number_id: z.string(),
-    }),
+export const metaEventWebhookBodyMessagesFieldChangeValueSchema = z
+    .object({
+        messaging_product: z.string(),
 
-    contacts: z.array(
-        z.object({
-            profile: z.object({
-                name: z.string(),
-            }),
+        metadata: z.object({
+            phone_number_id: z.string(),
         }),
-    ),
-
-    messages: z.array(
-        z.object({
-            from: z.string(),
-            text: z.object({
-                body: z.string(),
-            }),
-        }),
-    ),
-});
+    })
+    .and(metaEventNewWhatsappMessagesSchema);
