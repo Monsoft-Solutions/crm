@@ -81,9 +81,17 @@ export function metaWebhookHandler(server: express.Express) {
                     });
 
                     for (const message of messages) {
+                        const fromPhoneNumberWithoutPlusSign =
+                            message.fromPhoneNumber.replace('+', '');
+
+                        const fromPhoneNumber = `+${fromPhoneNumberWithoutPlusSign}`;
+
                         emit({
                             event: 'whatsappMessageReceivedEvent',
-                            payload: message,
+                            payload: {
+                                ...message,
+                                fromPhoneNumber,
+                            },
                         });
                     }
                 } else {
