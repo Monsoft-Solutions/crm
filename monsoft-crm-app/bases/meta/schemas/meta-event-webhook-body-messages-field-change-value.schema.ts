@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 import { metaEventNewWhatsappMessagesSchema } from './meta-event-new-whatsapp-messages.schema';
+import { metaEventWhatsappMessagesStatusUpdateSchema } from './meta-event-whatsapp-messages-status-update.schema';
 
 export const metaEventWebhookBodyMessagesFieldChangeValueSchema = z
     .object({
@@ -10,4 +11,8 @@ export const metaEventWebhookBodyMessagesFieldChangeValueSchema = z
             phone_number_id: z.string(),
         }),
     })
-    .and(metaEventNewWhatsappMessagesSchema);
+    .and(
+        metaEventNewWhatsappMessagesSchema.or(
+            metaEventWhatsappMessagesStatusUpdateSchema,
+        ),
+    );
