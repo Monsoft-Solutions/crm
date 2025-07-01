@@ -75,6 +75,13 @@ void listen(
             );
 
             if (insertContactPhoneNumberError) return;
+
+            emit({
+                event: 'newContact',
+                payload: {
+                    brandId: brand.id,
+                },
+            });
         }
 
         const messageId = uuidv4();
