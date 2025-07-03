@@ -4,11 +4,11 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { db } from '@db/providers/server';
+import { Tx } from '@db/types';
 
 import { contactSmsMessage } from '@db/db';
 
-export const getContactSmsMessages = (async ({ contactId }) => {
+export const getContactSmsMessages = (async ({ contactId, db }) => {
     const { data: smsMessages, error: smsMessagesError } = await catchError(
         db.query.contactSmsMessage.findMany({
             where: (record, { eq }) => eq(record.contactId, contactId),
@@ -19,6 +19,6 @@ export const getContactSmsMessages = (async ({ contactId }) => {
 
     return Success(smsMessages);
 }) satisfies Function<
-    { contactId: string },
+    { contactId: string; db: Tx },
     InferSelectModel<typeof contactSmsMessage>[]
 >;

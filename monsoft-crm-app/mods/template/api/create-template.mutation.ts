@@ -6,8 +6,6 @@ import { z } from 'zod';
 
 import { ensurePermission } from '@guard/providers';
 
-import { db } from '@db/providers/server';
-
 import { catchError } from '@errors/utils/catch-error.util';
 
 import { v4 as uuidv4 } from 'uuid';
@@ -28,6 +26,7 @@ export const createTemplate = protectedEndpoint
                     session: { user },
                 },
                 input: { name },
+                db,
             }) => {
                 // ensure user has permission to create a template
                 ensurePermission({

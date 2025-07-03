@@ -6,8 +6,6 @@ import { z } from 'zod';
 
 import { ensurePermission } from '@guard/providers';
 
-import { db } from '@db/providers/server';
-
 import { and, eq, like } from 'drizzle-orm';
 
 import { userMatcherEnum } from '../enums';
@@ -29,6 +27,7 @@ export const searchTemplates = protectedEndpoint
                     session: { user },
                 },
                 input: { search, creator },
+                db,
             }) => {
                 // if searching for templates from anyone
                 // ensure user has permission to read everyone's templates

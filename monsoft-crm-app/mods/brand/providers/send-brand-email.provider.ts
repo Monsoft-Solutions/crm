@@ -2,11 +2,11 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { db } from '@db/providers/server';
+import { Tx } from '@db/types';
 
 import { sendEmail } from '@email/utils';
 
-export const sendBrandEmail = (async ({ brandId, to, subject, body }) => {
+export const sendBrandEmail = (async ({ brandId, to, subject, body, db }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
@@ -49,6 +49,7 @@ export const sendBrandEmail = (async ({ brandId, to, subject, body }) => {
         to: string;
         subject: string;
         body: string;
+        db: Tx;
     },
     { sid: string }
 >;

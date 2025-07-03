@@ -5,18 +5,23 @@ import { listen } from '@events/providers/listen.provider';
 
 import { getTemplatesStats } from '../providers/server';
 
+import { db as dbProvider } from '@db/providers/server';
+
 // template-created listener
 void listen('templateCreated', async () => {
     // get the templates stats
-    const { data: templatesStats, error: templateStatsError } =
-        await getTemplatesStats();
 
-    if (templateStatsError) {
-        throwAsync('TEMPLATE_CREATED_LISTENER');
+    await dbProvider.transaction(async (db) => {
+        const { data: templatesStats, error: templateStatsError } =
+            await getTemplatesStats({ db });
 
-        return;
-    }
+        if (templateStatsError) {
+            throwAsync('TEMPLATE_CREATED_LISTENER');
 
-    // emit a template-stats-changed event with the updated values
-    emit({ event: 'templateStatsChanged', payload: templatesStats });
+            return;
+        }
+
+        // emit a template-stats-changed event with the updated values
+        emit({ event: 'templateStatsChanged', payload: templatesStats });
+    });
 });

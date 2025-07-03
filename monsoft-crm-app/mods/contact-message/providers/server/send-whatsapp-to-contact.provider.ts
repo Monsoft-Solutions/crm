@@ -4,11 +4,12 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { db } from '@db/providers/server';
+import { Tx } from '@db/types';
+
 import tables from '@db/db';
 import { sendBrandWhatsapp } from '@mods/brand/providers';
 
-export const sendWhatsappToContact = (async ({ contactId, body }) => {
+export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
     // TODO: use whatsapp-specific numbers
     const { data: contact, error: contactError } = await catchError(
         db.query.contact.findFirst({
@@ -34,6 +35,7 @@ export const sendWhatsappToContact = (async ({ contactId, body }) => {
         brandId,
         to: defaultContactPhoneNumber,
         body,
+        db,
     });
 
     if (messageError) return Error();
@@ -60,4 +62,7 @@ export const sendWhatsappToContact = (async ({ contactId, body }) => {
     };
 
     return Success(result);
-}) satisfies Function<{ contactId: string; body: string }, { id: string }>;
+}) satisfies Function<
+    { contactId: string; body: string; db: Tx },
+    { id: string }
+>;

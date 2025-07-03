@@ -6,7 +6,6 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { db } from '@db/providers/server';
 import tables from '@db/db';
 
 import { getTwilioClientOrg } from '@twilio/providers';
@@ -28,6 +27,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 whatsappPhoneId,
                 whatsappPhoneNumber,
             },
+            db,
         }) => {
             const id = uuidv4();
 

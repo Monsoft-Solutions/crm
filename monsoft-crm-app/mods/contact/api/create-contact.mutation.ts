@@ -6,7 +6,6 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { db } from '@db/providers/server';
 import tables from '@db/db';
 
 import { createContactSchema } from '../schemas';
@@ -23,6 +22,7 @@ export const createContact = protectedEndpoint
                     phoneNumber,
                     emailAddress,
                 },
+                db,
             }) => {
                 const contactId = uuidv4();
 
