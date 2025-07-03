@@ -1,6 +1,7 @@
 import { QueryMutationCallback } from '@api/types/server/query-mutation-callback.type';
 
 import { Success, Error } from '@errors/utils';
+import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
@@ -11,9 +12,15 @@ export const queryMutationCallback = <Context, Input, Output>(
     callback: QueryMutationCallback<Context, Input, Output, { db: Tx }>,
 ) => {
     return (async (args: { ctx: Context; input: Input }) => {
-        const { data, error } = await db.transaction(async (db) => {
-            return callback({ ...args, db });
-        });
+        const { data, error } = await catchError(
+            db.transaction(async (db) => {
+                const { data, error } = await callback({ ...args, db });
+
+                if (error) throw error;
+
+                return data;
+            }),
+        );
 
         if (error) return Error(error);
 
