@@ -15,6 +15,39 @@ export const addContactPhoneNumber = protectedEndpoint
     .mutation(
         queryMutationCallback(
             async ({ input: { contactId, phoneNumber }, db }) => {
+                const { data: contact, error: contactError } = await catchError(
+                    db.query.contact.findFirst({
+                        where: (record, { eq }) => eq(record.id, contactId),
+                    }),
+                );
+
+                if (contactError) return Error();
+
+                if (!contact) return Error();
+
+                const {
+                    data: contactPhoneNumbers,
+                    error: contactPhoneNumbersError,
+                } = await catchError(
+                    db.query.contactPhoneNumber.findMany({
+                        where: (record, { eq }) =>
+                            eq(record.contactId, contactId),
+
+                        with: {
+                            contact: true,
+                        },
+                    }),
+                );
+
+                if (contactPhoneNumbersError) return Error();
+
+                for (const contactPhoneNumber of contactPhoneNumbers) {
+                    if (contactPhoneNumber.contact.brandId === contact.brandId)
+                        return Error(
+                            'CONTACT_PHONE_NUMBER_ALREADY_EXISTS_FOR_BRAND',
+                        );
+                }
+
                 const { error: insertContactPhoneNumberError } =
                     await catchError(
                         db.insert(tables.contactPhoneNumber).values({
