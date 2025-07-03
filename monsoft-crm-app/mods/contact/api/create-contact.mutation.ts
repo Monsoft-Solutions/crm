@@ -24,6 +24,52 @@ export const createContact = protectedEndpoint
                 },
                 db,
             }) => {
+                const {
+                    data: contactPhoneNumbers,
+                    error: contactPhoneNumbersError,
+                } = await catchError(
+                    db.query.contactPhoneNumber.findMany({
+                        where: (record, { eq }) =>
+                            eq(record.contactId, contactId),
+
+                        with: {
+                            contact: true,
+                        },
+                    }),
+                );
+
+                if (contactPhoneNumbersError) return Error();
+
+                for (const contactPhoneNumber of contactPhoneNumbers) {
+                    if (contactPhoneNumber.contact.brandId === brandId)
+                        return Error(
+                            'CONTACT_PHONE_NUMBER_ALREADY_EXISTS_FOR_BRAND',
+                        );
+                }
+
+                const {
+                    data: contactEmailAddresses,
+                    error: contactEmailAddressesError,
+                } = await catchError(
+                    db.query.contactEmailAddress.findMany({
+                        where: (record, { eq }) =>
+                            eq(record.contactId, contactId),
+
+                        with: {
+                            contact: true,
+                        },
+                    }),
+                );
+
+                if (contactEmailAddressesError) return Error();
+
+                for (const contactEmailAddress of contactEmailAddresses) {
+                    if (contactEmailAddress.contact.brandId === brandId)
+                        return Error(
+                            'CONTACT_EMAIL_ADDRESS_ALREADY_EXISTS_FOR_BRAND',
+                        );
+                }
+
                 const contactId = uuidv4();
 
                 const contact = { id: contactId, brandId, firstName, lastName };
