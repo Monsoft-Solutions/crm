@@ -13,15 +13,13 @@ export const removeContactPhoneNumber = protectedEndpoint
     .input(z.object({ phoneNumberId: z.string() }))
     .mutation(
         queryMutationCallback(async ({ input: { phoneNumberId }, db }) => {
-            const { error } = await catchError(
-                db.transaction(async (tx) => {
-                    await tx
-                        .delete(tables.contactPhoneNumber)
-                        .where(eq(tables.contactPhoneNumber.id, phoneNumberId));
-                }),
+            const { error: deleteContactPhoneNumberError } = await catchError(
+                db
+                    .delete(tables.contactPhoneNumber)
+                    .where(eq(tables.contactPhoneNumber.id, phoneNumberId)),
             );
 
-            if (error) return Error();
+            if (deleteContactPhoneNumberError) return Error();
 
             return Success();
         }),

@@ -28,26 +28,34 @@ export const createContact = protectedEndpoint
 
                 const contact = { id: contactId, brandId, firstName, lastName };
 
-                const { error } = await catchError(
-                    db.transaction(async (tx) => {
-                        await tx.insert(tables.contact).values(contact);
+                const { error: insertContactError } = await catchError(
+                    db.insert(tables.contact).values(contact),
+                );
 
-                        await tx.insert(tables.contactPhoneNumber).values({
+                if (insertContactError) return Error();
+
+                const { error: insertContactPhoneNumberError } =
+                    await catchError(
+                        db.insert(tables.contactPhoneNumber).values({
                             id: uuidv4(),
                             contactId,
                             phoneNumber,
                             isDefault: 'true',
-                        });
+                        }),
+                    );
 
-                        await tx.insert(tables.contactEmailAddress).values({
+                if (insertContactPhoneNumberError) return Error();
+
+                const { error: insertContactEmailAddressError } =
+                    await catchError(
+                        db.insert(tables.contactEmailAddress).values({
                             id: uuidv4(),
                             contactId,
                             emailAddress,
-                        });
-                    }),
-                );
+                        }),
+                    );
 
-                if (error) return Error();
+                if (insertContactEmailAddressError) return Error();
 
                 return Success();
             },

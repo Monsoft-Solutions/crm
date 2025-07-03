@@ -13,20 +13,22 @@ export const setDefaultContactPhoneNumber = protectedEndpoint
     .input(z.object({ phoneNumberId: z.string() }))
     .mutation(
         queryMutationCallback(async ({ input: { phoneNumberId }, db }) => {
-            const { error } = await catchError(
-                db.transaction(async (tx) => {
-                    const contactPhoneNumber =
-                        await tx.query.contactPhoneNumber.findFirst({
-                            where: (record, { eq }) =>
-                                eq(record.id, phoneNumberId),
-                        });
+            const { data: contactPhoneNumber, error: contactPhoneNumberError } =
+                await catchError(
+                    db.query.contactPhoneNumber.findFirst({
+                        where: (record, { eq }) => eq(record.id, phoneNumberId),
+                    }),
+                );
 
-                    if (!contactPhoneNumber)
-                        throw 'CONTACT_PHONE_NUMBER_NOT_FOUND';
+            if (contactPhoneNumberError) return Error();
 
-                    const { contactId } = contactPhoneNumber;
+            if (!contactPhoneNumber) return Error();
 
-                    await tx
+            const { contactId } = contactPhoneNumber;
+
+            const { error: updateNonDefaultContactPhoneNumbersError } =
+                await catchError(
+                    db
                         .update(tables.contactPhoneNumber)
                         .set({
                             isDefault: null,
@@ -39,18 +41,22 @@ export const setDefaultContactPhoneNumber = protectedEndpoint
                                 ),
                                 ne(tables.contactPhoneNumber.id, phoneNumberId),
                             ),
-                        );
+                        ),
+                );
 
-                    await tx
+            if (updateNonDefaultContactPhoneNumbersError) return Error();
+
+            const { error: updateDefaultContactPhoneNumberError } =
+                await catchError(
+                    db
                         .update(tables.contactPhoneNumber)
                         .set({
                             isDefault: 'true',
                         })
-                        .where(eq(tables.contactPhoneNumber.id, phoneNumberId));
-                }),
-            );
+                        .where(eq(tables.contactPhoneNumber.id, phoneNumberId)),
+                );
 
-            if (error) return Error();
+            if (updateDefaultContactPhoneNumberError) return Error();
 
             return Success();
         }),

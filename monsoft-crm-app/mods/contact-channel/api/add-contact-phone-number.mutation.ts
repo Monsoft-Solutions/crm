@@ -15,17 +15,16 @@ export const addContactPhoneNumber = protectedEndpoint
     .mutation(
         queryMutationCallback(
             async ({ input: { contactId, phoneNumber }, db }) => {
-                const { error } = await catchError(
-                    db.transaction(async (tx) => {
-                        await tx.insert(tables.contactPhoneNumber).values({
+                const { error: insertContactPhoneNumberError } =
+                    await catchError(
+                        db.insert(tables.contactPhoneNumber).values({
                             id: uuidv4(),
                             contactId,
                             phoneNumber,
-                        });
-                    }),
-                );
+                        }),
+                    );
 
-                if (error) return Error();
+                if (insertContactPhoneNumberError) return Error();
 
                 return Success();
             },

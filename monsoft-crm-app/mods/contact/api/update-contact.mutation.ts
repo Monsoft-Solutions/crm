@@ -19,16 +19,14 @@ export const updateContact = protectedEndpoint
             async ({ input: { id, firstName, lastName }, db }) => {
                 const contact = { id, firstName, lastName };
 
-                const { error } = await catchError(
-                    db.transaction(async (tx) => {
-                        await tx
-                            .update(tables.contact)
-                            .set(contact)
-                            .where(eq(tables.contact.id, id));
-                    }),
+                const { error: updateContactError } = await catchError(
+                    db
+                        .update(tables.contact)
+                        .set(contact)
+                        .where(eq(tables.contact.id, id)),
                 );
 
-                if (error) return Error();
+                if (updateContactError) return Error();
 
                 return Success();
             },
