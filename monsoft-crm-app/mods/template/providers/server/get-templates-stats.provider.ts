@@ -3,16 +3,16 @@ import { Error, Success } from '@errors/utils';
 
 import { count, eq } from 'drizzle-orm';
 
-import { db } from '@db/providers/server';
-
 import { user } from '@auth/db';
 
 import { templateTable } from '@app/db';
 import { TemplatesStats } from '@mods/template/schemas';
 import { catchError } from '@errors/utils/catch-error.util';
 
+import { Tx } from '@db/types';
+
 // get the templates stats
-export const getTemplatesStats = (async () => {
+export const getTemplatesStats = (async ({ db }) => {
     // get the number of draft templates
     const { data: draftTemplatesQueryData, error: draftTemplatesQueryError } =
         await catchError(
@@ -72,4 +72,4 @@ export const getTemplatesStats = (async () => {
 
     // return the templates stats
     return Success(templateStats);
-}) satisfies Function<void, TemplatesStats>;
+}) satisfies Function<{ db: Tx }, TemplatesStats>;

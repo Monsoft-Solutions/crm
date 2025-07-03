@@ -6,8 +6,6 @@ import { z } from 'zod';
 
 import { ensurePermission } from '@guard/providers';
 
-import { db } from '@db/providers/server';
-
 import { emit } from '@events/providers';
 
 import { templateTable } from '../db';
@@ -28,6 +26,7 @@ export const deleteTemplate = protectedEndpoint
                 },
 
                 input: { id },
+                db,
             }) => {
                 const { data: template, error: readError } = await catchError(
                     db.query.templateTable.findFirst({

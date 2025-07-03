@@ -10,10 +10,11 @@ import { getContactMessages as getContactMessagesProvider } from '../providers/s
 export const getContactMessages = protectedEndpoint
     .input(z.object({ contactId: z.string() }))
     .query(
-        queryMutationCallback(async ({ input: { contactId } }) => {
+        queryMutationCallback(async ({ input: { contactId }, db }) => {
             const { data: contactMessages, error: contactMessagesError } =
                 await getContactMessagesProvider({
                     contactId,
+                    db,
                 });
 
             if (contactMessagesError) return Error();

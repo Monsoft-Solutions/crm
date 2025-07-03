@@ -6,7 +6,6 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { db } from '@db/providers/server';
 import tables from '@db/db';
 
 import { addContactEmailAddressSchema } from '../schemas/add-contact-email-address.schema';
@@ -15,7 +14,7 @@ export const addContactEmailAddress = protectedEndpoint
     .input(addContactEmailAddressSchema)
     .mutation(
         queryMutationCallback(
-            async ({ input: { contactId, emailAddress } }) => {
+            async ({ input: { contactId, emailAddress }, db }) => {
                 const id = uuidv4();
 
                 const contactEmailAddress = {

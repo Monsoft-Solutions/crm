@@ -7,10 +7,10 @@ import { getTemplatesStats as getTemplatesStatsProvider } from '../providers/ser
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
 export const getTemplatesStats = publicEndpoint.query(
-    queryMutationCallback(async () => {
+    queryMutationCallback(async ({ db }) => {
         // get the templates stats
         const { data: templateStatsData, error: templateStatsError } =
-            await getTemplatesStatsProvider();
+            await getTemplatesStatsProvider({ db });
 
         if (templateStatsError) return Error();
 

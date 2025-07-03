@@ -2,13 +2,13 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { db } from '@db/providers/server';
+import { Tx } from '@db/types';
 
 import { sendSms } from '@sms/providers';
 
 import { getTwilioClientOrg } from '@twilio/providers';
 
-export const sendBrandSms = (async ({ brandId, to, body }) => {
+export const sendBrandSms = (async ({ brandId, to, body, db }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
@@ -51,6 +51,6 @@ export const sendBrandSms = (async ({ brandId, to, body }) => {
 
     return Success(result);
 }) satisfies Function<
-    { brandId: string; to: string; body: string },
+    { brandId: string; to: string; body: string; db: Tx },
     { sid: string }
 >;

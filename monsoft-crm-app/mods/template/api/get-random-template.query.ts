@@ -2,8 +2,6 @@ import { Error, Success } from '@errors/utils';
 
 import { protectedEndpoint } from '@api/providers/server';
 
-import { db } from '@db/providers/server';
-
 import { desc, sql } from 'drizzle-orm';
 
 import { getCoreConf, getCustomConf } from '@conf/providers/server';
@@ -21,6 +19,7 @@ export const getRandomTemplate = protectedEndpoint.query(
                     user: { organizationId },
                 },
             },
+            db,
         }) => {
             // get the custom configuration for the organization
             const customConfWithError = await getCustomConf({ organizationId });

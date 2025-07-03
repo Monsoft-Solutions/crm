@@ -6,8 +6,6 @@ import { z } from 'zod';
 
 import { ensurePermission } from '@guard/providers';
 
-import { db } from '@db/providers/server';
-
 import { emit } from '@events/providers';
 
 import { templateTable } from '../db';
@@ -29,6 +27,7 @@ export const updateTemplateStatus = protectedEndpoint
                     session: { user },
                 },
                 input: { id, status },
+                db,
             }) => {
                 // get the template
                 const { data: template, error: readError } = await catchError(

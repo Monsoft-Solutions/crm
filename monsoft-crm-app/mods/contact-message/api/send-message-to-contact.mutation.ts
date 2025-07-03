@@ -17,7 +17,7 @@ export const sendMessageToContact = protectedEndpoint
     .input(sendMessageToContactSchema)
     .mutation(
         queryMutationCallback(
-            async ({ input: { contactId, channelType, body } }) => {
+            async ({ input: { contactId, channelType, body }, db }) => {
                 let id: string;
 
                 switch (channelType) {
@@ -26,6 +26,7 @@ export const sendMessageToContact = protectedEndpoint
                             await sendSmsToContact({
                                 contactId,
                                 body,
+                                db,
                             });
 
                         if (error) return Error();
@@ -40,6 +41,7 @@ export const sendMessageToContact = protectedEndpoint
                                 contactId,
                                 subject: '',
                                 body,
+                                db,
                             });
 
                         if (error) return Error();
@@ -54,6 +56,7 @@ export const sendMessageToContact = protectedEndpoint
                             await sendWhatsappToContact({
                                 contactId,
                                 body,
+                                db,
                             });
 
                         if (error) return Error();

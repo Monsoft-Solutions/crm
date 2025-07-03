@@ -6,7 +6,6 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
-import { db } from '@db/providers/server';
 import { eq } from 'drizzle-orm';
 
 import tables from '@db/db';
@@ -17,7 +16,7 @@ export const updateContact = protectedEndpoint
     .input(updateContactSchema.extend({ id: z.string() }))
     .mutation(
         queryMutationCallback(
-            async ({ input: { id, firstName, lastName } }) => {
+            async ({ input: { id, firstName, lastName }, db }) => {
                 const contact = { id, firstName, lastName };
 
                 const { error } = await catchError(
