@@ -7,3 +7,4 @@ export * from './get-contact-messages.provider';
 export * from './mark-all-contact-inbound-email-messages-as-read.provider';
 export * from './mark-all-contact-inbound-sms-messages-as-read.provider';
 export * from './mark-all-contact-inbound-whatsapp-messages-as-read.provider';
+export * from './mark-all-contact-inbound-messages-as-read.provider';
