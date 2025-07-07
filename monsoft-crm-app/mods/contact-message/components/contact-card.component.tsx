@@ -57,6 +57,11 @@ export const ContactCard = forwardRef<
                 )}
                 onClick={() => {
                     onSelect?.();
+                    void api.contactMessage.markAllContactInboundMessagesAsRead.mutate(
+                        {
+                            contactId,
+                        },
+                    );
                 }}
                 data-testid="contact-card"
             >
