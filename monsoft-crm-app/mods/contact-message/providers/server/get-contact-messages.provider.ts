@@ -36,7 +36,7 @@ export const getContactMessages = (async ({ contactId, db }) => {
 
     if (contactEmailMessagesError) return Error();
 
-    const smsMessages = [
+    const messages = [
         ...(contactSmsMessages.map((message) => ({
             ...message,
             channelType: 'sms',
@@ -53,5 +53,7 @@ export const getContactMessages = (async ({ contactId, db }) => {
         })) as MessageBubbleProps[]),
     ];
 
-    return Success(smsMessages);
+    const messagesSorted = messages.sort((a, b) => b.createdAt - a.createdAt);
+
+    return Success(messagesSorted);
 }) satisfies Function<{ contactId: string; db: Tx }, MessageBubbleProps[]>;
