@@ -31,7 +31,7 @@ export const addContactPhoneNumber = protectedEndpoint
                 } = await catchError(
                     db.query.contactPhoneNumber.findMany({
                         where: (record, { eq }) =>
-                            eq(record.contactId, contactId),
+                            eq(record.phoneNumber, phoneNumber),
 
                         with: {
                             contact: true,
