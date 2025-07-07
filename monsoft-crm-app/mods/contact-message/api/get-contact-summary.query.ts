@@ -6,6 +6,8 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
+import { getContactLastEvent } from '@mods/contact/providers/get-contact-last-event.provider';
+
 export const getContactSummary = protectedEndpoint
     .input(z.object({ contactId: z.string() }))
     .query(
@@ -35,24 +37,15 @@ export const getContactSummary = protectedEndpoint
                 (smsMessage) => smsMessage.status !== 'read',
             ).length;
 
-            const lastSmsMessage = smsMessages.at(-1);
+            const { data: lastEvent, error: lastEventError } =
+                await getContactLastEvent({ db, contactId });
 
-            const lastMessage = lastSmsMessage
-                ? {
-                      direction: lastSmsMessage.direction,
-                      body: lastSmsMessage.body,
-                  }
-                : null;
-
-            const lastActivityTimestamp = lastSmsMessage
-                ? lastSmsMessage.createdAt
-                : rawContact.createdAt;
+            if (lastEventError) return Error();
 
             const summary = {
                 contact,
-                lastMessage,
                 numUnreadMessages,
-                lastActivityTimestamp,
+                lastEvent,
             };
 
             return Success(summary);

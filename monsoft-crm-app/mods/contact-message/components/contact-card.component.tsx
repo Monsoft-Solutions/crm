@@ -1,17 +1,15 @@
 import { forwardRef } from 'react';
 
+import { intToOneDigitStr } from '@shared/utils/number';
 import { timeToAgo } from '@shared/utils/tmp';
 
 import { cn } from '@css/utils';
 
 import { Check } from 'lucide-react';
-
 import { Badge } from '@ui/badge.ui';
-
 import { ContactAvatar } from '@mods/contact/components';
 
 import { api } from '@api/providers/web';
-import { intToOneDigitStr } from '@shared/utils/number';
 
 export const ContactCard = forwardRef<
     HTMLDivElement,
@@ -44,21 +42,9 @@ export const ContactCard = forwardRef<
         if (isLoadingContactCardSummary) return;
         if (contactCardSummaryError) return;
 
-        const {
-            lastMessage,
-            lastActivityTimestamp,
-            numUnreadMessages,
-            contact,
-        } = contactCardSummary;
+        const { contact, numUnreadMessages, lastEvent } = contactCardSummary;
 
         const contactName = `${contact.firstName} ${contact.lastName}`;
-
-        // Get the last message content preview (similar to WhatsApp)
-        const lastMessageContent = lastMessage?.body ?? '';
-        const truncatedMessageContent =
-            lastMessageContent.length > 40
-                ? lastMessageContent.substring(0, 40) + '...'
-                : lastMessageContent;
 
         return (
             <div
@@ -99,7 +85,7 @@ export const ContactCard = forwardRef<
                                 {/* Last message time in WhatsApp style */}
                                 {
                                     <span className="min-w-[40px] text-right text-xs text-gray-500">
-                                        {timeToAgo(lastActivityTimestamp)}
+                                        {timeToAgo(lastEvent.timestamp)}
                                     </span>
                                 }
                             </div>
@@ -108,19 +94,25 @@ export const ContactCard = forwardRef<
                         {/* Bottom row: Message preview and badges */}
                         <div className="mt-0.5 flex w-full items-center justify-between">
                             {/* Last message preview with truncation */}
-                            <div className="flex max-w-[60%] min-w-0 items-center gap-1">
-                                {/* Check mark for outbound messages (like WhatsApp) */}
-                                {lastMessage &&
-                                    lastMessage.direction === 'outbound' && (
+                            {lastEvent.type === 'message' && (
+                                <div className="flex max-w-[60%] min-w-0 items-center gap-1">
+                                    {/* Check mark for outbound messages (like WhatsApp) */}
+                                    {lastEvent.message.direction ===
+                                        'outbound' && (
                                         <Check className="size-3.5 flex-shrink-0 stroke-blue-500" />
                                     )}
 
-                                {/* Message preview */}
-                                <p className="truncate text-xs text-gray-500">
-                                    {truncatedMessageContent ||
-                                        'No messages yet'}
-                                </p>
-                            </div>
+                                    {/* Message preview */}
+                                    <p className="truncate text-xs text-gray-500">
+                                        {lastEvent.message.body.length > 40
+                                            ? lastEvent.message.body.substring(
+                                                  0,
+                                                  40,
+                                              ) + '...'
+                                            : lastEvent.message.body}
+                                    </p>
+                                </div>
+                            )}
 
                             <div className="ml-1 flex flex-shrink-0 items-center gap-1">
                                 {/* Unread count badge in WhatsApp style */}

@@ -2,19 +2,14 @@ import { relations } from 'drizzle-orm';
 
 import { table, text, timestamp } from '@db/sql';
 
-import {
-    brand,
-    contactPhoneNumber,
-    contactEmailAddress,
-    contactSmsMessage,
-} from '@db/db';
+import tables from '@db/db';
 
 export const contact = table('contact', {
     id: text('id').primaryKey(),
 
     brandId: text('brand_id')
         .notNull()
-        .references(() => brand.id, { onDelete: 'cascade' }),
+        .references(() => tables.brand.id, { onDelete: 'cascade' }),
 
     firstName: text('first_name').notNull(),
 
@@ -24,14 +19,16 @@ export const contact = table('contact', {
 });
 
 export const contactTableRelations = relations(contact, ({ one, many }) => ({
-    brand: one(brand, {
+    brand: one(tables.brand, {
         fields: [contact.brandId],
-        references: [brand.id],
+        references: [tables.brand.id],
     }),
 
-    phoneNumbers: many(contactPhoneNumber),
+    emailAddresses: many(tables.contactEmailAddress),
 
-    emailAddresses: many(contactEmailAddress),
+    phoneNumbers: many(tables.contactPhoneNumber),
 
-    smsMessages: many(contactSmsMessage),
+    smsMessages: many(tables.contactSmsMessage),
+
+    whatsappMessages: many(tables.contactWhatsappMessage),
 }));
