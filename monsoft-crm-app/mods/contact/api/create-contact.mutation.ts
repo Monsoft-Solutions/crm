@@ -30,7 +30,7 @@ export const createContact = protectedEndpoint
                 } = await catchError(
                     db.query.contactPhoneNumber.findMany({
                         where: (record, { eq }) =>
-                            eq(record.contactId, contactId),
+                            eq(record.phoneNumber, phoneNumber),
 
                         with: {
                             contact: true,
@@ -53,7 +53,7 @@ export const createContact = protectedEndpoint
                 } = await catchError(
                     db.query.contactEmailAddress.findMany({
                         where: (record, { eq }) =>
-                            eq(record.contactId, contactId),
+                            eq(record.emailAddress, emailAddress),
 
                         with: {
                             contact: true,
