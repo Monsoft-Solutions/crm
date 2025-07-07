@@ -33,8 +33,10 @@ export const getContactSummary = protectedEndpoint
                 lastName,
             };
 
-            const numUnreadMessages = smsMessages.filter(
-                (smsMessage) => smsMessage.status !== 'read',
+            const numUnreadInboundMessages = smsMessages.filter(
+                (smsMessage) =>
+                    smsMessage.direction === 'inbound' &&
+                    smsMessage.status !== 'read',
             ).length;
 
             const { data: lastEvent, error: lastEventError } =
@@ -44,7 +46,7 @@ export const getContactSummary = protectedEndpoint
 
             const summary = {
                 contact,
-                numUnreadMessages,
+                numUnreadInboundMessages,
                 lastEvent,
             };
 

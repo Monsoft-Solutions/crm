@@ -42,7 +42,8 @@ export const ContactCard = forwardRef<
         if (isLoadingContactCardSummary) return;
         if (contactCardSummaryError) return;
 
-        const { contact, numUnreadMessages, lastEvent } = contactCardSummary;
+        const { contact, numUnreadInboundMessages, lastEvent } =
+            contactCardSummary;
 
         const contactName = `${contact.firstName} ${contact.lastName}`;
 
@@ -57,6 +58,11 @@ export const ContactCard = forwardRef<
                 )}
                 onClick={() => {
                     onSelect?.();
+                    void api.contactMessage.markAllContactInboundMessagesAsRead.mutate(
+                        {
+                            contactId,
+                        },
+                    );
                 }}
                 data-testid="contact-card"
             >
@@ -116,9 +122,11 @@ export const ContactCard = forwardRef<
 
                             <div className="ml-1 flex flex-shrink-0 items-center gap-1">
                                 {/* Unread count badge in WhatsApp style */}
-                                {numUnreadMessages > 0 && (
+                                {numUnreadInboundMessages > 0 && (
                                     <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-green-500 p-0 text-xs text-white">
-                                        {intToOneDigitStr(numUnreadMessages)}
+                                        {intToOneDigitStr(
+                                            numUnreadInboundMessages,
+                                        )}
                                     </Badge>
                                 )}
                             </div>
