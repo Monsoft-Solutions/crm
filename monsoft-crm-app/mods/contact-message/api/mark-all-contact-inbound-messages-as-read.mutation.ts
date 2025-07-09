@@ -20,8 +20,6 @@ export const markAllContactInboundMessagesAsRead = protectedEndpoint
 
             if (error) return Error();
 
-            console.log('all messages marked as read for contact', contactId);
-
             return Success();
         }),
     );

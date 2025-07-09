@@ -10,8 +10,6 @@ export function twilioEventWebhookHandler(server: express.Express) {
     server.use(twilioEventWebhookPath, express.json());
 
     server.post(twilioEventWebhookPath, (req, res) => {
-        console.log(req.body);
-
         const parsedBody = twilioEventWebhookBodySchema.parse(req.body);
 
         for (const event of parsedBody) {
