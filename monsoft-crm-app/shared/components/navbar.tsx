@@ -8,6 +8,7 @@ import {
     Power,
     Settings,
     MessageCircle,
+    Package,
 } from 'lucide-react';
 
 import { useIsMobile } from '../hooks/is-mobile';
@@ -105,6 +106,12 @@ export function Navbar() {
             title: 'Chat',
             url: '/chat',
             icon: MessageCircle,
+        },
+
+        {
+            title: 'Products',
+            url: '/products',
+            icon: Package,
         },
     ];
 
