@@ -1,3 +1,5 @@
+import { relations } from 'drizzle-orm';
+
 import { table, text, enumType } from '@db/sql';
 
 import tables from '@db/db';
@@ -28,3 +30,10 @@ export const assistant = table('assistant', {
 
     prompt: text('prompt').notNull(),
 });
+
+export const assistantRelations = relations(assistant, ({ one }) => ({
+    brand: one(tables.brand, {
+        fields: [assistant.brandId],
+        references: [tables.brand.id],
+    }),
+}));
