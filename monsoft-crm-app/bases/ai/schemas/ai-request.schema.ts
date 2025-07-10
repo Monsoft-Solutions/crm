@@ -2,18 +2,10 @@ import { z } from 'zod';
 
 import { agentToolEnum } from '../enums/agent-tool.enum';
 
-import {
-    aiModelProviderEnum,
-    anthropicModelEnum,
-    openaiModelEnum,
-} from '../enums';
+import { aiModelEnum } from '../enums';
 
 export const aiRequestSchema = z.object({
-    provider: aiModelProviderEnum,
-
-    model: anthropicModelEnum
-        .or(openaiModelEnum)
-        .default('claude-3-7-sonnet-latest'),
+    model: aiModelEnum.default('claude-3-7-sonnet-latest'),
 
     maxTokens: z.number().describe('The max tokens of the model').optional(),
 
