@@ -1,19 +1,14 @@
 import { relations } from 'drizzle-orm';
 import { table, text } from '@db/sql';
 
-import {
-    organization,
-    brandDomain,
-    brandPhoneNumber,
-    brandWhatsappNumber,
-} from '@db/db';
+import tables from '@db/db';
 
 export const brand = table('brand', {
     id: text('id').primaryKey(),
 
     organizationId: text('organization_id')
         .notNull()
-        .references(() => organization.id, { onDelete: 'cascade' }),
+        .references(() => tables.organization.id, { onDelete: 'cascade' }),
 
     name: text('name').notNull(),
 });
@@ -22,10 +17,12 @@ export const brandRelations = relations(
     brand,
 
     ({ many }) => ({
-        phoneNumbers: many(brandPhoneNumber),
+        phoneNumbers: many(tables.brandPhoneNumber),
 
-        whatsappNumbers: many(brandWhatsappNumber),
+        whatsappNumbers: many(tables.brandWhatsappNumber),
 
-        domains: many(brandDomain),
+        domains: many(tables.brandDomain),
+
+        contacts: many(tables.contact),
     }),
 );
