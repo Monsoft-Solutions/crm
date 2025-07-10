@@ -1,4 +1,4 @@
-import { streamText as aiSdkStreamText, Message, smoothStream } from 'ai';
+import { streamText as aiSdkStreamText, Message, smoothStream, Tool } from 'ai';
 
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
@@ -9,21 +9,7 @@ import { thinkTool } from '../tools/think.tool';
 
 import { aiModelToSdkModel } from '@ai/utils';
 
-export const streamText = (async ({
-    prompt,
-    messages,
-    modelParams,
-}:
-    | {
-          prompt: string;
-          messages?: undefined;
-          modelParams: AiRequest;
-      }
-    | {
-          prompt?: undefined;
-          messages: Message[];
-          modelParams: AiRequest;
-      }) => {
+export const streamText = (async ({ prompt, messages, modelParams, tools }) => {
     const { data: model, error: modelError } = await aiModelToSdkModel(
         modelParams.model,
     );
@@ -39,9 +25,9 @@ export const streamText = (async ({
         prompt,
         messages: cleanMessages,
         tools: {
+            ...tools,
             think: thinkTool,
         },
-        experimental_activeTools: modelParams.activeTools,
         maxSteps: 10,
         maxRetries: 3,
 
@@ -57,7 +43,18 @@ export const streamText = (async ({
     const reader = textStream.getReader();
     return Success(reader);
 }) satisfies Function<
-    | { prompt: string; messages?: undefined; modelParams: AiRequest }
-    | { prompt?: undefined; messages: Message[]; modelParams: AiRequest },
+    {
+        modelParams: AiRequest;
+        tools?: Record<string, Tool>;
+    } & (
+        | {
+              prompt: string;
+              messages?: undefined;
+          }
+        | {
+              prompt?: undefined;
+              messages: Message[];
+          }
+    ),
     ReadableStreamDefaultReader<string>
 >;

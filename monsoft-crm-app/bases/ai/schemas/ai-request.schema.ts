@@ -1,7 +1,5 @@
 import { z } from 'zod';
 
-import { agentToolEnum } from '../enums/agent-tool.enum';
-
 import { aiModelEnum } from '../enums';
 
 export const aiRequestSchema = z.object({
@@ -24,12 +22,6 @@ export const aiRequestSchema = z.object({
         .optional(),
 
     stream: z.boolean().describe('Whether to stream the response').optional(),
-
-    activeTools: z
-        .array(agentToolEnum)
-        .describe('The names of the tools available for the model')
-        .optional()
-        .default([]),
 
     userId: z
         .string()
