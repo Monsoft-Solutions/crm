@@ -1,0 +1,1 @@
+ALTER TABLE "core_conf" ADD COLUMN "openai_api_key" text;
