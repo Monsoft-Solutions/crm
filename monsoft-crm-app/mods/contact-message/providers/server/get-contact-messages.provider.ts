@@ -9,12 +9,13 @@ import { getContactSmsMessages } from './get-contact-sms-messages.provider';
 import { getContactWhatsappMessages } from './get-contact-whatsapp-messages.provider';
 import { getContactEmailMessages } from './get-contact-email-messages.provider';
 
-export const getContactMessages = (async ({ db, contactId, from }) => {
+export const getContactMessages = (async ({ db, contactId, from, to }) => {
     const { data: contactSmsMessages, error: contactSmsMessagesError } =
         await getContactSmsMessages({
             contactId,
             db,
             from,
+            to,
         });
 
     if (contactSmsMessagesError) return Error();
@@ -26,6 +27,7 @@ export const getContactMessages = (async ({ db, contactId, from }) => {
         contactId,
         db,
         from,
+        to,
     });
 
     if (contactWhatsappMessagesError) return Error();
@@ -35,6 +37,7 @@ export const getContactMessages = (async ({ db, contactId, from }) => {
             contactId,
             db,
             from,
+            to,
         });
 
     if (contactEmailMessagesError) return Error();
@@ -60,6 +63,6 @@ export const getContactMessages = (async ({ db, contactId, from }) => {
 
     return Success(messagesSorted);
 }) satisfies Function<
-    { contactId: string; db: Tx; from?: number },
+    { contactId: string; db: Tx; from?: number; to?: number },
     MessageBubbleProps[]
 >;
