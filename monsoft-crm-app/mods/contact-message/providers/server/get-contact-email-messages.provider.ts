@@ -8,13 +8,14 @@ import { Tx } from '@db/types';
 
 import { contactEmail } from '@db/db';
 
-export const getContactEmailMessages = (async ({ db, contactId, from }) => {
+export const getContactEmailMessages = (async ({ db, contactId, from, to }) => {
     const { data: contactEmails, error: contactEmailsError } = await catchError(
         db.query.contactEmail.findMany({
-            where: (record, { eq, gte }) =>
+            where: (record, { eq, gte, lt }) =>
                 and(
                     eq(record.contactId, contactId),
                     from ? gte(record.createdAt, from) : undefined,
+                    to ? lt(record.createdAt, to) : undefined,
                 ),
 
             orderBy: asc(contactEmail.createdAt),
@@ -25,6 +26,6 @@ export const getContactEmailMessages = (async ({ db, contactId, from }) => {
 
     return Success(contactEmails);
 }) satisfies Function<
-    { contactId: string; db: Tx; from?: number },
+    { contactId: string; db: Tx; from?: number; to?: number },
     InferSelectModel<typeof contactEmail>[]
 >;
