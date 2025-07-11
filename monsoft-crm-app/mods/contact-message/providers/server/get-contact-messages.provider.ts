@@ -59,7 +59,7 @@ export const getContactMessages = (async ({ db, contactId, from, to }) => {
         })) as MessageBubbleProps[]),
     ];
 
-    const messagesSorted = messages.sort((a, b) => b.createdAt - a.createdAt);
+    const messagesSorted = messages.sort((a, b) => a.createdAt - b.createdAt);
 
     return Success(messagesSorted);
 }) satisfies Function<
