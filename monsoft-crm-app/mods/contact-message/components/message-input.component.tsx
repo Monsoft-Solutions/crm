@@ -42,6 +42,24 @@ export function MessageInput({
 }) {
     const [newMessage, setNewMessage] = useState('');
 
+    useEffect(() => {
+        const handleSetNewMessageEvent = (event: CustomEvent<string>) => {
+            setNewMessage(event.detail);
+        };
+
+        window.addEventListener(
+            'setNewMessage',
+            handleSetNewMessageEvent as EventListener,
+        );
+
+        return () => {
+            window.removeEventListener(
+                'setNewMessage',
+                handleSetNewMessageEvent as EventListener,
+            );
+        };
+    }, []);
+
     const [attachments, setAttachments] = useState<File[]>([]);
 
     const [isSending, setIsSending] = useState(false);
