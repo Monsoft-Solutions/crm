@@ -7,6 +7,7 @@ import { getReplySuggestions } from './get-reply-suggestions.query';
 import { askAssistant } from './ask-assistant.mutation';
 
 // subscriptions
+import { onReplySuggestionsCreated } from './reply-suggestions-created.subscription';
 
 export const assistant = endpoints({
     // queries
@@ -16,4 +17,5 @@ export const assistant = endpoints({
     askAssistant,
 
     // subscriptions
+    onReplySuggestionsCreated,
 });
