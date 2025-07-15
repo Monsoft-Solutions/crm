@@ -27,9 +27,7 @@ export const ConversationFactsSchema = z.object({
         .array(z.string())
         .optional()
         .nullable()
-        .describe(
-            'Explicit requests made by the contact, such as asking for availability or pricing.',
-        ),
+        .describe('Explicit requests made by the contact.'),
 });
 
 export type ConversationFacts = z.infer<typeof ConversationFactsSchema>;
