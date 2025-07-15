@@ -330,6 +330,13 @@
       "when": 1752593800439,
       "tag": "0046_slippery_omega_flight",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1752597549281,
+      "tag": "0047_ambitious_the_hand",
+      "breakpoints": true
     }
   ]
 }
