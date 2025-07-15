@@ -24,5 +24,7 @@ export const brandRelations = relations(
         domains: many(tables.brandDomain),
 
         contacts: many(tables.contact),
+
+        assistants: many(tables.assistant),
     }),
 );
