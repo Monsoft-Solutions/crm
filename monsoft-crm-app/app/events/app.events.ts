@@ -3,3 +3,4 @@
 export * from '@mods/template/events';
 export * from '@mods/contact/events';
 export * from '@mods/contact-message/events';
+export * from '@mods/assistant/events';
