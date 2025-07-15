@@ -2,6 +2,7 @@ import { endpoints } from '@api/providers/server';
 
 // queries
 import { getReplySuggestions } from './get-reply-suggestions.query';
+import { getConversationFacts } from './get-conversation-facts.query';
 
 // mutations
 import { askAssistant } from './ask-assistant.mutation';
@@ -13,6 +14,7 @@ import { onReplySuggestionsCreated } from './reply-suggestions-created.subscript
 export const assistant = endpoints({
     // queries
     getReplySuggestions,
+    getConversationFacts,
 
     // mutations
     askAssistant,
