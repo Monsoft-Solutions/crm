@@ -20,6 +20,8 @@ export const getConversationFacts = protectedEndpoint
                         where: (record, { eq }) =>
                             eq(record.contactId, contactId),
 
+                        orderBy: (record, { desc }) => desc(record.createdAt),
+
                         with: {
                             topicsDiscussed: true,
                             questionsByContact: true,
