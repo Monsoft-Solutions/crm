@@ -1,0 +1,1 @@
+ALTER TABLE "conversation_facts" ADD COLUMN "created_at" bigint DEFAULT (EXTRACT(EPOCH FROM now()) * 1000)::bigint NOT NULL;
