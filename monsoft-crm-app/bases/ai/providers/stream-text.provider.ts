@@ -31,6 +31,8 @@ export const streamText = (async ({ prompt, messages, modelParams, tools }) => {
         maxSteps: 10,
         maxRetries: 3,
 
+        temperature: modelParams.temperature,
+
         experimental_transform: smoothStream(),
 
         onStepFinish: (step) => {
