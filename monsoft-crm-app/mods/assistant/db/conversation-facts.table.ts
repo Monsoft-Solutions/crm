@@ -20,5 +20,7 @@ export const conversationFactsRelations = relations(
         }),
 
         topicsDiscussed: many(tables.topicDiscussed),
+
+        questionsByContact: many(tables.questionByContact),
     }),
 );
