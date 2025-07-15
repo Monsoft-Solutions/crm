@@ -63,7 +63,7 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
     if (conversationFactsError)
         return Error('EXTRACT_CONVERSATION_FACTS_ERROR');
 
-    const { topicsDiscussed } = conversationFacts;
+    const { topicsDiscussed, questionsByContact } = conversationFacts;
 
     const conversationFactsId = uuidv4();
 
@@ -90,6 +90,21 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
 
         if (topicsDiscussedInsertError)
             return Error('TOPICS_DISCUSSED_INSERT_ERROR');
+    }
+
+    if (questionsByContact) {
+        const { error: questionsByContactInsertError } = await catchError(
+            db.insert(tables.questionByContact).values(
+                questionsByContact.map((question) => ({
+                    id: uuidv4(),
+                    conversationFactsId,
+                    question,
+                })),
+            ),
+        );
+
+        if (questionsByContactInsertError)
+            return Error('QUESTIONS_BY_CONTACT_INSERT_ERROR');
     }
 
     return Success(conversationFacts);
