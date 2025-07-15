@@ -1,11 +1,7 @@
-import { ZodSchema } from 'zod';
+import { ZodType } from 'zod';
 
-import {
-    generateObject as aiSdkGenerateObject,
-    GenerateObjectResult,
-} from 'ai';
+import { generateObject as aiSdkGenerateObject, Message, Tool } from 'ai';
 
-import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
@@ -13,16 +9,25 @@ import { AiRequest } from '../schemas';
 
 import { aiModelToSdkModel } from '@ai/utils';
 
-export const generateObject = (async ({
+export const generateObject = async <T>({
     prompt,
+    messages,
     modelParams,
     outputSchema,
 }: {
-    prompt: string;
-    messages?: undefined;
     modelParams: AiRequest;
-    outputSchema: ZodSchema;
-}) => {
+    tools?: Record<string, Tool>;
+    outputSchema: ZodType<T>;
+} & (
+    | {
+          prompt: string;
+          messages?: undefined;
+      }
+    | {
+          prompt?: undefined;
+          messages: Message[];
+      }
+)) => {
     const { data: model, error: modelError } = await aiModelToSdkModel(
         modelParams.model,
     );
@@ -33,6 +38,7 @@ export const generateObject = (async ({
         aiSdkGenerateObject({
             model,
             prompt,
+            messages,
             schema: outputSchema,
         }),
     );
@@ -40,11 +46,4 @@ export const generateObject = (async ({
     if (error) return Error('AI_GENERATE_OBJECT_FAILED');
 
     return Success(result.object);
-}) satisfies Function<
-    {
-        prompt: string;
-        modelParams: AiRequest;
-        outputSchema: ZodSchema;
-    },
-    GenerateObjectResult<unknown>['object']
->;
+};
