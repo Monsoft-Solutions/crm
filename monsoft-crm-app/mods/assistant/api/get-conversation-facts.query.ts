@@ -22,6 +22,7 @@ export const getConversationFacts = protectedEndpoint
 
                         with: {
                             topicsDiscussed: true,
+                            questionsByContact: true,
                         },
                     }),
                 );
