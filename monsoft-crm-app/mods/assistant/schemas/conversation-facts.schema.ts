@@ -9,13 +9,6 @@ export const ConversationFactsSchema = z.object({
             'A list of key topics discussed during the conversation, such as products or pricing.',
         ),
 
-    importantDetails: z
-        .array(z.string())
-        .optional()
-        .describe(
-            "Important details mentioned, such as personal information. For each detail, provide a topic and a brief description of the detail if necessary. For example, instead of providing just the date of birth, it should be: 'Date Of Birth: ...'",
-        ),
-
     questionsByContact: z
         .array(z.string())
         .optional()
