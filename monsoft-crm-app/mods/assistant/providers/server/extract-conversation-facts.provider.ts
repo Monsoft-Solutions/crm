@@ -63,8 +63,6 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
     if (conversationFactsError)
         return Error('EXTRACT_CONVERSATION_FACTS_ERROR');
 
-    const { topicsDiscussed, questionsByContact } = conversationFacts;
-
     const conversationFactsId = uuidv4();
 
     const { error: conversationFactsInsertError } = await catchError(
@@ -77,36 +75,6 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
 
     if (conversationFactsInsertError)
         return Error('CONVERSATION_FACTS_INSERT_ERROR');
-
-    if (topicsDiscussed) {
-        const { error: topicsDiscussedInsertError } = await catchError(
-            db.insert(tables.topicDiscussed).values(
-                topicsDiscussed.map((topic) => ({
-                    id: uuidv4(),
-                    conversationFactsId,
-                    topic,
-                })),
-            ),
-        );
-
-        if (topicsDiscussedInsertError)
-            return Error('TOPICS_DISCUSSED_INSERT_ERROR');
-    }
-
-    if (questionsByContact) {
-        const { error: questionsByContactInsertError } = await catchError(
-            db.insert(tables.questionByContact).values(
-                questionsByContact.map((question) => ({
-                    id: uuidv4(),
-                    conversationFactsId,
-                    question,
-                })),
-            ),
-        );
-
-        if (questionsByContactInsertError)
-            return Error('QUESTIONS_BY_CONTACT_INSERT_ERROR');
-    }
 
     return Success(conversationFacts);
 }) satisfies Function<{ db: Tx; contactId: string }, ConversationFacts>;
