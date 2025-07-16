@@ -17,14 +17,10 @@ export const conversationFacts = table('conversation_facts', {
 export const conversationFactsRelations = relations(
     conversationFacts,
 
-    ({ one, many }) => ({
+    ({ one }) => ({
         contact: one(tables.contact, {
             fields: [conversationFacts.contactId],
             references: [tables.contact.id],
         }),
-
-        topicsDiscussed: many(tables.topicDiscussed),
-
-        questionsByContact: many(tables.questionByContact),
     }),
 );

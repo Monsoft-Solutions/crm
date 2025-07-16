@@ -351,6 +351,13 @@
       "when": 1752665652407,
       "tag": "0049_worried_ikaris",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1752667644372,
+      "tag": "0050_vengeful_lester",
+      "breakpoints": true
     }
   ]
 }
