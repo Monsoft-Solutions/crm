@@ -71,6 +71,7 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
         db.insert(tables.conversationFacts).values({
             id: conversationFactsId,
             contactId,
+            facts: conversationFacts,
         }),
     );
 

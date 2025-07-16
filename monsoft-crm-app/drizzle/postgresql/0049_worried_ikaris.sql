@@ -1,0 +1,1 @@
+ALTER TABLE "conversation_facts" ADD COLUMN "facts" jsonb NOT NULL;
