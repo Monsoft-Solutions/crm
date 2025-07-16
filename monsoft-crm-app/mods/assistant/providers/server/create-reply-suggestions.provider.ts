@@ -9,13 +9,14 @@ import { Tx } from '@db/types';
 
 import { generateText } from '@ai/providers';
 
-import { getContactCompressedChatTool } from '@mods/assistant/tools';
-
 import tables from '@db/db';
 
 import { emit } from '@events/providers/emit.provider';
 
-import { getContactMessage } from '@mods/contact-message/providers/server';
+import {
+    getContactCompressedChat,
+    getContactMessage,
+} from '@mods/contact-message/providers/server';
 
 export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: message, error: messageError } = await getContactMessage({
@@ -53,6 +54,19 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     const { tone, prompt: assistantPrompt, model } = assistant;
 
+    const { data: compressedChat, error: compressedChatError } =
+        await getContactCompressedChat({
+            db,
+            contactId: message.contactId,
+        });
+
+    if (compressedChatError) return Error('COMPRESSED_CHAT_ERROR');
+
+    const compressedChatWithoutCurrentMessage: typeof compressedChat = {
+        summaries: compressedChat.summaries,
+        messages: compressedChat.messages.filter(({ id }) => id !== messageId),
+    };
+
     const fullPrompt = `
     You are a assistant who replies to a message from a contact, using ${tone} tone, following these instructions:
     ${assistantPrompt}
@@ -62,6 +76,9 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     And this information about the contact:
     ${JSON.stringify(contact, null, 2)}
+
+    And this information about the conversation, consisting of a) a list of summaries of older messages and b) a list of the latest messages (non-summarized):
+    ${JSON.stringify(compressedChatWithoutCurrentMessage, null, 2)}
 
     Please respond with the reply. Do NOT explain the reasonning behind the reply. Keep it as short as possible, using direct and concise answer.
     `;
@@ -89,10 +106,6 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
                 model,
                 temperature: 0.5,
                 callerName: 'assistant',
-            },
-
-            tools: {
-                getContactCompressedChatTool,
             },
         });
 
