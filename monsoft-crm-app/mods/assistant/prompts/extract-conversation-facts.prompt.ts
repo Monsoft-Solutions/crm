@@ -3,7 +3,7 @@ import { Success } from '@errors/utils';
 
 export const extractConversationFactsPrompt = (() => {
     const systemPrompt = `
-    You are a helpful assistant that extracts conversation facts from the message history.
+    You are a helpful assistant that extracts conversation facts from a list of messages.
     `;
 
     return Success(systemPrompt);
