@@ -17,6 +17,8 @@ import { getContactMessages } from '@mods/contact-message/providers/server';
 
 import tables from '@db/db';
 
+import { extractConversationFactsPrompt } from '../../prompts';
+
 export const extractConversationFacts = (async ({ db, contactId }) => {
     const { data: contactMessages, error: contactMessagesError } =
         await getContactMessages({
@@ -35,9 +37,7 @@ export const extractConversationFacts = (async ({ db, contactId }) => {
         content: body,
     }));
 
-    const systemPrompt = `
-    You are a helpful assistant that extracts conversation facts from a list of messages.
-    `;
+    const { data: systemPrompt } = extractConversationFactsPrompt();
 
     const { data: conversationFacts, error: conversationFactsError } =
         await generateObject({
