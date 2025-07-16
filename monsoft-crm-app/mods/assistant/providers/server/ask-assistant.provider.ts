@@ -1,3 +1,5 @@
+import { v4 as uuidv4 } from 'uuid';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
@@ -10,6 +12,8 @@ import { Tx } from '@db/types';
 import tables from '@db/db';
 
 import { generateText } from '@ai/providers';
+
+import { askAssistantPrompt } from '../../prompts';
 
 import {
     getBrandContactsTool,
@@ -33,21 +37,32 @@ export const askAssistant = (async ({ db, assistantId, prompt }) => {
 
     const { model, brand, tone, prompt: assistantPrompt } = assistant;
 
-    const fullPrompt = `
-    You are a assistant who answers in ${tone} tone and follows these instructions:
-    ${assistantPrompt}
+    const { data: systemPrompt, error: systemPromptError } = askAssistantPrompt(
+        {
+            assistant: {
+                brand,
+                tone,
+                instructions: assistantPrompt,
+            },
+        },
+    );
 
-    Taking into account this information about the brand you work for:
-    ${JSON.stringify(brand, null, 2)}
-
-    Please respond only with the answer to the prompt, no additional text.
-
-    You are given a prompt and you need to respond to it.
-    The prompt is: ${prompt}
-    `;
+    if (systemPromptError) return Error('ASK_ASSISTANT_PROMPT');
 
     const { data: response, error: responseError } = await generateText({
-        prompt: fullPrompt,
+        messages: [
+            {
+                id: uuidv4(),
+                role: 'system',
+                content: systemPrompt,
+            },
+
+            {
+                id: uuidv4(),
+                role: 'user',
+                content: prompt,
+            },
+        ],
 
         modelParams: {
             model,
