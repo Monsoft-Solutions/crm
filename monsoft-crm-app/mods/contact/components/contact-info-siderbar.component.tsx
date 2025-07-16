@@ -2,6 +2,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/tabs.ui';
 
 import { ContactData } from './contact-data.component';
 import { ContactOverview } from './contact-overview.component';
+import { ConversationInsights } from './conversation-insights.component';
 
 import {
     Sidebar,
@@ -98,8 +99,11 @@ export function ContactInfoSidebar({ contactId }: { contactId: string }) {
                                 value="AI"
                                 className="m-0 border-0 p-0"
                             >
-                                {/* TODO: add conversation analysis component */}
-                                <div className="p-4">Conversation Analysis</div>
+                                <div className="p-4">
+                                    <ConversationInsights
+                                        contactId={contactId}
+                                    />
+                                </div>
                             </TabsContent>
                         </div>
                     </Tabs>
