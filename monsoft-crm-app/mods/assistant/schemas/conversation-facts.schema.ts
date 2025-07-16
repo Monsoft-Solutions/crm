@@ -4,6 +4,7 @@ export const ConversationFactsSchema = z.object({
     topicsDiscussed: z
         .array(z.string())
         .optional()
+        .nullable()
         .describe(
             'A list of key topics discussed during the conversation, such as products or pricing.',
         ),
