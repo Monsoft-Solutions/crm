@@ -18,6 +18,8 @@ import {
     getContactMessage,
 } from '@mods/contact-message/providers/server';
 
+import { createReplySuggestionsPrompt } from '../../prompts';
+
 export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: message, error: messageError } = await getContactMessage({
         db,
@@ -67,21 +69,14 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
         messages: compressedChat.messages.filter(({ id }) => id !== messageId),
     };
 
-    const fullPrompt = `
-    You are a assistant who replies to a message from a contact, using ${tone} tone, following these instructions:
-    ${assistantPrompt}
+    const { data: systemPrompt, error: systemPromptError } =
+        createReplySuggestionsPrompt({
+            assistant: { brand, tone, instructions: assistantPrompt },
+            contact,
+            compressedChatWithoutCurrentMessage,
+        });
 
-    Taking into account this information about the brand you work for:
-    ${JSON.stringify(brand, null, 2)}
-
-    And this information about the contact:
-    ${JSON.stringify(contact, null, 2)}
-
-    And this information about the conversation, consisting of a) a list of summaries of older messages and b) a list of the latest messages (non-summarized):
-    ${JSON.stringify(compressedChatWithoutCurrentMessage, null, 2)}
-
-    Please respond with the reply. Do NOT explain the reasonning behind the reply. Keep it as short as possible, using direct and concise answer.
-    `;
+    if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');
 
     const replySuggestions = [];
 
@@ -92,7 +87,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
                 {
                     id: uuidv4(),
                     role: 'system',
-                    content: fullPrompt,
+                    content: systemPrompt,
                 },
 
                 {
