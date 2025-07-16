@@ -7,6 +7,7 @@ export {
     char,
     varchar,
     text,
+    jsonb as json,
 } from 'drizzle-orm/pg-core';
 
 import { bigint } from 'drizzle-orm/pg-core';
