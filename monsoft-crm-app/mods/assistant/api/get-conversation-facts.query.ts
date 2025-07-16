@@ -6,6 +6,8 @@ import { catchError } from '@errors/utils/catch-error.util';
 import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
+import { ConversationFactsSchema } from '../schemas';
+
 export const getConversationFacts = protectedEndpoint
     .input(
         z.object({
@@ -21,11 +23,6 @@ export const getConversationFacts = protectedEndpoint
                             eq(record.contactId, contactId),
 
                         orderBy: (record, { desc }) => desc(record.createdAt),
-
-                        with: {
-                            topicsDiscussed: true,
-                            questionsByContact: true,
-                        },
                     }),
                 );
 
@@ -33,6 +30,15 @@ export const getConversationFacts = protectedEndpoint
 
             if (!conversationFacts) return Success(undefined);
 
-            return Success(conversationFacts);
+            const parsingFacts = ConversationFactsSchema.safeParse(
+                conversationFacts.facts,
+            );
+
+            if (!parsingFacts.success)
+                return Error('INVALID_CONVERSATION_FACTS');
+
+            const parsedFacts = parsingFacts.data;
+
+            return Success(parsedFacts);
         }),
     );
