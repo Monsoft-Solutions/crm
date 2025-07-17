@@ -358,6 +358,13 @@
       "when": 1752667644372,
       "tag": "0050_vengeful_lester",
       "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1752749473950,
+      "tag": "0051_short_titanium_man",
+      "breakpoints": true
     }
   ]
 }

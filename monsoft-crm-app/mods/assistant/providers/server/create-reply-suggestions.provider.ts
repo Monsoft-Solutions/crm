@@ -54,7 +54,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (!assistant) return Error('BRAND_ASSISTANT_NOT_FOUND');
 
-    const { tone, prompt: assistantPrompt, model } = assistant;
+    const { tone, instructions, model } = assistant;
 
     const { data: compressedChat, error: compressedChatError } =
         await getContactCompressedChat({
@@ -71,7 +71,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     const { data: systemPrompt, error: systemPromptError } =
         createReplySuggestionsPrompt({
-            assistant: { brand, tone, instructions: assistantPrompt },
+            assistant: { brand, tone, instructions },
             contact,
             compressedChatWithoutCurrentMessage,
         });

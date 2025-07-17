@@ -28,7 +28,7 @@ export const assistant = table('assistant', {
 
     tone: assistantTone('tone').notNull(),
 
-    prompt: text('prompt').notNull(),
+    instructions: text('instructions').notNull(),
 });
 
 export const assistantRelations = relations(assistant, ({ one }) => ({

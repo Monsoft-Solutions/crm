@@ -1,0 +1,1 @@
+ALTER TABLE "assistant" RENAME COLUMN "prompt" TO "instructions";

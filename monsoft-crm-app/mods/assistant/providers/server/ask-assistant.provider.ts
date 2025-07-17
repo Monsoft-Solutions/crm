@@ -35,14 +35,14 @@ export const askAssistant = (async ({ db, assistantId, prompt }) => {
 
     if (!assistant) return Error('ASSISTANT_NOT_FOUND');
 
-    const { model, brand, tone, prompt: assistantPrompt } = assistant;
+    const { model, brand, tone, instructions } = assistant;
 
     const { data: systemPrompt, error: systemPromptError } = askAssistantPrompt(
         {
             assistant: {
                 brand,
                 tone,
-                instructions: assistantPrompt,
+                instructions,
             },
         },
     );
