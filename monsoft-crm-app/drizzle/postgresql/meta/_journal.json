@@ -365,6 +365,13 @@
       "when": 1752749473950,
       "tag": "0051_short_titanium_man",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1752749565845,
+      "tag": "0052_classy_speed_demon",
+      "breakpoints": true
     }
   ]
 }
