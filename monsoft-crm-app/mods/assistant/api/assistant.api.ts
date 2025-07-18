@@ -9,6 +9,7 @@ import { getAssistant } from './get-assistant.query';
 // mutations
 import { askAssistant } from './ask-assistant.mutation';
 import { extractConversationFacts } from './extract-conversation-facts.mutation';
+import { createAssistant } from './create-assistant.mutation';
 
 // subscriptions
 import { onReplySuggestionsCreated } from './reply-suggestions-created.subscription';
@@ -23,6 +24,7 @@ export const assistant = endpoints({
     // mutations
     askAssistant,
     extractConversationFacts,
+    createAssistant,
 
     // subscriptions
     onReplySuggestionsCreated,
