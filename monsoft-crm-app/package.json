@@ -26,7 +26,7 @@
         "db:create"    : "cd bases/db && tsx scripts/db-create.ts",
         "db:generate"  : "npx drizzle-kit generate --config=bases/db/drizzle.config.ts",
         "db:migrate"   : "npx drizzle-kit migrate  --config=bases/db/drizzle.config.ts",
-        "db:seed"      : "npm run add:type && tsx bases/seed/main.ts && npm run remove:type",
+        "db:seed"      : "cd bases/seed && tsx main.ts",
         "db:prepare"   : "cd bases/db && tsx scripts/db-prepare.script.ts",
         "db:ensure"    : "cd bases/db && tsx scripts/db-ensure.script.ts",
 
