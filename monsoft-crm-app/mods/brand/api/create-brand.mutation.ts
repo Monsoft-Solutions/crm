@@ -26,6 +26,10 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 domain,
                 whatsappPhoneId,
                 whatsappPhoneNumber,
+                description,
+                industry,
+                companySize,
+                foundedYear,
             },
             db,
         }) => {
@@ -49,6 +53,10 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                     id,
                     organizationId,
                     name,
+                    description,
+                    industry,
+                    companySize,
+                    foundedYear,
                 }),
             );
 
