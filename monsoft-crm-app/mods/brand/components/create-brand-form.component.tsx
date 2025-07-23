@@ -24,6 +24,8 @@ import {
     createBrandSchema,
 } from '@mods/brand/schemas/create-brand.schema';
 
+import { industryEnum, companySizeEnum } from '@mods/brand/enums';
+
 import { api } from '@api/providers/web';
 
 export function CreateBrandForm({
@@ -41,6 +43,10 @@ export function CreateBrandForm({
             domain: '',
             whatsappPhoneId: '',
             whatsappPhoneNumber: '',
+            description: '',
+            industry: industryEnum.options.at(0),
+            companySize: companySizeEnum.options.at(0),
+            foundedYear: 2000,
         },
     });
 
@@ -120,6 +126,111 @@ export function CreateBrandForm({
                                     label="Whatsapp Phone Number"
                                     {...field}
                                 />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                {/* Brand Description */}
+                <FormField
+                    control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem className="grow">
+                            <InputAnimatedLabel
+                                label="Brand Description (optional)"
+                                {...field}
+                            />
+                        </FormItem>
+                    )}
+                />
+
+                <div className="flex gap-4">
+                    {/* Founded Year */}
+                    <FormField
+                        control={form.control}
+                        name="foundedYear"
+                        render={({ field }) => (
+                            <FormItem className="grow">
+                                <InputAnimatedLabel
+                                    label="Founded Year"
+                                    type="number"
+                                    {...field}
+                                    onChange={(e) => {
+                                        const value = Number(e.target.value);
+                                        field.onChange(value);
+                                    }}
+                                />
+                            </FormItem>
+                        )}
+                    />
+                </div>
+
+                <div className="flex gap-4">
+                    {/* Industry */}
+                    <FormField
+                        control={form.control}
+                        name="industry"
+                        render={({ field }) => (
+                            <FormItem className="grow">
+                                <FormLabel className="font-medium">
+                                    Industry
+                                </FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl className="mb-0">
+                                        <SelectTrigger className="rounded-md">
+                                            <SelectValue placeholder="Select Industry" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {industryEnum.options.map(
+                                            (industry) => (
+                                                <SelectItem
+                                                    key={industry}
+                                                    value={industry}
+                                                >
+                                                    {industry.replace(
+                                                        /_/g,
+                                                        ' ',
+                                                    )}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+
+                    {/* Company Size */}
+                    <FormField
+                        control={form.control}
+                        name="companySize"
+                        render={({ field }) => (
+                            <FormItem className="grow">
+                                <FormLabel className="font-medium">
+                                    Company Size
+                                </FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                >
+                                    <FormControl className="mb-0">
+                                        <SelectTrigger className="rounded-md">
+                                            <SelectValue placeholder="Select Company Size" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {companySizeEnum.options.map((size) => (
+                                            <SelectItem key={size} value={size}>
+                                                {size}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
                             </FormItem>
                         )}
                     />
