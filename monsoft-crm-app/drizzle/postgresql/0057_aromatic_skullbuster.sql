@@ -1,0 +1,2 @@
+ALTER TABLE "brand" ADD COLUMN "brand_market_id" text NOT NULL;--> statement-breakpoint
+ALTER TABLE "brand" ADD CONSTRAINT "brand_brand_market_id_brand_market_id_fk" FOREIGN KEY ("brand_market_id") REFERENCES "public"."brand_market"("id") ON DELETE cascade ON UPDATE no action;

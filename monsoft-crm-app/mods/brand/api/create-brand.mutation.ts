@@ -36,6 +36,10 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 languagePreferences,
                 voiceGuidelines,
                 prohibitedContent,
+                keyProducts,
+                differentiators,
+                painPoints,
+                targetSegments,
             },
             db,
         }) => {
@@ -70,6 +74,20 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
 
             if (insertBrandVoiceError) return Error();
 
+            const brandMarketId = uuidv4();
+
+            const { error: insertBrandMarketError } = await catchError(
+                db.insert(tables.brandMarket).values({
+                    id: brandMarketId,
+                    keyProducts,
+                    differentiators,
+                    painPoints,
+                    targetSegments,
+                }),
+            );
+
+            if (insertBrandMarketError) return Error();
+
             const { error: insertBrandError } = await catchError(
                 db.insert(tables.brand).values({
                     id,
@@ -80,6 +98,7 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                     companySize,
                     foundedYear,
                     brandVoiceId,
+                    brandMarketId,
                 }),
             );
 

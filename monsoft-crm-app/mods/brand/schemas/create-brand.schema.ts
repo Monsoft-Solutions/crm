@@ -20,6 +20,11 @@ export const createBrandSchema = z.object({
     languagePreferences: z.string().optional(),
     voiceGuidelines: z.string().optional(),
     prohibitedContent: z.string().optional(),
+
+    keyProducts: z.string().optional(),
+    differentiators: z.string().optional(),
+    painPoints: z.string().optional(),
+    targetSegments: z.string().optional(),
 });
 
 export type CreateBrand = z.infer<typeof createBrandSchema>;

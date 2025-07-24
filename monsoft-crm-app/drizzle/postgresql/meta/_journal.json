@@ -400,6 +400,13 @@
       "when": 1753368102299,
       "tag": "0056_tearful_magneto",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1753368252917,
+      "tag": "0057_aromatic_skullbuster",
+      "breakpoints": true
     }
   ]
 }

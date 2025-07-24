@@ -37,6 +37,10 @@ export const brand = table('brand', {
     brandVoiceId: text('brand_voice_id')
         .notNull()
         .references(() => tables.brandVoice.id, { onDelete: 'cascade' }),
+
+    brandMarketId: text('brand_market_id')
+        .notNull()
+        .references(() => tables.brandMarket.id, { onDelete: 'cascade' }),
 });
 
 export const brandRelations = relations(
@@ -56,6 +60,11 @@ export const brandRelations = relations(
         brandVoice: one(tables.brandVoice, {
             fields: [brand.brandVoiceId],
             references: [tables.brandVoice.id],
+        }),
+
+        brandMarket: one(tables.brandMarket, {
+            fields: [brand.brandMarketId],
+            references: [tables.brandMarket.id],
         }),
     }),
 );
