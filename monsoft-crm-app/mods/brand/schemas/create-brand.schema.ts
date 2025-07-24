@@ -13,6 +13,13 @@ export const createBrandSchema = z.object({
     industry: industryEnum,
     companySize: companySizeEnum,
     foundedYear: z.number(),
+
+    coreValues: z.string().optional(),
+    personalityTraits: z.string().optional(),
+    communicationStyle: z.string().optional(),
+    languagePreferences: z.string().optional(),
+    voiceGuidelines: z.string().optional(),
+    prohibitedContent: z.string().optional(),
 });
 
 export type CreateBrand = z.infer<typeof createBrandSchema>;

@@ -33,12 +33,16 @@ export const brand = table('brand', {
 
     // Year the company was founded
     foundedYear: int('founded_year').notNull(),
+
+    brandVoiceId: text('brand_voice_id')
+        .notNull()
+        .references(() => tables.brandVoice.id, { onDelete: 'cascade' }),
 });
 
 export const brandRelations = relations(
     brand,
 
-    ({ many }) => ({
+    ({ many, one }) => ({
         phoneNumbers: many(tables.brandPhoneNumber),
 
         whatsappNumbers: many(tables.brandWhatsappNumber),
@@ -48,5 +52,10 @@ export const brandRelations = relations(
         contacts: many(tables.contact),
 
         assistants: many(tables.assistant),
+
+        brandVoice: one(tables.brandVoice, {
+            fields: [brand.brandVoiceId],
+            references: [tables.brandVoice.id],
+        }),
     }),
 );
