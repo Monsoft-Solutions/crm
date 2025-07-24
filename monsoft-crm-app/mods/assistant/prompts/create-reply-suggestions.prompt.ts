@@ -32,6 +32,14 @@ export const createReplySuggestionsPrompt = (({
             brand: {
                 id: string;
                 name: string;
+                brandVoice: {
+                    coreValues: string | null;
+                    personalityTraits: string | null;
+                    communicationStyle: string | null;
+                    languagePreferences: string | null;
+                    voiceGuidelines: string | null;
+                    prohibitedContent: string | null;
+                };
             };
             tone: string;
             instructions: string;

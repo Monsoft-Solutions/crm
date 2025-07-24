@@ -35,6 +35,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
             with: {
                 brand: {
                     with: {
+                        brandVoice: true,
                         assistants: true,
                     },
                 },
