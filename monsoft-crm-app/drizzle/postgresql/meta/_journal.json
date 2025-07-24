@@ -393,6 +393,13 @@
       "when": 1753353743607,
       "tag": "0055_chubby_diamondback",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1753368102299,
+      "tag": "0056_tearful_magneto",
+      "breakpoints": true
     }
   ]
 }

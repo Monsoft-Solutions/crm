@@ -4,3 +4,4 @@ export * from './brand-whatsapp-number.table';
 export * from './brand-domain.table';
 export * from './brand-email-address.table';
 export * from './brand-voice.table';
+export * from './brand-market.table';
