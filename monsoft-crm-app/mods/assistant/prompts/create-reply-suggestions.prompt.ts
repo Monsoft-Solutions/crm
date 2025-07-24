@@ -40,6 +40,12 @@ export const createReplySuggestionsPrompt = (({
                     voiceGuidelines: string | null;
                     prohibitedContent: string | null;
                 };
+                brandMarket: {
+                    keyProducts: string | null;
+                    differentiators: string | null;
+                    painPoints: string | null;
+                    targetSegments: string | null;
+                };
             };
             tone: string;
             instructions: string;
