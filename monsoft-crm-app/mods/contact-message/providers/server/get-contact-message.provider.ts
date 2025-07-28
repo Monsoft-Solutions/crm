@@ -3,6 +3,7 @@ import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
+import { ContactChannelType } from '@mods/contact-channel/enums';
 
 export const getContactMessage = (async ({ db, messageId }) => {
     const { data: whatsappMessage, error: whatsappMessageError } =
@@ -19,6 +20,7 @@ export const getContactMessage = (async ({ db, messageId }) => {
             id: whatsappMessage.id,
             contactId: whatsappMessage.contactId,
             body: whatsappMessage.body,
+            channelType: 'whatsapp',
         });
 
     const { data: smsMessage, error: smsMessageError } = await catchError(
@@ -34,6 +36,7 @@ export const getContactMessage = (async ({ db, messageId }) => {
             id: smsMessage.id,
             contactId: smsMessage.contactId,
             body: smsMessage.body,
+            channelType: 'sms',
         });
 
     const { data: emailMessage, error: emailMessageError } = await catchError(
@@ -49,6 +52,7 @@ export const getContactMessage = (async ({ db, messageId }) => {
             id: emailMessage.id,
             contactId: emailMessage.contactId,
             body: emailMessage.body,
+            channelType: 'email',
         });
 
     return Error('MESSAGE_NOT_FOUND');
@@ -57,5 +61,6 @@ export const getContactMessage = (async ({ db, messageId }) => {
     {
         id: string;
         body: string;
+        channelType: ContactChannelType;
     }
 >;
