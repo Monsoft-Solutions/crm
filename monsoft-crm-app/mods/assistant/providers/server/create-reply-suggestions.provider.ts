@@ -20,6 +20,7 @@ import {
 
 import { createReplySuggestionsPrompt } from '../../prompts';
 
+import { sendMessageToContact } from '@mods/contact-message/providers/server';
 import { CertaintyLevel } from '@mods/assistant/enums';
 
 export const createReplySuggestions = (async ({ db, messageId }) => {
@@ -132,12 +133,25 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (insertReplySuggestionsError) return Error();
 
-    emit({
-        event: 'replySuggestionsCreated',
-        payload: {
-            messageId,
-        },
-    });
+    const highCertaintyReplySuggestion = replySuggestions.find(
+        ({ certaintyLevel }) => certaintyLevel === 'high',
+    );
+
+    if (highCertaintyReplySuggestion) {
+        await sendMessageToContact({
+            db,
+            contactId: message.contactId,
+            channelType: message.channelType,
+            body: highCertaintyReplySuggestion.content,
+        });
+    } else {
+        emit({
+            event: 'replySuggestionsCreated',
+            payload: {
+                messageId,
+            },
+        });
+    }
 
     return Success();
 }) satisfies Function<{ db: Tx; messageId: string }, string[]>;
