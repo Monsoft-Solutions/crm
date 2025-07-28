@@ -421,6 +421,13 @@
       "when": 1753711595900,
       "tag": "0059_rich_maginty",
       "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1753711777973,
+      "tag": "0060_solid_captain_marvel",
+      "breakpoints": true
     }
   ]
 }

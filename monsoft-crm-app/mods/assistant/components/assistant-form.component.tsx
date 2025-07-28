@@ -27,7 +27,13 @@ import {
 } from '../schemas';
 
 import { api } from '@api/providers/web';
-import { AssistantType, assistantTypeEnum } from '../enums';
+import {
+    AssistantType,
+    assistantTypeEnum,
+    DetailLevel,
+    detailLevelEnum,
+} from '../enums';
+import { ScrollArea } from '@shared/ui/scroll-area.ui';
 
 type AssistantFormProps = {
     onSuccess?: () => void | Promise<void>;
@@ -62,6 +68,9 @@ export function AssistantForm({
             tone: '',
             instructions: '',
             expertise: '',
+            communicationStyle: '',
+            responseTone: '',
+            detailLevel: detailLevelEnum.options.at(0),
         },
     });
 
@@ -99,6 +108,9 @@ export function AssistantForm({
         tone: string;
         instructions: string;
         expertise: string;
+        communicationStyle: string;
+        responseTone: string;
+        detailLevel: DetailLevel;
     }) => {
         if (assistant) {
             await handleUpdate({
@@ -114,150 +126,216 @@ export function AssistantForm({
     };
 
     return (
-        <Form {...form}>
-            <form
-                className="flex flex-col gap-4"
-                onSubmit={(e) => {
-                    void form.handleSubmit(handleSubmit)(e);
-                }}
-            >
-                <FormField
-                    control={form.control}
-                    name="name"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InputAnimatedLabel
-                                label="Assistant Name"
-                                {...field}
-                            />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="description"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InputAnimatedLabel
-                                label="Assistant Description"
-                                {...field}
-                            />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="model"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Model</FormLabel>
-                            <Select
-                                onValueChange={field.onChange}
-                                value={field.value}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="AI Model" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {aiModelEnum.options.map((model) => (
-                                        <SelectItem key={model} value={model}>
-                                            {model}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="type"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Type</FormLabel>
-                            <Select
-                                onValueChange={field.onChange}
-                                value={field.value}
-                            >
-                                <FormControl>
-                                    <SelectTrigger>
-                                        <SelectValue placeholder="Assistant Type" />
-                                    </SelectTrigger>
-                                </FormControl>
-                                <SelectContent>
-                                    {assistantTypeEnum.options.map((type) => (
-                                        <SelectItem key={type} value={type}>
-                                            {type}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="tone"
-                    render={({ field }) => (
-                        <FormItem>
-                            <InputAnimatedLabel label="Tone" {...field} />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="instructions"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Instructions</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Instructions..."
-                                    className="min-h-[100px]"
+        <ScrollArea className="max-h-[50vh]">
+            <Form {...form}>
+                <form
+                    className="flex flex-col gap-4 py-2"
+                    onSubmit={(e) => {
+                        void form.handleSubmit(handleSubmit)(e);
+                    }}
+                >
+                    <FormField
+                        control={form.control}
+                        name="name"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel
+                                    label="Assistant Name"
                                     {...field}
                                 />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
+                            </FormItem>
+                        )}
+                    />
 
-                <FormField
-                    control={form.control}
-                    name="expertise"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Expertise</FormLabel>
-                            <FormControl>
-                                <Textarea
-                                    placeholder="Expertise..."
-                                    className="min-h-[100px]"
+                    <FormField
+                        control={form.control}
+                        name="description"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel
+                                    label="Assistant Description"
                                     {...field}
                                 />
-                            </FormControl>
-                        </FormItem>
-                    )}
-                />
+                            </FormItem>
+                        )}
+                    />
 
-                <div className="flex gap-2 pt-4">
-                    <Button type="submit">Save</Button>
-                    {onCancel && (
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={onCancel}
-                        >
-                            Cancel
-                        </Button>
-                    )}
-                </div>
-            </form>
-        </Form>
+                    <FormField
+                        control={form.control}
+                        name="model"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Model</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="AI Model" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {aiModelEnum.options.map((model) => (
+                                            <SelectItem
+                                                key={model}
+                                                value={model}
+                                            >
+                                                {model}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="type"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Type</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Assistant Type" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {assistantTypeEnum.options.map(
+                                            (type) => (
+                                                <SelectItem
+                                                    key={type}
+                                                    value={type}
+                                                >
+                                                    {type}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="tone"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel label="Tone" {...field} />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="instructions"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Instructions</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Instructions..."
+                                        className="min-h-[100px]"
+                                        {...field}
+                                    />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="expertise"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Expertise</FormLabel>
+                                <FormControl>
+                                    <Textarea
+                                        placeholder="Expertise..."
+                                        className="min-h-[100px]"
+                                        {...field}
+                                    />
+                                </FormControl>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="communicationStyle"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel
+                                    label="Communication Style"
+                                    {...field}
+                                />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="responseTone"
+                        render={({ field }) => (
+                            <FormItem>
+                                <InputAnimatedLabel
+                                    label="Response Tone"
+                                    {...field}
+                                />
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="detailLevel"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Detail Level</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Detail Level" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {detailLevelEnum.options.map(
+                                            (level) => (
+                                                <SelectItem
+                                                    key={level}
+                                                    value={level}
+                                                >
+                                                    {level}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+
+                    <div className="flex gap-2 pt-4">
+                        <Button type="submit">Save</Button>
+                        {onCancel && (
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={onCancel}
+                            >
+                                Cancel
+                            </Button>
+                        )}
+                    </div>
+                </form>
+            </Form>
+        </ScrollArea>
     );
 }

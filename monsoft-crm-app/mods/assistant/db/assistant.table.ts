@@ -8,6 +8,8 @@ import { aiModelEnum } from '@ai/enums';
 
 import { assistantTypeEnum } from '../enums';
 
+import { assistantBehavior } from './assistant-behavior.table';
+
 export const assistantModel = enumType('assistant_model', aiModelEnum.options);
 
 export const assistantType = enumType(
@@ -35,11 +37,20 @@ export const assistant = table('assistant', {
     instructions: text('instructions').notNull(),
 
     expertise: text('expertise').notNull(),
+
+    behaviorId: text('behavior_id')
+        .notNull()
+        .references(() => assistantBehavior.id, { onDelete: 'cascade' }),
 });
 
 export const assistantRelations = relations(assistant, ({ one }) => ({
     brand: one(tables.brand, {
         fields: [assistant.brandId],
         references: [tables.brand.id],
+    }),
+
+    behavior: one(assistantBehavior, {
+        fields: [assistant.behaviorId],
+        references: [assistantBehavior.id],
     }),
 }));

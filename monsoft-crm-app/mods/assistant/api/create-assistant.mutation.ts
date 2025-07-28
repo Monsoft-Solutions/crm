@@ -25,8 +25,27 @@ export const createAssistant = protectedEndpoint
                     tone,
                     instructions,
                     expertise,
+                    communicationStyle,
+                    responseTone,
+                    detailLevel,
                 },
             }) => {
+                const behaviorId = uuidv4();
+                const { error: behaviorError } = await catchError(
+                    db
+                        .insert(tables.assistantBehavior)
+                        .values({
+                            id: behaviorId,
+                            communicationStyle,
+                            responseTone,
+                            detailLevel,
+                        })
+                        .returning(),
+                );
+
+                if (behaviorError)
+                    return Error('CREATE_ASSISTANT_BEHAVIOR_ERROR');
+
                 const { data: createdAssistant, error: createError } =
                     await catchError(
                         db
@@ -41,6 +60,7 @@ export const createAssistant = protectedEndpoint
                                 tone,
                                 instructions,
                                 expertise,
+                                behaviorId,
                             })
                             .returning(),
                     );

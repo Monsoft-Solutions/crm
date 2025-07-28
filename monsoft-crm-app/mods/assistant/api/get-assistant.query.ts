@@ -24,6 +24,10 @@ export const getAssistant = protectedEndpoint
                         instructions: true,
                         expertise: true,
                     },
+
+                    with: {
+                        behavior: true,
+                    },
                 }),
             );
 
@@ -31,6 +35,13 @@ export const getAssistant = protectedEndpoint
 
             if (!assistant) return Error('ASSISTANT_NOT_FOUND');
 
-            return Success(assistant);
+            const { behavior, ...rest } = assistant;
+
+            const flattenedAssistant = {
+                ...rest,
+                ...behavior,
+            };
+
+            return Success(flattenedAssistant);
         }),
     );
