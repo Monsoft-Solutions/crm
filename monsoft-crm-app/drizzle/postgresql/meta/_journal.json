@@ -407,6 +407,13 @@
       "when": 1753368252917,
       "tag": "0057_aromatic_skullbuster",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1753703254404,
+      "tag": "0058_kind_talisman",
+      "breakpoints": true
     }
   ]
 }

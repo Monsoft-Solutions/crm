@@ -27,6 +27,7 @@ import {
 } from '../schemas';
 
 import { api } from '@api/providers/web';
+import { AssistantType, assistantTypeEnum } from '../enums';
 
 type AssistantFormProps = {
     onSuccess?: () => void | Promise<void>;
@@ -55,9 +56,12 @@ export function AssistantForm({
         resolver: zodResolver(assistantSchema),
         defaultValues: assistant ?? {
             name: '',
+            description: '',
             model: aiModelEnum.options.at(0),
+            type: assistantTypeEnum.options.at(0),
             tone: '',
             instructions: '',
+            expertise: '',
         },
     });
 
@@ -89,9 +93,12 @@ export function AssistantForm({
 
     const handleSubmit = async (values: {
         name: string;
+        description: string;
         model: AiModel;
+        type: AssistantType;
         tone: string;
         instructions: string;
+        expertise: string;
     }) => {
         if (assistant) {
             await handleUpdate({
@@ -129,6 +136,19 @@ export function AssistantForm({
 
                 <FormField
                     control={form.control}
+                    name="description"
+                    render={({ field }) => (
+                        <FormItem>
+                            <InputAnimatedLabel
+                                label="Assistant Description"
+                                {...field}
+                            />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
                     name="model"
                     render={({ field }) => (
                         <FormItem>
@@ -156,6 +176,33 @@ export function AssistantForm({
 
                 <FormField
                     control={form.control}
+                    name="type"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Type</FormLabel>
+                            <Select
+                                onValueChange={field.onChange}
+                                value={field.value}
+                            >
+                                <FormControl>
+                                    <SelectTrigger>
+                                        <SelectValue placeholder="Assistant Type" />
+                                    </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                    {assistantTypeEnum.options.map((type) => (
+                                        <SelectItem key={type} value={type}>
+                                            {type}
+                                        </SelectItem>
+                                    ))}
+                                </SelectContent>
+                            </Select>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
                     name="tone"
                     render={({ field }) => (
                         <FormItem>
@@ -173,6 +220,23 @@ export function AssistantForm({
                             <FormControl>
                                 <Textarea
                                     placeholder="Instructions..."
+                                    className="min-h-[100px]"
+                                    {...field}
+                                />
+                            </FormControl>
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="expertise"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Expertise</FormLabel>
+                            <FormControl>
+                                <Textarea
+                                    placeholder="Expertise..."
                                     className="min-h-[100px]"
                                     {...field}
                                 />

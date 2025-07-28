@@ -16,7 +16,16 @@ export const createAssistant = protectedEndpoint
         queryMutationCallback(
             async ({
                 db,
-                input: { brandId, name, model, tone, instructions },
+                input: {
+                    brandId,
+                    name,
+                    description,
+                    model,
+                    type,
+                    tone,
+                    instructions,
+                    expertise,
+                },
             }) => {
                 const { data: createdAssistant, error: createError } =
                     await catchError(
@@ -26,9 +35,12 @@ export const createAssistant = protectedEndpoint
                                 id: uuidv4(),
                                 brandId,
                                 name,
+                                description,
+                                type,
                                 model,
                                 tone,
                                 instructions,
+                                expertise,
                             })
                             .returning(),
                     );

@@ -17,9 +17,12 @@ export const getAssistant = protectedEndpoint
                     columns: {
                         id: true,
                         name: true,
+                        description: true,
+                        type: true,
                         model: true,
                         tone: true,
                         instructions: true,
+                        expertise: true,
                     },
                 }),
             );
