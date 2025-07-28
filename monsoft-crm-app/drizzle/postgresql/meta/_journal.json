@@ -414,6 +414,13 @@
       "when": 1753703254404,
       "tag": "0058_kind_talisman",
       "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1753711595900,
+      "tag": "0059_rich_maginty",
+      "breakpoints": true
     }
   ]
 }
