@@ -20,6 +20,8 @@ import {
 
 import { createReplySuggestionsPrompt } from '../../prompts';
 
+import { CertaintyLevel } from '@mods/assistant/enums';
+
 export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: message, error: messageError } = await getContactMessage({
         db,
@@ -80,7 +82,10 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');
 
-    const replySuggestions = [];
+    const replySuggestions: {
+        content: string;
+        certaintyLevel: CertaintyLevel;
+    }[] = [];
 
     let count = 0;
     while (count++ < 3) {
@@ -108,15 +113,19 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
         if (responseError) return Error('GENERATE_TEXT_ERROR');
 
-        replySuggestions.push(response);
+        replySuggestions.push({
+            content: response,
+            certaintyLevel: 'high',
+        });
     }
 
     const { error: insertReplySuggestionsError } = await catchError(
         db.insert(tables.replySuggestion).values(
-            replySuggestions.map((suggestion) => ({
+            replySuggestions.map(({ content, certaintyLevel }) => ({
                 id: uuidv4(),
                 messageId,
-                content: suggestion,
+                content,
+                certaintyLevel,
             })),
         ),
     );
