@@ -26,6 +26,20 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
                 domain,
                 whatsappPhoneId,
                 whatsappPhoneNumber,
+                description,
+                industry,
+                companySize,
+                foundedYear,
+                coreValues,
+                personalityTraits,
+                communicationStyle,
+                languagePreferences,
+                voiceGuidelines,
+                prohibitedContent,
+                keyProducts,
+                differentiators,
+                painPoints,
+                targetSegments,
             },
             db,
         }) => {
@@ -44,11 +58,47 @@ export const createBrand = protectedEndpoint.input(createBrandSchema).mutation(
 
             const brandPhoneNumber = purchasedNumber.phoneNumber;
 
+            const brandVoiceId = uuidv4();
+
+            const { error: insertBrandVoiceError } = await catchError(
+                db.insert(tables.brandVoice).values({
+                    id: brandVoiceId,
+                    coreValues,
+                    personalityTraits,
+                    communicationStyle,
+                    languagePreferences,
+                    voiceGuidelines,
+                    prohibitedContent,
+                }),
+            );
+
+            if (insertBrandVoiceError) return Error();
+
+            const brandMarketId = uuidv4();
+
+            const { error: insertBrandMarketError } = await catchError(
+                db.insert(tables.brandMarket).values({
+                    id: brandMarketId,
+                    keyProducts,
+                    differentiators,
+                    painPoints,
+                    targetSegments,
+                }),
+            );
+
+            if (insertBrandMarketError) return Error();
+
             const { error: insertBrandError } = await catchError(
                 db.insert(tables.brand).values({
                     id,
                     organizationId,
                     name,
+                    description,
+                    industry,
+                    companySize,
+                    foundedYear,
+                    brandVoiceId,
+                    brandMarketId,
                 }),
             );
 

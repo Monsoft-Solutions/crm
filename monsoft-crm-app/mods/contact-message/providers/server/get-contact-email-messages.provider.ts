@@ -1,4 +1,4 @@
-import { InferSelectModel } from 'drizzle-orm';
+import { asc, and, InferSelectModel } from 'drizzle-orm';
 
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
@@ -8,10 +8,17 @@ import { Tx } from '@db/types';
 
 import { contactEmail } from '@db/db';
 
-export const getContactEmailMessages = (async ({ contactId, db }) => {
+export const getContactEmailMessages = (async ({ db, contactId, from, to }) => {
     const { data: contactEmails, error: contactEmailsError } = await catchError(
         db.query.contactEmail.findMany({
-            where: (record, { eq }) => eq(record.contactId, contactId),
+            where: (record, { eq, gte, lt }) =>
+                and(
+                    eq(record.contactId, contactId),
+                    from ? gte(record.createdAt, from) : undefined,
+                    to ? lt(record.createdAt, to) : undefined,
+                ),
+
+            orderBy: asc(contactEmail.createdAt),
         }),
     );
 
@@ -19,6 +26,6 @@ export const getContactEmailMessages = (async ({ contactId, db }) => {
 
     return Success(contactEmails);
 }) satisfies Function<
-    { contactId: string; db: Tx },
+    { contactId: string; db: Tx; from?: number; to?: number },
     InferSelectModel<typeof contactEmail>[]
 >;

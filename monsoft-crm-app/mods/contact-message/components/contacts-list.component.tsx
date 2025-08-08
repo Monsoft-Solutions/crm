@@ -4,7 +4,7 @@ import { useNavigate } from '@tanstack/react-router';
 
 import { cn } from '@css/utils';
 
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { ChevronLeft, ChevronRight, PlusIcon } from 'lucide-react';
 
 import { Button } from '@ui/button.ui';
 import { ScrollArea } from '@ui/scroll-area.ui';
@@ -19,9 +19,12 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
+    SelectSeparator,
 } from '@shared/ui/select.ui';
 
 import { api, apiClientUtils } from '@api/providers/web';
+import { CreateBrandForm } from '@mods/brand/components/create-brand-form.component';
+import { Dialog, DialogContent, DialogTrigger } from '@shared/ui/dialog.ui';
 
 export function ContactsList({
     brandId,
@@ -37,6 +40,30 @@ export function ContactsList({
     const navigate = useNavigate();
 
     const [isContactsExpanded, setIsContactsExpanded] = useState(true);
+
+    const [isCreateBrandDialogOpen, setIsCreateBrandDialogOpen] =
+        useState(false);
+
+    const [availablePhoneNumbers, setAvailablePhoneNumbers] = useState<
+        string[]
+    >([]);
+
+    const [isSelectBrandOpen, setIsSelectBrandOpen] = useState(false);
+
+    const handleCreateBrandDialogOpenChange = async (open: boolean) => {
+        if (open) {
+            const result =
+                await apiClientUtils.brand.getAvailablePhoneNumbers.ensureData();
+
+            if (result.error) return;
+
+            setAvailablePhoneNumbers(result.data);
+
+            setIsSelectBrandOpen(false);
+        }
+
+        setIsCreateBrandDialogOpen(open);
+    };
 
     const {
         data: brands,
@@ -131,6 +158,8 @@ export function ContactsList({
                                 onValueChange={(value) => {
                                     void setActiveBrandId(value);
                                 }}
+                                open={isSelectBrandOpen}
+                                onOpenChange={setIsSelectBrandOpen}
                             >
                                 <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select a brand" />
@@ -145,6 +174,40 @@ export function ContactsList({
                                             {brand.name}
                                         </SelectItem>
                                     ))}
+
+                                    <SelectSeparator />
+
+                                    <div className="flex flex-col gap-2">
+                                        <Dialog
+                                            open={isCreateBrandDialogOpen}
+                                            onOpenChange={(open) =>
+                                                void handleCreateBrandDialogOpenChange(
+                                                    open,
+                                                )
+                                            }
+                                        >
+                                            <DialogTrigger
+                                                className="justify-start"
+                                                asChild
+                                            >
+                                                <Button
+                                                    variant="ghost"
+                                                    className="gap-2"
+                                                >
+                                                    <PlusIcon className="h-4 w-4" />
+                                                    New Brand
+                                                </Button>
+                                            </DialogTrigger>
+
+                                            <DialogContent>
+                                                <CreateBrandForm
+                                                    availablePhoneNumbers={
+                                                        availablePhoneNumbers
+                                                    }
+                                                />
+                                            </DialogContent>
+                                        </Dialog>
+                                    </div>
                                 </SelectContent>
                             </Select>
                         </h2>

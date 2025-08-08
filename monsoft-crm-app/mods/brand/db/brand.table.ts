@@ -1,31 +1,70 @@
 import { relations } from 'drizzle-orm';
-import { table, text } from '@db/sql';
+import { table, text, int, enumType } from '@db/sql';
 
-import {
-    organization,
-    brandDomain,
-    brandPhoneNumber,
-    brandWhatsappNumber,
-} from '@db/db';
+import tables from '@db/db';
+
+import { industryEnum, companySizeEnum } from '../enums';
+
+export const industry = enumType('brand_industry', industryEnum.options);
+
+export const companySize = enumType(
+    'brand_company_size',
+    companySizeEnum.options,
+);
 
 export const brand = table('brand', {
     id: text('id').primaryKey(),
 
     organizationId: text('organization_id')
         .notNull()
-        .references(() => organization.id, { onDelete: 'cascade' }),
+        .references(() => tables.organization.id, { onDelete: 'cascade' }),
 
+    // Brand name
     name: text('name').notNull(),
+
+    // Brief description of what the company does and its mission
+    description: text('description').notNull(),
+
+    // Industry sector the brand operates in
+    industry: industry('industry').notNull(),
+
+    // Company size classification
+    companySize: companySize('company_size').notNull(),
+
+    // Year the company was founded
+    foundedYear: int('founded_year').notNull(),
+
+    brandVoiceId: text('brand_voice_id')
+        .notNull()
+        .references(() => tables.brandVoice.id, { onDelete: 'cascade' }),
+
+    brandMarketId: text('brand_market_id')
+        .notNull()
+        .references(() => tables.brandMarket.id, { onDelete: 'cascade' }),
 });
 
 export const brandRelations = relations(
     brand,
 
-    ({ many }) => ({
-        phoneNumbers: many(brandPhoneNumber),
+    ({ many, one }) => ({
+        phoneNumbers: many(tables.brandPhoneNumber),
 
-        whatsappNumbers: many(brandWhatsappNumber),
+        whatsappNumbers: many(tables.brandWhatsappNumber),
 
-        domains: many(brandDomain),
+        domains: many(tables.brandDomain),
+
+        contacts: many(tables.contact),
+
+        assistants: many(tables.assistant),
+
+        brandVoice: one(tables.brandVoice, {
+            fields: [brand.brandVoiceId],
+            references: [tables.brandVoice.id],
+        }),
+
+        brandMarket: one(tables.brandMarket, {
+            fields: [brand.brandMarketId],
+            references: [tables.brandMarket.id],
+        }),
     }),
 );

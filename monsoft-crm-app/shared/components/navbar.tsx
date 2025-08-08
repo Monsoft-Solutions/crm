@@ -9,6 +9,7 @@ import {
     Settings,
     MessageCircle,
     Package,
+    Bot,
 } from 'lucide-react';
 
 import { useIsMobile } from '../hooks/is-mobile';
@@ -112,6 +113,12 @@ export function Navbar() {
             title: 'Products',
             url: '/products',
             icon: Package,
+        },
+
+        {
+            title: 'Assistants',
+            url: '/assistant',
+            icon: Bot,
         },
     ];
 

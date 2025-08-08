@@ -1,115 +1,69 @@
+import { streamText as aiSdkStreamText, Message, smoothStream, Tool } from 'ai';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
-
-import { getCoreConf } from '@conf/providers/server';
-
-import { v4 as uuidv4 } from 'uuid';
-
-import { streamText as aiSdkStreamText, Message, smoothStream } from 'ai';
-import { createAnthropic } from '@ai-sdk/anthropic';
-
-import { Langfuse } from 'langfuse';
 
 import { AiRequest } from '../schemas';
 
 import { thinkTool } from '../tools/think.tool';
 
-let langfuse: Langfuse | undefined;
+import { aiModelToSdkModel } from '@ai/utils';
 
-export const streamText = (async ({
-    prompt,
-    messages,
-    modelParams,
-}:
-    | {
-          prompt: string;
-          messages?: undefined;
-          modelParams: AiRequest;
-      }
-    | {
-          prompt?: undefined;
-          messages: Message[];
-          modelParams: AiRequest;
-      }) => {
-    const traceId = uuidv4();
+import { initLangfuseTraceAndGeneration } from './init-langfuse-trace-and-generation.provider';
 
-    // get the core configuration
-    const coreConfWithError = await getCoreConf();
+export const streamText = (async ({ prompt, messages, modelParams, tools }) => {
+    const { model: modelName, callerName } = modelParams;
 
-    const { error: coreConfError } = coreConfWithError;
+    const { data: model, error: modelError } =
+        await aiModelToSdkModel(modelName);
 
-    if (coreConfError !== null) return Error('MISSING_CORE_CONF');
+    if (modelError) return Error('FAIL_TO_INFER_SDK_MODEL');
 
-    const { data: coreConf } = coreConfWithError;
+    const promptOrMessages = messages
+        ? {
+              messages: messages.filter(
+                  (message) => message.content.length > 0,
+              ),
+              prompt: undefined,
+          }
+        : { prompt, messages: undefined };
 
-    const {
-        anthropicApiKey,
-        langfuseSecretKey,
-        langfusePublicKey,
-        langfuseBaseUrl,
-    } = coreConf;
-
-    if (!langfuse) {
-        initLangfuse({
-            langfuseSecretKey,
-            langfusePublicKey,
-            langfuseBaseUrl,
+    const { data: traceAndGeneration, error: traceAndGenerationError } =
+        await initLangfuseTraceAndGeneration({
+            modelName,
+            callerName,
+            toolsNames: Object.keys(tools ?? {}),
+            ...promptOrMessages,
         });
-    }
-    const trace = langfuse?.trace({
-        name: modelParams.callerName,
-        id: traceId,
-        metadata: {
-            prompt,
-            messages,
-            modelParams,
-        },
-        sessionId: modelParams.chatSessionId,
-        userId: modelParams.userId,
-        tags: [modelParams.model, modelParams.provider, modelParams.callerName],
-    });
 
-    const anthropic = createAnthropic({
-        apiKey: anthropicApiKey,
-    });
+    if (traceAndGenerationError)
+        return Error('FAIL_TO_INIT_LANGFUSE_TRACE_AND_GENERATION');
 
-    const model = modelParams.model;
-
-    const generation = trace?.generation({
-        model,
-        input: messages && messages.length > 0 ? messages : prompt,
-        metadata: {
-            activeTools: modelParams.activeTools,
-        },
-    });
-
-    const cleanMessages = messages?.filter(
-        (message) => message.content.length > 0,
-    );
+    const { langfuse, trace, generation } = traceAndGeneration;
 
     const { textStream } = aiSdkStreamText({
-        model: anthropic(model),
-        prompt,
-        messages: cleanMessages,
+        model,
+        ...promptOrMessages,
+
         tools: {
+            ...tools,
             think: thinkTool,
         },
-        experimental_activeTools: modelParams.activeTools,
         maxSteps: 10,
         maxRetries: 3,
+
+        temperature: modelParams.temperature,
 
         experimental_transform: smoothStream(),
 
         onStepFinish: (step) => {
-            if (step.finishReason === 'stop') {
+            if (step.finishReason === 'stop' || step.toolCalls.length === 0) {
                 return;
             }
 
-            trace?.event({
+            trace.event({
                 name: `event_inner_step_${
-                    step.toolCalls.length
-                        ? step.toolCalls[0].toolName
-                        : 'no_tool'
+                    step.toolCalls.at(0)?.toolName ?? 'no_tool'
                 }`,
                 metadata: {
                     stepType: step.stepType,
@@ -119,30 +73,10 @@ export const streamText = (async ({
                 input: step.request.body,
                 output: step.response.messages,
             });
-
-            trace?.generation({
-                name: `inner_step_call_${
-                    step.toolCalls.length
-                        ? step.toolCalls[0].toolName
-                        : 'no_tool'
-                }`,
-                model,
-                input: step.request.body,
-                output: step.response.messages,
-                usage: {
-                    input: step.usage.promptTokens,
-                    output: step.usage.completionTokens,
-                    total: step.usage.totalTokens,
-                },
-                metadata: {
-                    stepType: step.stepType,
-                    finishReason: step.finishReason,
-                },
-            });
         },
 
         onFinish: async (result) => {
-            generation?.end({
+            generation.end({
                 input: messages && messages.length > 0 ? messages : prompt,
                 output: result.text,
                 usage: {
@@ -160,55 +94,49 @@ export const streamText = (async ({
                     })),
                 },
             });
-            await langfuse?.flushAsync();
+            await langfuse.flushAsync();
         },
 
         onError: async (error) => {
-            trace?.event({
+            trace.event({
                 name: 'error',
                 metadata: {
                     error: error.error,
                 },
             });
 
-            trace?.update({
+            trace.update({
                 metadata: {
                     error: error.error,
                 },
                 tags: ['error'],
             });
 
-            generation?.end({
+            generation.end({
                 metadata: {
                     error: error.error,
                 },
             });
 
-            await langfuse?.flushAsync();
+            await langfuse.flushAsync();
         },
     });
 
     const reader = textStream.getReader();
     return Success(reader);
 }) satisfies Function<
-    | { prompt: string; messages?: undefined; modelParams: AiRequest }
-    | { prompt?: undefined; messages: Message[]; modelParams: AiRequest },
+    {
+        modelParams: AiRequest;
+        tools?: Record<string, Tool>;
+    } & (
+        | {
+              prompt: string;
+              messages?: undefined;
+          }
+        | {
+              prompt?: undefined;
+              messages: Message[];
+          }
+    ),
     ReadableStreamDefaultReader<string>
 >;
-
-const initLangfuse = ({
-    langfuseSecretKey,
-    langfusePublicKey,
-    langfuseBaseUrl,
-}: {
-    langfuseSecretKey: string;
-    langfusePublicKey: string;
-    langfuseBaseUrl: string;
-}) => {
-    if (langfuse) return;
-    langfuse = new Langfuse({
-        secretKey: langfuseSecretKey,
-        publicKey: langfusePublicKey,
-        baseUrl: langfuseBaseUrl,
-    });
-};

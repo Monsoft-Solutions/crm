@@ -1,0 +1,1 @@
+ALTER TABLE "core_conf" ALTER COLUMN "openai_api_key" SET NOT NULL;

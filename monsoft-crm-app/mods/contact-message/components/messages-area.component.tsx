@@ -1,3 +1,4 @@
+import { Card } from '@shared/ui/card.ui';
 import { ScrollArea } from '@ui/scroll-area.ui';
 
 import { MessageBubble } from './message-bubble.component';
@@ -29,6 +30,32 @@ export function MessagesArea({ contactId }: { contactId: string }) {
     const {
         getContactMessages: { setData: setContactMessages },
     } = apiClientUtils.contactMessage;
+
+    const lastMessage = messages?.at(-1);
+
+    const { data: lastMessageReplySuggestions } =
+        api.assistant.getReplySuggestions.useQuery(
+            {
+                messageId: lastMessage ? lastMessage.id : '',
+            },
+            {
+                enabled: !!lastMessage,
+            },
+        );
+
+    api.assistant.onReplySuggestionsCreated.useSubscription(
+        {
+            messageId: lastMessage ? lastMessage.id : '',
+        },
+
+        {
+            onData: ({ messageId }) => {
+                void apiClientUtils.assistant.getReplySuggestions.invalidate({
+                    messageId,
+                });
+            },
+        },
+    );
 
     api.contactMessage.onNewContactMessage.useSubscription(
         {
@@ -124,6 +151,24 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                                 </div>
                             ),
                         )}
+                    </div>
+
+                    <div className="flex justify-between gap-4">
+                        {lastMessageReplySuggestions?.map(({ id, content }) => (
+                            <Card
+                                key={id}
+                                className="bg-primary/10 flex-1 p-2"
+                                onClick={() => {
+                                    window.dispatchEvent(
+                                        new CustomEvent('setNewMessage', {
+                                            detail: content,
+                                        }),
+                                    );
+                                }}
+                            >
+                                {content}
+                            </Card>
+                        ))}
                     </div>
                 </ScrollArea>
             </div>

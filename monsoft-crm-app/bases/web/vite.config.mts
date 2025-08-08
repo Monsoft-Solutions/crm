@@ -82,7 +82,7 @@ export default defineConfig({
     },
 
     // specify the public directory to serve static assets
-    publicDir: 'public',
+    publicDir: '../../theme/public',
 
     build: {
         chunkSizeWarningLimit: 5000,

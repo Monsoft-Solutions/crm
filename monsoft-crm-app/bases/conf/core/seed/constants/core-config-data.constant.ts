@@ -25,4 +25,5 @@ export const coreConfigData: InferInsertModel<typeof coreConfTable> = {
     langfuseSecretKey: z.string().parse(process.env.LANGFUSE_SECRET_KEY),
 
     anthropicApiKey: z.string().parse(process.env.ANTHROPIC_API_KEY),
+    openaiApiKey: z.string().parse(process.env.OPENAI_API_KEY),
 };

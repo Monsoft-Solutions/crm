@@ -274,6 +274,167 @@
       "when": 1751990598705,
       "tag": "0038_past_goblin_queen",
       "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1752139342212,
+      "tag": "0039_colorful_doctor_doom",
+      "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1752140000705,
+      "tag": "0040_organic_demogoblin",
+      "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1752153069559,
+      "tag": "0041_mature_kang",
+      "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1752171941340,
+      "tag": "0042_steep_preak",
+      "breakpoints": true
+    },
+    {
+      "idx": 43,
+      "version": "7",
+      "when": 1752496326839,
+      "tag": "0043_broad_zombie",
+      "breakpoints": true
+    },
+    {
+      "idx": 44,
+      "version": "7",
+      "when": 1752593128212,
+      "tag": "0044_empty_dazzler",
+      "breakpoints": true
+    },
+    {
+      "idx": 45,
+      "version": "7",
+      "when": 1752593514724,
+      "tag": "0045_cynical_lady_deathstrike",
+      "breakpoints": true
+    },
+    {
+      "idx": 46,
+      "version": "7",
+      "when": 1752593800439,
+      "tag": "0046_slippery_omega_flight",
+      "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1752597549281,
+      "tag": "0047_ambitious_the_hand",
+      "breakpoints": true
+    },
+    {
+      "idx": 48,
+      "version": "7",
+      "when": 1752598073082,
+      "tag": "0048_kind_network",
+      "breakpoints": true
+    },
+    {
+      "idx": 49,
+      "version": "7",
+      "when": 1752665652407,
+      "tag": "0049_worried_ikaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1752667644372,
+      "tag": "0050_vengeful_lester",
+      "breakpoints": true
+    },
+    {
+      "idx": 51,
+      "version": "7",
+      "when": 1752749473950,
+      "tag": "0051_short_titanium_man",
+      "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1752749565845,
+      "tag": "0052_classy_speed_demon",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1753268942960,
+      "tag": "0053_fluffy_donald_blake",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1753353679859,
+      "tag": "0054_funny_lilith",
+      "breakpoints": true
+    },
+    {
+      "idx": 55,
+      "version": "7",
+      "when": 1753353743607,
+      "tag": "0055_chubby_diamondback",
+      "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1753368102299,
+      "tag": "0056_tearful_magneto",
+      "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1753368252917,
+      "tag": "0057_aromatic_skullbuster",
+      "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1753703254404,
+      "tag": "0058_kind_talisman",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1753711595900,
+      "tag": "0059_rich_maginty",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1753711777973,
+      "tag": "0060_solid_captain_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 61,
+      "version": "7",
+      "when": 1753714214893,
+      "tag": "0061_absurd_kree",
+      "breakpoints": true
     }
   ]
 }

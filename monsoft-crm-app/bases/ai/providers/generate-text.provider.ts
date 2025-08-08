@@ -1,7 +1,7 @@
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
-import { Message } from 'ai';
+import { Message, Tool } from 'ai';
 
 import { streamText } from './stream-text.provider';
 
@@ -11,25 +11,16 @@ export const generateText = (async ({
     prompt,
     messages,
     modelParams,
-}: (
-    | {
-          prompt: string;
-          messages?: undefined;
-      }
-    | {
-          prompt?: undefined;
-          messages: Message[];
-      }
-) & {
-    modelParams: AiRequest;
+    tools,
 }) => {
     const { data: textStream, error: textGenerationError } = await streamText(
         messages
             ? {
                   messages,
                   modelParams,
+                  tools,
               }
-            : { prompt, modelParams },
+            : { prompt, modelParams, tools },
     );
 
     if (textGenerationError) return Error();
@@ -46,4 +37,19 @@ export const generateText = (async ({
     }
 
     return Success(text);
-}) satisfies Function<{ prompt: string; modelParams: AiRequest }, string>;
+}) satisfies Function<
+    {
+        modelParams: AiRequest;
+        tools?: Record<string, Tool>;
+    } & (
+        | {
+              prompt: string;
+              messages?: undefined;
+          }
+        | {
+              prompt?: undefined;
+              messages: Message[];
+          }
+    ),
+    string
+>;
