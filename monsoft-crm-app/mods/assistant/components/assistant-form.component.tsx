@@ -129,7 +129,7 @@ export function AssistantForm({
         <ScrollArea className="max-h-[50vh]">
             <Form {...form}>
                 <form
-                    className="flex flex-col gap-4 py-2"
+                    className="flex flex-col gap-4 py-2 pr-4"
                     onSubmit={(e) => {
                         void form.handleSubmit(handleSubmit)(e);
                     }}
