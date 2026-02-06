@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 
-import { enumType, table, text, int, timestamp } from '@db/sql';
+import { defaultTimestamp, enumType, table, text, int } from '@db/sql';
 
 import tables from '@db/db';
 
@@ -39,10 +39,10 @@ export const product = table('product', {
     price: int('price').notNull(),
 
     // creation timestamp
-    createdAt: timestamp('created_at').notNull(),
+    createdAt: defaultTimestamp('created_at').notNull(),
 
     // update timestamp
-    updatedAt: timestamp('updated_at').notNull(),
+    updatedAt: defaultTimestamp('updated_at').notNull(),
 });
 
 export const productRelations = relations(product, ({ one, many }) => ({

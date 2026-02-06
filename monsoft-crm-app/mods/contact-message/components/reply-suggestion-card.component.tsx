@@ -31,9 +31,17 @@ export function ReplySuggestionCard({
         <Tooltip>
             <TooltipTrigger asChild>
                 <Card
+                    role="button"
+                    tabIndex={0}
                     className="bg-primary/[0.06] border-primary/10 hover:bg-primary/[0.1] min-w-0 flex-1 cursor-pointer rounded-xl border p-3 shadow-none transition-colors"
                     onClick={() => {
                         onSelect(id, content);
+                    }}
+                    onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                            e.preventDefault();
+                            onSelect(id, content);
+                        }
                     }}
                 >
                     <div className="flex items-start justify-between gap-2">

@@ -1,5 +1,5 @@
 import { relations } from 'drizzle-orm';
-import { enumType, table, text, timestamp } from '@db/sql';
+import { defaultTimestamp, enumType, table, text } from '@db/sql';
 
 import { contact } from '@db/db';
 
@@ -35,7 +35,7 @@ export const contactEmail = table('contact_email', {
 
     status: contactEmailStatus('status').notNull().default('queued'),
 
-    createdAt: timestamp('created_at').notNull(),
+    createdAt: defaultTimestamp('created_at').notNull(),
 });
 
 export const contactEmailRelations = relations(

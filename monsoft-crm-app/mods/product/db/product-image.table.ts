@@ -1,7 +1,7 @@
 import { relations } from 'drizzle-orm';
 import { unique } from 'drizzle-orm/pg-core';
 
-import { table, text, timestamp, enumType } from '@db/sql';
+import { defaultTimestamp, table, text, enumType } from '@db/sql';
 
 import tables from '@db/db';
 
@@ -28,7 +28,7 @@ export const productImage = table(
         isMain: isMainProductImage('is_main'),
 
         // creation timestamp
-        createdAt: timestamp('created_at').notNull(),
+        createdAt: defaultTimestamp('created_at').notNull(),
     },
 
     (t) => [unique().on(t.productId, t.isMain)],

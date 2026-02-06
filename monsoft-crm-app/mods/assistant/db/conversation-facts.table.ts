@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 
-import { table, text, timestamp, json } from '@db/sql';
+import { defaultTimestamp, table, text, json } from '@db/sql';
 
 import tables from '@db/db';
 
@@ -11,7 +11,7 @@ export const conversationFacts = table('conversation_facts', {
 
     facts: json('facts').notNull(),
 
-    createdAt: timestamp('created_at').notNull(),
+    createdAt: defaultTimestamp('created_at').notNull(),
 });
 
 export const conversationFactsRelations = relations(
