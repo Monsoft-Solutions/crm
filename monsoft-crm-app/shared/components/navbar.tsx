@@ -89,6 +89,8 @@ function NavbarLink({
 // Menu items.
 
 export function Navbar() {
+    const navigate = useNavigate();
+
     const { data: session } = authClient.useSession();
 
     const { setOpenMobile } = useSidebar();
@@ -169,7 +171,13 @@ export function Navbar() {
                                 side="top"
                                 className="w-(--radix-popper-anchor-width)"
                             >
-                                <DropdownMenuItem>
+                                <DropdownMenuItem
+                                    onClick={() => {
+                                        void navigate({
+                                            to: '/settings',
+                                        });
+                                    }}
+                                >
                                     Account
                                     <DropdownMenuShortcut>
                                         <Fingerprint className="size-4" />

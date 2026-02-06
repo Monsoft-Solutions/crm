@@ -5,3 +5,4 @@ export * from '@mods/contact-channel/api';
 export * from '@mods/contact-message/api';
 export * from '@mods/product/api';
 export * from '@mods/assistant/api';
+export * from '@mods/settings/api';

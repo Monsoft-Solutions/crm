@@ -35,7 +35,7 @@ export const authServer = betterAuth({
 
     secret: authEnv.MSS_AUTH_SECRET,
 
-    trustedOrigins: [appUrl],
+    trustedOrigins: [appUrl, 'https://wise-mastiff-sharing.ngrok-free.app'],
 
     database: drizzleAdapter(db, {
         provider: 'pg',
