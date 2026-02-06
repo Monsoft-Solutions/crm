@@ -220,6 +220,61 @@ Events are emitted without await: `emit({ event: 'eventName', payload: data })`.
 | Build      | Vite (web), tsup (server), Turbo (orchestration)            |
 | Monitoring | Sentry, Winston, Clarity, GA4                               |
 
+## Agent Memory
+
+This project uses an agent memory system in `agents-notes/` to persist learnings across sessions.
+
+- **Capture notes:** Use `/note [category] <content>` or let Claude auto-capture during work
+- **Recall notes:** Use `/recall [search query]` before starting a task
+- **Categories:** `errors`, `patterns`, `decisions`, `tips`, `context`
+- **Notes location:** See `agents-notes/README.md` for full documentation
+
+Before starting a task, check if relevant notes exist. After solving non-trivial problems, capture the learning.
+
+## Parallel Development
+
+Use git worktrees for parallel Claude Code sessions with isolated code:
+
+- **Create:** `/worktree new feat/my-feature` — creates worktree, installs deps
+- **List:** `/worktree list` — show active worktrees
+- **Clean:** `/worktree clean` — remove merged worktrees
+- **Remove:** `/worktree remove <name>` — remove a specific worktree
+- **Location:** Worktrees live in `../worktrees/crm-<branch-slug>/`
+- **Script:** `scripts/claude-wt.sh` handles the lifecycle directly
+
+After creating a worktree, open a new terminal and run `claude` in the worktree directory.
+
+### Session Management
+
+- Name sessions with `/rename <descriptive-name>` for easy resumption
+- Resume with `claude --resume <name>` or `claude --continue`
+- Use `/clear` between unrelated tasks to keep context clean
+
+### Writer/Reviewer Pattern
+
+For higher-quality output, use two sessions:
+- **Session A (Writer):** Implements the feature
+- **Session B (Reviewer):** Reviews with fresh context using the `code-reviewer` subagent
+- Feed review results back to Session A for fixes
+
+## Subagents & Agent Teams
+
+Custom subagents in `.claude/agents/` for specialized tasks:
+
+- **code-reviewer** — Reviews changes for quality, security, and pattern compliance
+- **test-writer** — Generates tests matching project conventions
+- **pr-preparer** — Prepares and creates PRs with structured descriptions
+
+Claude delegates to these automatically, or invoke explicitly: `use the code-reviewer subagent`.
+
+### Agent Teams (Experimental)
+
+For complex parallel tasks, ask Claude to create an agent team. Each teammate gets its own context and worktree. Good for: multi-module implementation, parallel code review, and competing-hypothesis debugging. Use delegate mode (Shift+Tab) to keep the lead coordinating.
+
+### Headless CI Lint
+
+Run `npm run lint:claude` from the root to get a headless code review of changes vs main.
+
 ## Testing the UI in local
 
 - When testing the UI, use these credentials:

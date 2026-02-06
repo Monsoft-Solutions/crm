@@ -7,6 +7,7 @@
     "prepare": "husky",
     "check": "turbo run check",
     "pre-commit": "git stash -q -k -u && (npm run check || (git stash pop -q && exit 1)) && git stash pop -q",
+    "lint:claude": "claude -p 'Review changes vs main. Report issues: filename:line, description. Focus on bugs, security, and pattern violations per CLAUDE.md.' --output-format text",
     "docs:dev": "vitepress dev docs",
     "docs:build": "vitepress build docs",
     "docs:preview": "vitepress preview docs"
