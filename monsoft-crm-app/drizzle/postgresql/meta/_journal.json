@@ -435,6 +435,13 @@
       "when": 1753714214893,
       "tag": "0061_absurd_kree",
       "breakpoints": true
+    },
+    {
+      "idx": 62,
+      "version": "7",
+      "when": 1770344810033,
+      "tag": "0062_square_giant_man",
+      "breakpoints": true
     }
   ]
 }

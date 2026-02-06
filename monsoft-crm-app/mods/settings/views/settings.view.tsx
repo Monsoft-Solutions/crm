@@ -1,6 +1,9 @@
 import { ReactElement } from 'react';
 
+import { RefreshCw } from 'lucide-react';
+
 import { api } from '@api/providers/web';
+import { apiClientUtils } from '@api/providers/web';
 
 import {
     Card,
@@ -9,6 +12,7 @@ import {
     CardHeader,
     CardTitle,
 } from '@ui/card.ui';
+import { Button } from '@ui/button.ui';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/tabs.ui';
 
 import { TwilioCredentialsForm } from '../components/twilio-credentials-form.component';
@@ -18,6 +22,8 @@ export function SettingsView(): ReactElement {
     const { data: credentials } = api.settings.getTwilioCredentials.useQuery();
 
     const { data: phoneNumbers } = api.settings.getOwnedPhoneNumbers.useQuery();
+
+    const { data: brands } = api.brand.getBrands.useQuery();
 
     if (!credentials) return <div />;
 
@@ -54,7 +60,21 @@ export function SettingsView(): ReactElement {
 
                     <Card>
                         <CardHeader>
-                            <CardTitle>Phone Numbers</CardTitle>
+                            <div className="flex items-center gap-2">
+                                <CardTitle>Phone Numbers</CardTitle>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() =>
+                                        void apiClientUtils.settings.getOwnedPhoneNumbers.invalidate()
+                                    }
+                                >
+                                    <RefreshCw className="h-4 w-4" />
+                                </Button>
+                            </div>
+
                             <CardDescription>
                                 Phone numbers owned by your Twilio account and
                                 their brand assignments.
@@ -65,6 +85,10 @@ export function SettingsView(): ReactElement {
                             <TwilioPhoneNumbersTable
                                 phoneNumbers={phoneNumbers ?? []}
                                 hasCredentials={hasCredentials}
+                                brands={brands ?? []}
+                                onRefresh={() =>
+                                    void apiClientUtils.settings.getOwnedPhoneNumbers.invalidate()
+                                }
                             />
                         </CardContent>
                     </Card>

@@ -38,6 +38,8 @@ export const getOwnedPhoneNumbers = protectedEndpoint.query(
                         .select({
                             phoneNumber: tables.brandPhoneNumber.phoneNumber,
                             brandName: tables.brand.name,
+                            brandId: tables.brand.id,
+                            isDefault: tables.brandPhoneNumber.isDefault,
                         })
                         .from(tables.brandPhoneNumber)
                         .innerJoin(
@@ -53,15 +55,28 @@ export const getOwnedPhoneNumbers = protectedEndpoint.query(
             if (brandPhoneError) return Success([]);
 
             const brandMap = new Map(
-                brandPhoneNumbers.map((bp) => [bp.phoneNumber, bp.brandName]),
+                brandPhoneNumbers.map((bp) => [
+                    bp.phoneNumber,
+                    {
+                        brandName: bp.brandName,
+                        brandId: bp.brandId,
+                        isDefault: bp.isDefault,
+                    },
+                ]),
             );
 
-            const result = incomingNumbers.map((number) => ({
-                phoneNumber: number.phoneNumber,
-                friendlyName: number.friendlyName,
-                sid: number.sid,
-                brandName: brandMap.get(number.phoneNumber) ?? null,
-            }));
+            const result = incomingNumbers.map((number) => {
+                const brand = brandMap.get(number.phoneNumber);
+
+                return {
+                    phoneNumber: number.phoneNumber,
+                    friendlyName: number.friendlyName,
+                    sid: number.sid,
+                    brandName: brand?.brandName ?? null,
+                    brandId: brand?.brandId ?? null,
+                    isDefault: brand?.isDefault ?? null,
+                };
+            });
 
             return Success(result);
         },

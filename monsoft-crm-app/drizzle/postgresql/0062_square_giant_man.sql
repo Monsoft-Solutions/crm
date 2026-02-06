@@ -1,0 +1,2 @@
+ALTER TABLE "brand_phone_number" ADD COLUMN "is_default" "is_default_phone_number";--> statement-breakpoint
+ALTER TABLE "brand_phone_number" ADD CONSTRAINT "brand_phone_number_brand_id_is_default_unique" UNIQUE("brand_id","is_default");

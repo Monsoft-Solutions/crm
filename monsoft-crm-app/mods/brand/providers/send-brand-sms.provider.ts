@@ -13,7 +13,10 @@ export const sendBrandSms = (async ({ brandId, to, body, db }) => {
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
             with: {
-                phoneNumbers: true,
+                phoneNumbers: {
+                    where: (record, { eq }) => eq(record.isDefault, 'true'),
+                    limit: 1,
+                },
             },
         }),
     );
@@ -24,7 +27,24 @@ export const sendBrandSms = (async ({ brandId, to, body, db }) => {
 
     const { organizationId, phoneNumbers } = brand;
 
-    const defaultPhoneNumber = phoneNumbers.at(0)?.phoneNumber;
+    let defaultPhoneNumber = phoneNumbers.at(0)?.phoneNumber;
+
+    if (!defaultPhoneNumber) {
+        const { data: fallbackBrand, error: fallbackError } = await catchError(
+            db.query.brand.findFirst({
+                where: (record, { eq }) => eq(record.id, brandId),
+                with: {
+                    phoneNumbers: {
+                        limit: 1,
+                    },
+                },
+            }),
+        );
+
+        if (!fallbackError && fallbackBrand) {
+            defaultPhoneNumber = fallbackBrand.phoneNumbers.at(0)?.phoneNumber;
+        }
+    }
 
     if (!defaultPhoneNumber) return Error();
 
