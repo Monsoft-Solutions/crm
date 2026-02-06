@@ -135,7 +135,7 @@ export function ContactsList({
                 {/* Header with fixed height similar to WhatsApp */}
                 <div
                     className={cn(
-                        'bg-muted/80 sticky top-0 z-10 flex items-center gap-2 border-b px-4 py-3',
+                        'bg-card/80 sticky top-0 z-10 flex items-center gap-2 border-b px-4 py-3 backdrop-blur-sm',
                         isMobileView
                             ? 'justify-between' // Mobile header always expanded
                             : isContactsExpanded
@@ -228,7 +228,7 @@ export function ContactsList({
                 >
                     <div className={cn('flex flex-col', isContactsExpanded)}>
                         {contacts.length === 0 && isContactsExpanded ? (
-                            <div className="border-border/50 bg-muted/50 mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border p-6 text-center">
+                            <div className="border-border/50 bg-muted/30 mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border p-6 text-center">
                                 <p className="text-foreground mb-1 font-medium">
                                     No contacts found
                                 </p>

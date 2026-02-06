@@ -21,7 +21,7 @@ export function ContactInfoSidebar({ contactId }: { contactId: string }) {
 
     return (
         <Sidebar variant="floating" collapsible="offcanvas" side="right">
-            <SidebarHeader className="bg-card sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3">
+            <SidebarHeader className="bg-card/95 sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3 backdrop-blur-sm">
                 <div className="flex items-center">
                     {isMobile && (
                         <Button

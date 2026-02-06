@@ -71,10 +71,10 @@ function NavbarLink({
                         className={cn(
                             'transition-all duration-150',
                             isActive &&
-                                'border-primary bg-sidebar-accent border-l-2 pl-[calc(0.5rem-2px)]',
+                                'border-primary bg-sidebar-accent text-sidebar-primary border-l-2 pl-[calc(0.5rem-2px)]',
                         )}
                     >
-                        <item.icon className="size-4" />
+                        <item.icon className="size-[1.125rem]" />
                         <span>{item.title}</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -128,10 +128,10 @@ export function Navbar() {
     return (
         <Sidebar variant="floating" collapsible="icon" side="left">
             <SidebarHeader className="flex flex-row items-center gap-2 p-3">
-                <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-lg">
-                    <Zap className="size-4" />
+                <div className="bg-primary text-primary-foreground flex size-8 items-center justify-center rounded-xl">
+                    <Zap className="size-4.5" />
                 </div>
-                <span className="text-sm font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
+                <span className="text-[0.9375rem] font-semibold tracking-[-0.02em] group-data-[collapsible=icon]:hidden">
                     Monsoft CRM
                 </span>
             </SidebarHeader>

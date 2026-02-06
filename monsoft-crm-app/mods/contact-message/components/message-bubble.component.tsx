@@ -50,10 +50,10 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                     <>
                         <p
                             className={cn(
-                                'text-[10px] font-medium opacity-70',
+                                'font-tabular text-[10px] font-medium',
                                 direction === 'inbound'
-                                    ? 'text-muted-foreground'
-                                    : 'text-primary',
+                                    ? 'text-muted-foreground/70'
+                                    : 'text-primary/70',
                             )}
                         >
                             {timeToHMEpochStr(createdAt)}
@@ -66,10 +66,10 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                                     <TooltipTrigger asChild>
                                         <div
                                             className={cn(
-                                                'flex items-center justify-center opacity-60',
+                                                'flex items-center justify-center',
                                                 direction === 'inbound'
-                                                    ? 'text-muted-foreground'
-                                                    : 'text-primary',
+                                                    ? 'text-muted-foreground/60'
+                                                    : 'text-primary/60',
                                             )}
                                         >
                                             <ChannelIcon className="size-3.5" />
@@ -98,10 +98,10 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
         return (
             <div
                 className={cn(
-                    'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-2xl transition-all',
+                    'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-[1.25rem] transition-all',
                     direction === 'outbound'
-                        ? 'bg-primary/10 self-end shadow-sm hover:shadow'
-                        : 'bg-muted text-foreground self-start shadow-sm hover:shadow',
+                        ? 'bg-primary/[0.08] border-primary/[0.06] self-end border shadow-sm hover:shadow'
+                        : 'bg-muted text-foreground border-border/30 self-start border shadow-sm hover:shadow',
                 )}
             >
                 {messageBubbleContent}

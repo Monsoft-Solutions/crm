@@ -70,6 +70,14 @@
     --shadow-floating: 0 0px 2px 0 oklch(0 0 0 / 0.06),
         0 6px 24px 0 oklch(0 0 0 / 0.08);
 
+    /* Colored shadows */
+    --shadow-primary-sm: 0 1px 3px oklch(0.546 0.182 237 / 0.12),
+        0 1px 2px oklch(0.546 0.182 237 / 0.08);
+    --shadow-primary-md: 0 4px 14px oklch(0.546 0.182 237 / 0.18);
+    --shadow-destructive-md: 0 4px 14px oklch(0.577 0.245 27 / 0.15);
+    --shadow-input-focus: 0 0 0 3px oklch(0.546 0.182 237 / 0.08),
+        0 0 0 1px oklch(0.546 0.182 237 / 0.3);
+
     /* Durations */
     --duration-fast: 150ms;
     --duration-normal: 200ms;
@@ -96,7 +104,7 @@
     --color-foreground: oklch(0.965 0.003 285);
     --color-card: oklch(0.195 0.014 285);
     --color-card-foreground: oklch(0.965 0.003 285);
-    --color-popover: oklch(0.175 0.014 285);
+    --color-popover: oklch(0.21 0.012 285);
     --color-popover-foreground: oklch(0.965 0.003 285);
     --color-primary: oklch(0.6 0.19 237);
     --color-primary-foreground: oklch(0.985 0.002 0);
@@ -130,6 +138,13 @@
     --shadow-floating: 0 0px 2px 0 oklch(0 0 0 / 0.3),
         0 6px 24px 0 oklch(0 0 0 / 0.25);
 
+    --shadow-primary-sm: 0 1px 3px oklch(0.6 0.19 237 / 0.2),
+        0 1px 2px oklch(0.6 0.19 237 / 0.15);
+    --shadow-primary-md: 0 4px 14px oklch(0.6 0.19 237 / 0.25);
+    --shadow-destructive-md: 0 4px 14px oklch(0.577 0.245 27 / 0.25);
+    --shadow-input-focus: 0 0 0 3px oklch(0.6 0.19 237 / 0.12),
+        0 0 0 1px oklch(0.6 0.19 237 / 0.4);
+
     --color-sidebar: oklch(0.175 0.014 285);
     --color-sidebar-foreground: oklch(0.965 0.003 285);
     --color-sidebar-primary: oklch(0.6 0.19 237);
@@ -149,16 +164,38 @@
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
         text-rendering: optimizeLegibility;
+        font-feature-settings:
+            'cv11' 1,
+            'ss01' 1,
+            'calt' 1;
     }
 
     body {
         @apply bg-background text-foreground font-sans;
+        letter-spacing: -0.011em;
     }
 }
 
 @utility container {
     margin-inline: auto;
     padding-inline: 2rem;
+}
+
+@utility font-tabular {
+    font-variant-numeric: tabular-nums;
+}
+
+@utility shadow-primary-sm {
+    box-shadow: var(--shadow-primary-sm);
+}
+@utility shadow-primary-md {
+    box-shadow: var(--shadow-primary-md);
+}
+@utility shadow-destructive-md {
+    box-shadow: var(--shadow-destructive-md);
+}
+@utility shadow-input-focus {
+    box-shadow: var(--shadow-input-focus);
 }
 
 /* Scrollbar styling */
@@ -233,7 +270,7 @@
 @keyframes pageEnter {
     from {
         opacity: 0;
-        transform: translateY(4px);
+        transform: translateY(6px);
     }
     to {
         opacity: 1;

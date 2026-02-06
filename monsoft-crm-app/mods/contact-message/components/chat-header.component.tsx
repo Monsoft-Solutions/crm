@@ -36,7 +36,7 @@ export function ChatHeader({
     const { contact } = contactSummary;
 
     return (
-        <div className="bg-card flex h-16 items-center justify-between border-b px-3 shadow-sm sm:px-5">
+        <div className="bg-card flex h-14 items-center justify-between border-b px-3 shadow-sm sm:px-5">
             <div className="flex grow items-center">
                 {/* Back button for mobile view */}
                 {isMobileView && onBackToList && (
@@ -76,12 +76,12 @@ export function ChatHeader({
                         firstName={contact.firstName}
                         lastName={contact.lastName}
                     />
-                    <span className="border-card absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border bg-emerald-500"></span>
+                    <span className="border-card absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border bg-emerald-500 shadow-[0_0_6px_oklch(0.627_0.194_149/0.5)]"></span>
                 </div>
 
                 <div className="ml-3 grow overflow-hidden">
                     <div className="flex flex-col">
-                        <p className="truncate text-sm font-medium">
+                        <p className="truncate text-[0.9375rem] font-medium">
                             {contact.firstName} {contact.lastName}
                         </p>
                         <p className="text-muted-foreground text-xs">Online</p>

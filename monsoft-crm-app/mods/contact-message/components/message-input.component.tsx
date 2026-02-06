@@ -176,7 +176,7 @@ export function MessageInput({
                 <TextareaAutosize
                     ref={textAreaRef}
                     placeholder="Type a message..."
-                    className="border-border placeholder:text-muted-foreground mx-2 flex-1 rounded-2xl border px-3 py-2 text-sm focus:ring-0 focus:ring-offset-0"
+                    className="border-border placeholder:text-muted-foreground focus:shadow-input-focus focus:border-primary mx-2 flex-1 rounded-2xl border px-3 py-2 text-sm transition-all duration-200 focus:ring-0 focus:ring-offset-0"
                     maxHeight={200}
                     value={newMessage}
                     onChange={handleNewMessageChange}
@@ -236,7 +236,7 @@ export function MessageInput({
                         className={cn(
                             'h-9 w-9 rounded-full p-0',
                             canSend
-                                ? 'bg-primary hover:bg-primary/90'
+                                ? 'bg-primary hover:bg-primary/90 shadow-primary-sm'
                                 : 'hover:bg-accent',
                         )}
                         aria-label="Send message"

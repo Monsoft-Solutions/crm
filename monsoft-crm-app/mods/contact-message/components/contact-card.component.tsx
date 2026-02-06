@@ -52,8 +52,8 @@ export const ContactCard = forwardRef<
                 ref={ref}
                 className={cn(
                     'border-border/50 relative flex cursor-pointer items-center border-b px-3 py-3 transition-colors',
-                    'hover:bg-accent',
-                    active && 'bg-primary/10',
+                    'hover:bg-accent/70',
+                    active && 'bg-primary/[0.07] border-l-primary border-l-2',
                 )}
                 onClick={() => {
                     onSelect?.();
@@ -82,7 +82,7 @@ export const ContactCard = forwardRef<
                     <div className="ml-3 min-w-0 flex-1 overflow-hidden pr-1">
                         {/* Top row: Contact name and time */}
                         <div className="flex w-full items-center justify-between">
-                            <p className="text-foreground max-w-[70%] truncate font-medium">
+                            <p className="text-foreground max-w-[70%] truncate text-[0.9375rem] font-medium">
                                 {contactName}
                             </p>
 
@@ -122,7 +122,7 @@ export const ContactCard = forwardRef<
                             <div className="ml-1 flex flex-shrink-0 items-center gap-1">
                                 {/* Unread count badge in WhatsApp style */}
                                 {numUnreadInboundMessages > 0 && (
-                                    <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-emerald-500 p-0 text-xs text-white dark:bg-emerald-400">
+                                    <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-emerald-500 p-0 text-xs text-white shadow-[0_0_8px_oklch(0.627_0.194_149/0.4)] dark:bg-emerald-400">
                                         {intToOneDigitStr(
                                             numUnreadInboundMessages,
                                         )}

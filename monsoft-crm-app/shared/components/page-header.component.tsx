@@ -23,7 +23,7 @@ export function PageHeader({
     breadcrumbs,
 }: PageHeaderProps): ReactElement {
     return (
-        <div className="flex flex-col gap-1 pb-6">
+        <div className="flex flex-col gap-1 pb-8">
             {breadcrumbs && breadcrumbs.length > 0 && (
                 <nav className="text-muted-foreground flex items-center gap-1 text-sm">
                     {breadcrumbs.map((crumb, i) => (
@@ -53,11 +53,11 @@ export function PageHeader({
 
             <div className="flex items-center justify-between gap-4">
                 <div className="flex flex-col gap-1">
-                    <h1 className="text-2xl font-semibold tracking-tight">
+                    <h1 className="text-2xl font-semibold tracking-[-0.025em]">
                         {title}
                     </h1>
                     {description && (
-                        <p className="text-muted-foreground text-sm">
+                        <p className="text-muted-foreground text-sm leading-relaxed">
                             {description}
                         </p>
                     )}
