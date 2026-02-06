@@ -45,9 +45,9 @@ export function LogInForm({
     onSubmit: (data: LogInCredentials) => void;
 }): ReactElement {
     return (
-        <Card className="w-full max-w-md border-none shadow-lg">
+        <Card className="w-full max-w-md border-none shadow-xl">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-start text-2xl">
+                <CardTitle className="text-start text-2xl tracking-[-0.03em]">
                     Sign in to your account
                 </CardTitle>
             </CardHeader>
@@ -105,7 +105,7 @@ export function LogInForm({
 
                         <Button
                             type="submit"
-                            className="bg-primary mt-6 h-11 w-full font-medium hover:shadow-lg"
+                            className="mt-6 h-11 w-full font-medium"
                         >
                             Log In
                         </Button>
@@ -116,7 +116,7 @@ export function LogInForm({
             </CardContent>
 
             <CardFooter className="flex justify-center border-t p-4">
-                <span className="text-sm text-gray-500">
+                <span className="text-muted-foreground text-sm">
                     New to Monsoft CRM?{' '}
                 </span>
                 <Link to="/auth/sign-up">

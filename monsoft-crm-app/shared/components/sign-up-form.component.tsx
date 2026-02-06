@@ -209,7 +209,7 @@ export function SignUpForm({
                     <Link to="/auth/log-in">
                         <Button
                             variant="link"
-                            className="px-1 text-blue-600 hover:text-blue-700"
+                            className="text-primary hover:text-primary/80 px-1"
                         >
                             Log In
                         </Button>

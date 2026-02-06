@@ -27,7 +27,7 @@ export function LogInView(): ReactElement {
     });
 
     return (
-        <div className="grid h-screen items-center justify-center bg-blue-50">
+        <div className="from-background via-background to-primary/8 grid h-screen items-center justify-center bg-gradient-to-br">
             <LogInForm
                 form={form}
                 onSubmit={(credentials) => {

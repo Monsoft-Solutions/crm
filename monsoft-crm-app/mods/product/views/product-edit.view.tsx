@@ -3,9 +3,8 @@ import { useState } from 'react';
 import { api } from '@api/providers/web';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/card.ui';
-import { Button } from '@ui/button.ui';
 
-import { ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@shared/components/page-header.component';
 
 import { ProductForm } from '../components';
 
@@ -83,23 +82,17 @@ export function ProductEditView() {
     if (isLoadingBrands || brandsError) return;
 
     return (
-        <div className="h-screen grow overflow-y-scroll">
+        <div className="grow overflow-y-auto p-6">
             {/* Header */}
-            <div className="mb-6">
-                <div className="mb-4 flex items-center gap-4">
-                    <Button variant="outline" size="sm" onClick={handleCancel}>
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Product
-                    </Button>
-                    <div>
-                        <h1 className="text-3xl font-bold">Edit Product</h1>
-                        <p className="text-muted-foreground">
-                            Update product information for{' '}
-                            <strong>{product.name}</strong>
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="Edit Product"
+                description={`Update product information for ${product.name}`}
+                breadcrumbs={[
+                    { label: 'Products', href: '/products' },
+                    { label: product.name, href: `/products/${productId}` },
+                    { label: 'Edit' },
+                ]}
+            />
 
             {/* Form */}
             <div className="max-w-4xl">

@@ -59,7 +59,7 @@ export function ViewEditDialog({
         <Dialog onOpenChange={handleOpenChange} open={isOpen}>
             <DialogTrigger asChild>{children}</DialogTrigger>
 
-            <DialogContent className="block max-h-[90vh] w-[90vw] max-w-none overflow-y-auto rounded-lg border-gray-200 p-6 shadow-lg md:w-[80vw] lg:w-[60vw] lg:max-w-[800px] lg:p-6">
+            <DialogContent className="border-border block max-h-[90vh] w-[90vw] max-w-none overflow-y-auto rounded-lg p-6 shadow-lg md:w-[80vw] lg:w-[60vw] lg:max-w-[800px] lg:p-6">
                 <DialogHeader className="mb-10">
                     <DialogTitle className="text-left">{title}</DialogTitle>
 

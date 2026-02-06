@@ -123,7 +123,7 @@ export function ContactsList({
     return (
         <div
             className={cn(
-                'relative z-0 flex flex-col border-r border-gray-200 transition-all duration-300',
+                'border-border relative z-0 flex flex-col border-r transition-all duration-300',
                 isMobileView
                     ? 'w-full' // Take full width on mobile
                     : isContactsExpanded
@@ -135,7 +135,7 @@ export function ContactsList({
                 {/* Header with fixed height similar to WhatsApp */}
                 <div
                     className={cn(
-                        'sticky top-0 z-10 flex items-center gap-2 border-b bg-gray-100/80 px-4 py-3',
+                        'bg-card/80 sticky top-0 z-10 flex items-center gap-2 border-b px-4 py-3 backdrop-blur-sm',
                         isMobileView
                             ? 'justify-between' // Mobile header always expanded
                             : isContactsExpanded
@@ -228,12 +228,12 @@ export function ContactsList({
                 >
                     <div className={cn('flex flex-col', isContactsExpanded)}>
                         {contacts.length === 0 && isContactsExpanded ? (
-                            <div className="mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border border-gray-100 bg-gray-50 p-6 text-center">
-                                <p className="mb-1 font-medium text-gray-700">
+                            <div className="border-border/50 bg-muted/30 mx-3 my-4 flex h-60 flex-col items-center justify-center rounded-md border p-6 text-center">
+                                <p className="text-foreground mb-1 font-medium">
                                     No contacts found
                                 </p>
 
-                                <p className="max-w-[220px] text-xs text-gray-500">
+                                <p className="text-muted-foreground max-w-[220px] text-xs">
                                     Create a new contact to start chatting or
                                     try a different search term
                                 </p>
@@ -242,7 +242,7 @@ export function ContactsList({
                                     <Button
                                         variant="outline"
                                         size="sm"
-                                        className="mt-4 rounded-full border-blue-100 bg-blue-50 text-blue-600 hover:bg-blue-100"
+                                        className="border-primary/20 bg-primary/10 text-primary hover:bg-primary/15 mt-4 rounded-full"
                                     >
                                         Create New Contact
                                     </Button>
@@ -274,7 +274,7 @@ export function ContactsList({
                     variant="ghost"
                     size="icon"
                     onClick={toggleContacts}
-                    className="absolute top-4.5 right-0 z-50 hidden size-6 translate-x-1/2 transform rounded-full border bg-white shadow-sm md:flex"
+                    className="bg-card absolute top-4.5 right-0 z-50 hidden size-6 translate-x-1/2 transform rounded-full border shadow-sm md:flex"
                     aria-label={
                         isContactsExpanded
                             ? 'Collapse contacts'

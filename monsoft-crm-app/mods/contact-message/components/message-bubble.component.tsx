@@ -50,10 +50,10 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                     <>
                         <p
                             className={cn(
-                                'text-[10px] font-medium opacity-70',
+                                'font-tabular text-[10px] font-medium',
                                 direction === 'inbound'
-                                    ? 'text-gray-500'
-                                    : 'text-blue-600',
+                                    ? 'text-muted-foreground/70'
+                                    : 'text-primary/70',
                             )}
                         >
                             {timeToHMEpochStr(createdAt)}
@@ -66,17 +66,17 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                                     <TooltipTrigger asChild>
                                         <div
                                             className={cn(
-                                                'flex items-center justify-center opacity-60',
+                                                'flex items-center justify-center',
                                                 direction === 'inbound'
-                                                    ? 'text-gray-500'
-                                                    : 'text-blue-500',
+                                                    ? 'text-muted-foreground/60'
+                                                    : 'text-primary/60',
                                             )}
                                         >
                                             <ChannelIcon className="size-3.5" />
                                         </div>
                                     </TooltipTrigger>
 
-                                    <TooltipContent className="bg-white text-black shadow-md">
+                                    <TooltipContent className="bg-popover text-popover-foreground shadow-md">
                                         <p className="text-xs">
                                             {channelTooltip}
                                         </p>
@@ -98,10 +98,10 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
         return (
             <div
                 className={cn(
-                    'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-2xl transition-all',
+                    'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-[1.25rem] transition-all',
                     direction === 'outbound'
-                        ? 'self-end bg-blue-50 shadow-sm hover:shadow'
-                        : 'self-start bg-gray-100 text-gray-800 shadow-sm hover:shadow',
+                        ? 'bg-primary/[0.08] border-primary/[0.06] self-end border shadow-sm hover:shadow'
+                        : 'bg-muted text-foreground border-border/30 self-start border shadow-sm hover:shadow',
                 )}
             >
                 {messageBubbleContent}

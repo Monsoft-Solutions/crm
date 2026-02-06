@@ -52,7 +52,7 @@ export function CreateContactDialog({
                 <Button
                     variant="ghost"
                     size="sm"
-                    className="h-9 w-9 flex-shrink-0 rounded-full bg-blue-50 p-0 text-blue-600 hover:bg-blue-100"
+                    className="bg-primary/10 text-primary hover:bg-primary/15 h-9 w-9 flex-shrink-0 rounded-full p-0"
                 >
                     <Plus className="h-5 w-5" />
                 </Button>

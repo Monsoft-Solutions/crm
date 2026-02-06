@@ -18,7 +18,7 @@ export function ProductDetailView() {
     if (isLoadingProduct || productError) return;
 
     return (
-        <div className="h-screen grow overflow-scroll py-2 pr-16">
+        <div className="grow overflow-y-auto p-6">
             <ProductDetail product={product} />
         </div>
     );

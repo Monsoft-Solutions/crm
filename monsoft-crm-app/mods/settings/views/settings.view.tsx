@@ -15,6 +15,10 @@ import {
 import { Button } from '@ui/button.ui';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@ui/tabs.ui';
 
+import { PageHeader } from '@shared/components/page-header.component';
+
+import { ThemeSelector } from '@ui/theme-selector.ui';
+
 import { TwilioCredentialsForm } from '../components/twilio-credentials-form.component';
 import { TwilioPhoneNumbersTable } from '../components/twilio-phone-numbers-table.component';
 
@@ -32,12 +36,16 @@ export function SettingsView(): ReactElement {
     );
 
     return (
-        <div className="h-screen grow overflow-y-auto p-6">
-            <h1 className="mb-6 text-2xl font-semibold">Settings</h1>
+        <div className="grow overflow-y-auto p-6">
+            <PageHeader
+                title="Settings"
+                description="Manage your account and application preferences"
+            />
 
             <Tabs defaultValue="twilio">
                 <TabsList>
                     <TabsTrigger value="twilio">Twilio</TabsTrigger>
+                    <TabsTrigger value="appearance">Appearance</TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="twilio" className="mt-4 space-y-6">
@@ -90,6 +98,22 @@ export function SettingsView(): ReactElement {
                                     void apiClientUtils.settings.getOwnedPhoneNumbers.invalidate()
                                 }
                             />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="appearance" className="mt-4 space-y-6">
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Theme</CardTitle>
+                            <CardDescription>
+                                Choose your preferred color scheme. System will
+                                follow your OS preference.
+                            </CardDescription>
+                        </CardHeader>
+
+                        <CardContent>
+                            <ThemeSelector type="both" />
                         </CardContent>
                     </Card>
                 </TabsContent>

@@ -130,7 +130,7 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                                     className="flex flex-col gap-3"
                                 >
                                     <div className="my-3 flex justify-center">
-                                        <div className="rounded-full bg-gray-100 px-3 py-0.5 text-[10px] font-medium text-gray-500 shadow-sm">
+                                        <div className="bg-muted text-muted-foreground rounded-full px-3 py-0.5 text-[10px] font-medium shadow-sm backdrop-blur-sm">
                                             {formatMessageDate(
                                                 new Date(dateString),
                                             )}
@@ -157,7 +157,7 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                         {lastMessageReplySuggestions?.map(({ id, content }) => (
                             <Card
                                 key={id}
-                                className="bg-primary/10 flex-1 p-2"
+                                className="bg-primary/[0.06] border-primary/10 hover:bg-primary/[0.1] flex-1 cursor-pointer border p-2 transition-colors"
                                 onClick={() => {
                                     window.dispatchEvent(
                                         new CustomEvent('setNewMessage', {
