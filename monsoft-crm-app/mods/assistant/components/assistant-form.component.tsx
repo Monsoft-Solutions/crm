@@ -148,24 +148,27 @@ export function AssistantForm({
 
         setIsGenerating(true);
 
-        const { data: config, error: configError } =
-            await api.assistant.generateAssistantConfig.mutate({
-                prompt: aiPrompt,
+        try {
+            const { data: config, error: configError } =
+                await api.assistant.generateAssistantConfig.mutate({
+                    prompt: aiPrompt,
+                });
+
+            if (configError) {
+                toast.error('Failed to generate configuration');
+                return;
+            }
+
+            form.reset({
+                ...config,
+                model: form.getValues('model'),
+                responseMode: form.getValues('responseMode'),
             });
 
-        setIsGenerating(false);
-
-        if (configError) {
-            toast.error('Failed to generate configuration');
-            return;
+            toast.success('Configuration generated successfully');
+        } finally {
+            setIsGenerating(false);
         }
-
-        form.reset({
-            ...config,
-            model: form.getValues('model'),
-        });
-
-        toast.success('Configuration generated successfully');
     };
 
     return (

@@ -141,19 +141,25 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
         }, undefined);
 
         if (bestSuggestion) {
-            await sendMessageToContact({
-                db,
-                contactId: message.contactId,
-                channelType: message.channelType,
-                body: bestSuggestion.content,
-            });
-
-            await catchError(
-                db
-                    .update(tables.replySuggestion)
-                    .set({ selectedAt: Date.now() })
-                    .where(eq(tables.replySuggestion.id, bestSuggestion.id)),
+            const { error: sendError } = await catchError(
+                sendMessageToContact({
+                    db,
+                    contactId: message.contactId,
+                    channelType: message.channelType,
+                    body: bestSuggestion.content,
+                }),
             );
+
+            if (!sendError) {
+                await catchError(
+                    db
+                        .update(tables.replySuggestion)
+                        .set({ selectedAt: Date.now() })
+                        .where(
+                            eq(tables.replySuggestion.id, bestSuggestion.id),
+                        ),
+                );
+            }
         }
     } else {
         emit({
