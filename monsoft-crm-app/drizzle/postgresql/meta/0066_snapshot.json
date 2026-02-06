@@ -1,6 +1,6 @@
 {
-  "id": "bd7edfd5-359e-4de9-8581-af67e49de29c",
-  "prevId": "8adf7afd-ab2e-4ad9-aff3-73668c3cf6f2",
+  "id": "e908c35d-eed3-4c31-9b9d-5e67e5e22ebe",
+  "prevId": "bd7edfd5-359e-4de9-8581-af67e49de29c",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -1875,15 +1875,13 @@
           "name": "from",
           "type": "bigint",
           "primaryKey": false,
-          "notNull": true,
-          "default": "(EXTRACT(EPOCH FROM now()) * 1000)::bigint"
+          "notNull": true
         },
         "to": {
           "name": "to",
           "type": "bigint",
           "primaryKey": false,
-          "notNull": true,
-          "default": "(EXTRACT(EPOCH FROM now()) * 1000)::bigint"
+          "notNull": true
         }
       },
       "indexes": {},

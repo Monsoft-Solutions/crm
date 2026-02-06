@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 
-import { table, text, timestamp } from '@db/sql';
+import { defaultTimestamp, table, text } from '@db/sql';
 
 import tables from '@db/db';
 
@@ -19,7 +19,7 @@ export const contact = table('contact', {
         onDelete: 'set null',
     }),
 
-    createdAt: timestamp('created_at').notNull(),
+    createdAt: defaultTimestamp('created_at').notNull(),
 });
 
 export const contactTableRelations = relations(contact, ({ one, many }) => ({
