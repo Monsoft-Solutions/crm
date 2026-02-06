@@ -41,7 +41,6 @@ export function CreateBrandForm({
             name: '',
             phoneNumber: availablePhoneNumbers[0],
             domain: '',
-            whatsappPhoneId: '',
             whatsappPhoneNumber: '',
             description: '',
             industry: industryEnum.options.at(0),
@@ -104,19 +103,6 @@ export function CreateBrandForm({
                 />
 
                 <div className="flex gap-4">
-                    <FormField
-                        control={form.control}
-                        name="whatsappPhoneId"
-                        render={({ field }) => (
-                            <FormItem className="grow">
-                                <InputAnimatedLabel
-                                    label="Whatsapp Phone ID"
-                                    {...field}
-                                />
-                            </FormItem>
-                        )}
-                    />
-
                     <FormField
                         control={form.control}
                         name="whatsappPhoneNumber"

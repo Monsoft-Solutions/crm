@@ -4,16 +4,19 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
-import { getCustomConf } from '@conf/providers/server';
+import { sendWhatsapp } from '@twilio-whatsapp/providers';
 
-import { sendWhatsapp } from '@whatsapp/providers';
+import { getTwilioClientOrg } from '@twilio/providers';
 
 export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
     const { data: brand, error: brandError } = await catchError(
         db.query.brand.findFirst({
             where: (record, { eq }) => eq(record.id, brandId),
             with: {
-                whatsappNumbers: true,
+                whatsappNumbers: {
+                    where: (record, { eq }) => eq(record.isDefault, 'true'),
+                    limit: 1,
+                },
             },
         }),
     );
@@ -24,23 +27,37 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
 
     const { organizationId, whatsappNumbers } = brand;
 
-    const defaultWhatsappNumber = whatsappNumbers.at(0);
+    let defaultWhatsappNumber = whatsappNumbers.at(0)?.phoneNumber;
+
+    if (!defaultWhatsappNumber) {
+        const { data: fallbackBrand, error: fallbackError } = await catchError(
+            db.query.brand.findFirst({
+                where: (record, { eq }) => eq(record.id, brandId),
+                with: {
+                    whatsappNumbers: {
+                        limit: 1,
+                    },
+                },
+            }),
+        );
+
+        if (!fallbackError && fallbackBrand) {
+            defaultWhatsappNumber =
+                fallbackBrand.whatsappNumbers.at(0)?.phoneNumber;
+        }
+    }
 
     if (!defaultWhatsappNumber) return Error('NO_DEFAULT_WHATSAPP_NUMBER');
 
-    const { data: customConf, error: customConfError } = await getCustomConf({
+    const { data: client, error: clientError } = await getTwilioClientOrg({
         organizationId,
     });
 
-    if (customConfError) return Error();
-
-    const { whatsappToken } = customConf;
-
-    if (!whatsappToken) return Error();
+    if (clientError) return Error();
 
     const { data: message, error: messageError } = await sendWhatsapp({
-        authToken: whatsappToken,
-        fromPhoneId: defaultWhatsappNumber.phoneId,
+        client,
+        from: defaultWhatsappNumber,
         to,
         body,
     });

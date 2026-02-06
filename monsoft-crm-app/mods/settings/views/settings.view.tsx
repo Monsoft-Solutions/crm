@@ -21,11 +21,17 @@ import { ThemeSelector } from '@ui/theme-selector.ui';
 
 import { TwilioCredentialsForm } from '../components/twilio-credentials-form.component';
 import { TwilioPhoneNumbersTable } from '../components/twilio-phone-numbers-table.component';
+import { WhatsappSendersTable } from '../components/whatsapp-senders-table.component';
+import { PurchasePhoneNumberDialog } from '../components/purchase-phone-number-dialog.component';
+import { WhatsappSetupGuide } from '../components/whatsapp-setup-guide.component';
 
 export function SettingsView(): ReactElement {
     const { data: credentials } = api.settings.getTwilioCredentials.useQuery();
 
     const { data: phoneNumbers } = api.settings.getOwnedPhoneNumbers.useQuery();
+
+    const { data: whatsappNumbers } =
+        api.settings.getWhatsappNumbers.useQuery();
 
     const { data: brands } = api.brand.getBrands.useQuery();
 
@@ -45,6 +51,7 @@ export function SettingsView(): ReactElement {
             <Tabs defaultValue="twilio">
                 <TabsList>
                     <TabsTrigger value="twilio">Twilio</TabsTrigger>
+                    <TabsTrigger value="whatsapp">WhatsApp</TabsTrigger>
                     <TabsTrigger value="appearance">Appearance</TabsTrigger>
                 </TabsList>
 
@@ -96,6 +103,59 @@ export function SettingsView(): ReactElement {
                                 brands={brands ?? []}
                                 onRefresh={() =>
                                     void apiClientUtils.settings.getOwnedPhoneNumbers.invalidate()
+                                }
+                            />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+
+                <TabsContent value="whatsapp" className="mt-4 space-y-6">
+                    <WhatsappSetupGuide />
+
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center gap-2">
+                                <CardTitle>Buy Phone Numbers</CardTitle>
+
+                                <PurchasePhoneNumberDialog />
+                            </div>
+
+                            <CardDescription>
+                                Search and purchase phone numbers from Twilio
+                                for WhatsApp messaging.
+                            </CardDescription>
+                        </CardHeader>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <div className="flex items-center gap-2">
+                                <CardTitle>WhatsApp Senders</CardTitle>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-7 w-7"
+                                    onClick={() =>
+                                        void apiClientUtils.settings.getWhatsappNumbers.invalidate()
+                                    }
+                                >
+                                    <RefreshCw className="h-4 w-4" />
+                                </Button>
+                            </div>
+
+                            <CardDescription>
+                                WhatsApp sender registrations, brand
+                                assignments, and status.
+                            </CardDescription>
+                        </CardHeader>
+
+                        <CardContent>
+                            <WhatsappSendersTable
+                                whatsappNumbers={whatsappNumbers ?? []}
+                                brands={brands ?? []}
+                                onRefresh={() =>
+                                    void apiClientUtils.settings.getWhatsappNumbers.invalidate()
                                 }
                             />
                         </CardContent>

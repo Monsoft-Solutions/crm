@@ -17,15 +17,32 @@ export function twilioEventWebhookHandler(server: express.Express) {
                 case 'com.twilio.messaging.inbound-message.received': {
                     const { from, to, body } = event.data;
 
-                    emit({
-                        event: 'twilioMessageReceived',
-                        payload: {
-                            from,
-                            to,
-                            body,
-                            createdAt: Date.now(),
-                        },
-                    });
+                    const isWhatsapp = from.startsWith('whatsapp:');
+
+                    if (isWhatsapp) {
+                        const fromPhone = from.replace('whatsapp:', '');
+                        const toPhone = to.replace('whatsapp:', '');
+
+                        emit({
+                            event: 'twilioWhatsappMessageReceived',
+                            payload: {
+                                fromPhoneNumber: fromPhone,
+                                toPhoneNumber: toPhone,
+                                body,
+                                createdAt: Date.now(),
+                            },
+                        });
+                    } else {
+                        emit({
+                            event: 'twilioMessageReceived',
+                            payload: {
+                                from,
+                                to,
+                                body,
+                                createdAt: Date.now(),
+                            },
+                        });
+                    }
 
                     break;
                 }
@@ -35,6 +52,14 @@ export function twilioEventWebhookHandler(server: express.Express) {
 
                     emit({
                         event: 'twilioMessageStatusUpdated',
+                        payload: {
+                            sid: messageSid,
+                            status: 'sent',
+                        },
+                    });
+
+                    emit({
+                        event: 'twilioWhatsappMessageStatusUpdated',
                         payload: {
                             sid: messageSid,
                             status: 'sent',
@@ -52,6 +77,28 @@ export function twilioEventWebhookHandler(server: express.Express) {
                         payload: {
                             sid: messageSid,
                             status: 'delivered',
+                        },
+                    });
+
+                    emit({
+                        event: 'twilioWhatsappMessageStatusUpdated',
+                        payload: {
+                            sid: messageSid,
+                            status: 'delivered',
+                        },
+                    });
+
+                    break;
+                }
+
+                case 'com.twilio.messaging.message.read': {
+                    const { messageSid } = event.data;
+
+                    emit({
+                        event: 'twilioWhatsappMessageStatusUpdated',
+                        payload: {
+                            sid: messageSid,
+                            status: 'read',
                         },
                     });
 

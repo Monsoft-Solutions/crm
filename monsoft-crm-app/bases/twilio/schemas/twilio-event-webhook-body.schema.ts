@@ -35,6 +35,16 @@ const twilioEventSchema = z.discriminatedUnion('type', [
             messageSid: z.string(),
         }),
     }),
+
+    z.object({
+        type: z.literal(
+            'com.twilio.messaging.message.read' satisfies TwilioEventType,
+        ),
+
+        data: z.object({
+            messageSid: z.string(),
+        }),
+    }),
 ]);
 
 export const twilioEventWebhookBodySchema = z.array(twilioEventSchema);

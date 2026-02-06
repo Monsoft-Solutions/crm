@@ -8,7 +8,7 @@ import { db } from '@db/providers/server';
 import tables from '@db/db';
 import { eq } from 'drizzle-orm';
 
-void listen('whatsappMessageStatusUpdatedEvent', async ({ sid, status }) => {
+void listen('twilioWhatsappMessageStatusUpdated', async ({ sid, status }) => {
     const { error: contactWhatsappMessageUpdateError } = await catchError(
         db
             .update(tables.contactWhatsappMessage)
