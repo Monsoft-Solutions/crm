@@ -24,10 +24,13 @@ export const getReplySuggestions = protectedEndpoint
 
             if (suggestionsError) return Error(suggestionsError);
 
-            const response = suggestions.map(({ id, content }) => ({
-                id,
-                content,
-            }));
+            const response = suggestions.map(
+                ({ id, content, certaintyLevel }) => ({
+                    id,
+                    content,
+                    certaintyLevel,
+                }),
+            );
 
             return Success(response);
         }),

@@ -1,7 +1,7 @@
-import { Card } from '@shared/ui/card.ui';
 import { ScrollArea } from '@ui/scroll-area.ui';
 
 import { MessageBubble } from './message-bubble.component';
+import { ReplySuggestionCard } from './reply-suggestion-card.component';
 
 import { api, apiClientUtils } from '@api/providers/web';
 
@@ -161,18 +161,18 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                         )}
                     </div>
 
-                    <div className="flex justify-between gap-4">
-                        {lastMessageReplySuggestions?.map(({ id, content }) => (
-                            <Card
-                                key={id}
-                                className="bg-primary/[0.06] border-primary/10 hover:bg-primary/[0.1] flex-1 cursor-pointer border p-2 transition-colors"
-                                onClick={() => {
-                                    selectReplySuggestion(id, content);
-                                }}
-                            >
-                                {content}
-                            </Card>
-                        ))}
+                    <div className="flex gap-3">
+                        {lastMessageReplySuggestions?.map(
+                            ({ id, content, certaintyLevel }) => (
+                                <ReplySuggestionCard
+                                    key={id}
+                                    id={id}
+                                    content={content}
+                                    certaintyLevel={certaintyLevel}
+                                    onSelect={selectReplySuggestion}
+                                />
+                            ),
+                        )}
                     </div>
                 </ScrollArea>
             </div>
