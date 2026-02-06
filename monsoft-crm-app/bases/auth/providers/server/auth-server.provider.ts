@@ -52,7 +52,7 @@ export const authServer = betterAuth({
             },
         },
 
-        requireEmailVerification: true,
+        requireEmailVerification: false,
     },
 
     socialProviders: {
@@ -79,7 +79,7 @@ export const authServer = betterAuth({
     },
 
     emailVerification: {
-        sendOnSignUp: true,
+        sendOnSignUp: false,
 
         autoSignInAfterVerification: true,
 
