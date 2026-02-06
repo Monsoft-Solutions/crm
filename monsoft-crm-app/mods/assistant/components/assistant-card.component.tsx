@@ -51,6 +51,11 @@ export function AssistantCard({ assistantId }: AssistantCardProps) {
                     <div className="flex items-center gap-2">
                         <Badge variant="secondary">{assistant.model}</Badge>
                         <Badge variant="outline">{assistant.tone}</Badge>
+                        <Badge variant="outline">
+                            {assistant.responseMode === 'auto_reply'
+                                ? 'Auto Reply'
+                                : 'Suggest Reply'}
+                        </Badge>
                     </div>
                     <div>
                         <p className="mb-1 text-sm font-medium">

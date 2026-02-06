@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Plus } from 'lucide-react';
 
 import { Button } from '@shared/ui/button.ui';
 import { Spinner } from '@ui/spinner.ui';
@@ -112,6 +112,20 @@ export function AssistantManagementDashboard() {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {selectedBrandId && (
+                            <CreateEditAssistantDialog
+                                brandId={selectedBrandId}
+                                onSuccess={() => {
+                                    void handleUpdateSuccess();
+                                }}
+                            >
+                                <Button>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Create Assistant
+                                </Button>
+                            </CreateEditAssistantDialog>
+                        )}
                     </div>
 
                     {selectedBrandId && (

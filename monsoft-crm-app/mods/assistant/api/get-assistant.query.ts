@@ -23,6 +23,7 @@ export const getAssistant = protectedEndpoint
                         tone: true,
                         instructions: true,
                         expertise: true,
+                        responseMode: true,
                     },
 
                     with: {

@@ -59,7 +59,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (!assistant) return Error('BRAND_ASSISTANT_NOT_FOUND');
 
-    const { tone, instructions, model } = assistant;
+    const { tone, instructions, model, responseMode } = assistant;
 
     const { data: compressedChat, error: compressedChatError } =
         await getContactCompressedChat({
@@ -133,17 +133,26 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (insertReplySuggestionsError) return Error();
 
-    const highCertaintyReplySuggestion = replySuggestions.find(
-        ({ certaintyLevel }) => certaintyLevel === 'high',
-    );
+    if (responseMode === 'auto_reply') {
+        const highCertaintyReplySuggestion = replySuggestions.find(
+            ({ certaintyLevel }) => certaintyLevel === 'high',
+        );
 
-    if (highCertaintyReplySuggestion) {
-        await sendMessageToContact({
-            db,
-            contactId: message.contactId,
-            channelType: message.channelType,
-            body: highCertaintyReplySuggestion.content,
-        });
+        if (highCertaintyReplySuggestion) {
+            await sendMessageToContact({
+                db,
+                contactId: message.contactId,
+                channelType: message.channelType,
+                body: highCertaintyReplySuggestion.content,
+            });
+        } else {
+            emit({
+                event: 'replySuggestionsCreated',
+                payload: {
+                    messageId,
+                },
+            });
+        }
     } else {
         emit({
             event: 'replySuggestionsCreated',

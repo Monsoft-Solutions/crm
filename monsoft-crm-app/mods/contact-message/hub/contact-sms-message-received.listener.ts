@@ -30,9 +30,9 @@ void listen(
 
         const { brand } = brandPhoneNumber;
 
-        const { data: contactPhoneNumber, error: contactPhoneNumberError } =
+        const { data: contactPhoneNumbers, error: contactPhoneNumberError } =
             await catchError(
-                db.query.contactPhoneNumber.findFirst({
+                db.query.contactPhoneNumber.findMany({
                     where: (record, { eq }) =>
                         eq(record.phoneNumber, fromPhoneNumber),
 
@@ -44,13 +44,14 @@ void listen(
 
         if (contactPhoneNumberError) return;
 
+        const matchedPhoneNumber = contactPhoneNumbers.find(
+            (cp) => cp.contact.brandId === brand.id,
+        );
+
         let contactId: string;
 
-        if (
-            contactPhoneNumber &&
-            contactPhoneNumber.contact.brandId === brand.id
-        ) {
-            contactId = contactPhoneNumber.contactId;
+        if (matchedPhoneNumber) {
+            contactId = matchedPhoneNumber.contactId;
         } else {
             contactId = uuidv4();
 
