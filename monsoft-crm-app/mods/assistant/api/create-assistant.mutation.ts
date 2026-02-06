@@ -28,6 +28,7 @@ export const createAssistant = protectedEndpoint
                     communicationStyle,
                     responseTone,
                     detailLevel,
+                    responseMode,
                 },
             }) => {
                 const behaviorId = uuidv4();
@@ -60,6 +61,7 @@ export const createAssistant = protectedEndpoint
                                 tone,
                                 instructions,
                                 expertise,
+                                responseMode,
                                 behaviorId,
                             })
                             .returning(),

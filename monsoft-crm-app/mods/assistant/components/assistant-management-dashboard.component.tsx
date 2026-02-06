@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { AlertCircle } from 'lucide-react';
+import { AlertCircle, Plus } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@shared/ui/button.ui';
 import { Spinner } from '@ui/spinner.ui';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/card.ui';
+import { Label } from '@ui/label.ui';
 
 import {
     Select,
@@ -50,8 +52,32 @@ export function AssistantManagementDashboard() {
         { enabled: !!selectedBrandId },
     );
 
+    const { data: selectedBrand } = api.brand.getBrand.useQuery(
+        { id: selectedBrandId ?? '' },
+        { enabled: !!selectedBrandId },
+    );
+
     const handleBrandChange = (brandId: string) => {
         setSelectedBrandId(brandId);
+    };
+
+    const handleDefaultAssistantChange = async (value: string) => {
+        if (!selectedBrandId) return;
+
+        const defaultAssistantId = value === 'none' ? null : value;
+
+        try {
+            await api.brand.updateBrandDefaultAssistant.mutate({
+                brandId: selectedBrandId,
+                defaultAssistantId,
+            });
+
+            toast.success('Default assistant updated');
+
+            await apiClientUtils.brand.getBrand.invalidate();
+        } catch {
+            toast.error('Failed to update default assistant');
+        }
     };
 
     const handleUpdateSuccess = async () => {
@@ -112,7 +138,59 @@ export function AssistantManagementDashboard() {
                                 </SelectContent>
                             </Select>
                         </div>
+
+                        {selectedBrandId && (
+                            <CreateEditAssistantDialog
+                                brandId={selectedBrandId}
+                                onSuccess={() => {
+                                    void handleUpdateSuccess();
+                                }}
+                            >
+                                <Button>
+                                    <Plus className="mr-2 h-4 w-4" />
+                                    Create Assistant
+                                </Button>
+                            </CreateEditAssistantDialog>
+                        )}
                     </div>
+
+                    {selectedBrandId &&
+                        assistantsIds &&
+                        assistantsIds.length > 0 && (
+                            <div className="mb-6">
+                                <Label className="mb-2 block text-sm font-medium">
+                                    Default Assistant
+                                </Label>
+                                <div className="max-w-xs">
+                                    <Select
+                                        value={
+                                            selectedBrand?.defaultAssistantId ??
+                                            'none'
+                                        }
+                                        onValueChange={(value) => {
+                                            void handleDefaultAssistantChange(
+                                                value,
+                                            );
+                                        }}
+                                    >
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Select default assistant" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectItem value="none">
+                                                None
+                                            </SelectItem>
+                                            {assistantsIds.map(({ id }) => (
+                                                <DefaultAssistantOption
+                                                    key={id}
+                                                    assistantId={id}
+                                                />
+                                            ))}
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
+                        )}
 
                     {selectedBrandId && (
                         <div>
@@ -133,6 +211,10 @@ export function AssistantManagementDashboard() {
                                         <AssistantCard
                                             key={id}
                                             assistantId={id}
+                                            isDefault={
+                                                id ===
+                                                selectedBrand?.defaultAssistantId
+                                            }
                                         />
                                     ))}
                                 </div>
@@ -163,4 +245,14 @@ export function AssistantManagementDashboard() {
             </Card>
         </div>
     );
+}
+
+function DefaultAssistantOption({ assistantId }: { assistantId: string }) {
+    const { data: assistant } = api.assistant.getAssistant.useQuery({
+        id: assistantId,
+    });
+
+    if (!assistant) return null;
+
+    return <SelectItem value={assistantId}>{assistant.name}</SelectItem>;
 }

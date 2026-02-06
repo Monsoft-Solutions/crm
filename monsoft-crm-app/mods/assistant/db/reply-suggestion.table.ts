@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm';
 
-import { enumType, table, text } from '@db/sql';
+import { enumType, table, text, timestamp } from '@db/sql';
 
 import { certaintyLevelEnum } from '../enums';
 
@@ -17,6 +17,8 @@ export const replySuggestion = table('reply_suggestion', {
     content: text('content').notNull(),
 
     certaintyLevel: certaintyLevel('certainty_level').notNull(),
+
+    selectedAt: timestamp('selected_at'),
 });
 
 export const replySuggestionRelations = relations(replySuggestion, () => ({}));

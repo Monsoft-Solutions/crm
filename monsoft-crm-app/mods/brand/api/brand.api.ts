@@ -7,6 +7,7 @@ import { getAvailablePhoneNumbers } from './get-available-phone-numbers.query';
 
 // mutations
 import { createBrand } from './create-brand.mutation';
+import { updateBrandDefaultAssistant } from './update-brand-default-assistant.mutation';
 
 // subscriptions
 
@@ -18,6 +19,7 @@ export const brand = endpoints({
 
     // mutations
     createBrand,
+    updateBrandDefaultAssistant,
 
     // subscriptions
 });

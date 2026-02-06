@@ -9,6 +9,8 @@ export const createContactSchema = z.object({
     phoneNumber: z.string(),
 
     emailAddress: z.string(),
+
+    assistantId: z.string().optional(),
 });
 
 export type CreateContact = z.infer<typeof createContactSchema>;

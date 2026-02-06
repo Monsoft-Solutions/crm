@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 import { aiModelEnum } from '@ai/enums';
-import { assistantTypeEnum, detailLevelEnum } from '../enums';
+import { assistantTypeEnum, detailLevelEnum, responseModeEnum } from '../enums';
 
 export const updateAssistantSchema = z.object({
     id: z.string(),
@@ -15,6 +15,7 @@ export const updateAssistantSchema = z.object({
     communicationStyle: z.string().optional(),
     responseTone: z.string().optional(),
     detailLevel: detailLevelEnum.optional(),
+    responseMode: responseModeEnum.optional(),
 });
 
 export type UpdateAssistant = z.infer<typeof updateAssistantSchema>;

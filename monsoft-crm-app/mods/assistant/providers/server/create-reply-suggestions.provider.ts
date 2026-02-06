@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { eq } from 'drizzle-orm';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
@@ -7,7 +9,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
-import { generateText } from '@ai/providers';
+import { generateObject } from '@ai/providers';
 
 import tables from '@db/db';
 
@@ -21,7 +23,8 @@ import {
 import { createReplySuggestionsPrompt } from '../../prompts';
 
 import { sendMessageToContact } from '@mods/contact-message/providers/server';
-import { CertaintyLevel } from '@mods/assistant/enums';
+
+import { replySuggestionOutputSchema } from '../../schemas';
 
 export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: message, error: messageError } = await getContactMessage({
@@ -34,6 +37,14 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: contact, error: contactError } = await catchError(
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, message.contactId),
+
+            columns: {
+                id: true,
+                brandId: true,
+                firstName: true,
+                lastName: true,
+                assistantId: true,
+            },
 
             with: {
                 brand: {
@@ -53,13 +64,17 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     const { brand } = contact;
 
-    const { assistants } = brand;
+    let assistant = contact.assistantId
+        ? brand.assistants.find((a) => a.id === contact.assistantId)
+        : undefined;
 
-    const assistant = assistants.at(0);
+    if (!assistant) {
+        assistant = brand.assistants.at(0);
+    }
 
     if (!assistant) return Error('BRAND_ASSISTANT_NOT_FOUND');
 
-    const { tone, instructions, model } = assistant;
+    const { tone, instructions, model, responseMode } = assistant;
 
     const { data: compressedChat, error: compressedChatError } =
         await getContactCompressedChat({
@@ -79,71 +94,73 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
             assistant: { brand, tone, instructions },
             contact,
             compressedChatWithoutCurrentMessage,
+            channelType: message.channelType,
         });
 
     if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');
 
-    const replySuggestions: {
-        content: string;
-        certaintyLevel: CertaintyLevel;
-    }[] = [];
+    const { data: result, error: generateError } = await generateObject({
+        messages: [
+            { id: uuidv4(), role: 'system', content: systemPrompt },
+            { id: uuidv4(), role: 'user', content: message.body },
+        ],
+        modelParams: { model, temperature: 0.5, callerName: 'assistant' },
+        outputSchema: replySuggestionOutputSchema,
+    });
 
-    let count = 0;
-    while (count++ < 3) {
-        const { data: response, error: responseError } = await generateText({
-            messages: [
-                {
-                    id: uuidv4(),
-                    role: 'system',
-                    content: systemPrompt,
-                },
+    if (generateError) return Error('GENERATE_TEXT_ERROR');
 
-                {
-                    id: uuidv4(),
-                    role: 'user',
-                    content: message.body,
-                },
-            ],
+    const replySuggestions = result.suggestions;
 
-            modelParams: {
-                model,
-                temperature: 0.5,
-                callerName: 'assistant',
-            },
-        });
-
-        if (responseError) return Error('GENERATE_TEXT_ERROR');
-
-        replySuggestions.push({
-            content: response,
-            certaintyLevel: 'high',
-        });
-    }
+    const suggestionRecords = replySuggestions.map(
+        ({ content, certaintyLevel }) => ({
+            id: uuidv4(),
+            messageId,
+            content,
+            certaintyLevel,
+        }),
+    );
 
     const { error: insertReplySuggestionsError } = await catchError(
-        db.insert(tables.replySuggestion).values(
-            replySuggestions.map(({ content, certaintyLevel }) => ({
-                id: uuidv4(),
-                messageId,
-                content,
-                certaintyLevel,
-            })),
-        ),
+        db.insert(tables.replySuggestion).values(suggestionRecords),
     );
 
     if (insertReplySuggestionsError) return Error();
 
-    const highCertaintyReplySuggestion = replySuggestions.find(
-        ({ certaintyLevel }) => certaintyLevel === 'high',
-    );
+    if (responseMode === 'auto_reply') {
+        const certaintyPriority = ['high', 'medium', 'low'] as const;
 
-    if (highCertaintyReplySuggestion) {
-        await sendMessageToContact({
-            db,
-            contactId: message.contactId,
-            channelType: message.channelType,
-            body: highCertaintyReplySuggestion.content,
-        });
+        const bestSuggestion = certaintyPriority.reduce<
+            (typeof suggestionRecords)[number] | undefined
+        >((found, level) => {
+            if (found) return found;
+            const index = replySuggestions.findIndex(
+                (s) => s.certaintyLevel === level,
+            );
+            return index !== -1 ? suggestionRecords[index] : undefined;
+        }, undefined);
+
+        if (bestSuggestion) {
+            const { error: sendError } = await catchError(
+                sendMessageToContact({
+                    db,
+                    contactId: message.contactId,
+                    channelType: message.channelType,
+                    body: bestSuggestion.content,
+                }),
+            );
+
+            if (!sendError) {
+                await catchError(
+                    db
+                        .update(tables.replySuggestion)
+                        .set({ selectedAt: Date.now() })
+                        .where(
+                            eq(tables.replySuggestion.id, bestSuggestion.id),
+                        ),
+                );
+            }
+        }
     } else {
         emit({
             event: 'replySuggestionsCreated',

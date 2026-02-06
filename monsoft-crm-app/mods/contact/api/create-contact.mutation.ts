@@ -21,6 +21,7 @@ export const createContact = protectedEndpoint
                     lastName,
                     phoneNumber,
                     emailAddress,
+                    assistantId,
                 },
                 db,
             }) => {
@@ -70,9 +71,30 @@ export const createContact = protectedEndpoint
                         );
                 }
 
+                let resolvedAssistantId = assistantId;
+
+                if (!resolvedAssistantId) {
+                    const { data: brand, error: brandError } = await catchError(
+                        db.query.brand.findFirst({
+                            where: (record, { eq }) => eq(record.id, brandId),
+                            columns: { defaultAssistantId: true },
+                        }),
+                    );
+
+                    if (!brandError && brand?.defaultAssistantId) {
+                        resolvedAssistantId = brand.defaultAssistantId;
+                    }
+                }
+
                 const contactId = uuidv4();
 
-                const contact = { id: contactId, brandId, firstName, lastName };
+                const contact = {
+                    id: contactId,
+                    brandId,
+                    firstName,
+                    lastName,
+                    assistantId: resolvedAssistantId,
+                };
 
                 const { error: insertContactError } = await catchError(
                     db.insert(tables.contact).values(contact),

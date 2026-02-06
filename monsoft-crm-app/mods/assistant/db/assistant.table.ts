@@ -6,7 +6,7 @@ import tables from '@db/db';
 
 import { aiModelEnum } from '@ai/enums';
 
-import { assistantTypeEnum } from '../enums';
+import { assistantTypeEnum, responseModeEnum } from '../enums';
 
 import { assistantBehavior } from './assistant-behavior.table';
 
@@ -16,6 +16,8 @@ export const assistantType = enumType(
     'assistant_type',
     assistantTypeEnum.options,
 );
+
+export const responseMode = enumType('response_mode', responseModeEnum.options);
 
 export const assistant = table('assistant', {
     id: text('id').primaryKey(),
@@ -38,12 +40,14 @@ export const assistant = table('assistant', {
 
     expertise: text('expertise').notNull(),
 
+    responseMode: responseMode('response_mode').notNull().default('auto_reply'),
+
     behaviorId: text('behavior_id')
         .notNull()
         .references(() => assistantBehavior.id, { onDelete: 'cascade' }),
 });
 
-export const assistantRelations = relations(assistant, ({ one }) => ({
+export const assistantRelations = relations(assistant, ({ one, many }) => ({
     brand: one(tables.brand, {
         fields: [assistant.brandId],
         references: [tables.brand.id],
@@ -53,4 +57,6 @@ export const assistantRelations = relations(assistant, ({ one }) => ({
         fields: [assistant.behaviorId],
         references: [assistantBehavior.id],
     }),
+
+    contacts: many(tables.contact),
 }));

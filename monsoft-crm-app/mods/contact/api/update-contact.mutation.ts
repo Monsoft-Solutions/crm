@@ -16,8 +16,8 @@ export const updateContact = protectedEndpoint
     .input(updateContactSchema.extend({ id: z.string() }))
     .mutation(
         queryMutationCallback(
-            async ({ input: { id, firstName, lastName }, db }) => {
-                const contact = { id, firstName, lastName };
+            async ({ input: { id, firstName, lastName, assistantId }, db }) => {
+                const contact = { id, firstName, lastName, assistantId };
 
                 const { error: updateContactError } = await catchError(
                     db

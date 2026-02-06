@@ -1,13 +1,21 @@
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { toast } from 'sonner';
+import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
 
 import { Button } from '@ui/button.ui';
 import { InputAnimatedLabel } from '@shared/ui/input-animated-label.ui';
 import { Textarea } from '@ui/textarea.ui';
 
 import { Form, FormControl, FormField, FormItem, FormLabel } from '@ui/form.ui';
+
+import {
+    Collapsible,
+    CollapsibleContent,
+    CollapsibleTrigger,
+} from '@ui/collapsible.ui';
 
 import {
     Select,
@@ -32,6 +40,8 @@ import {
     assistantTypeEnum,
     DetailLevel,
     detailLevelEnum,
+    ResponseMode,
+    responseModeEnum,
 } from '../enums';
 import { ScrollArea } from '@shared/ui/scroll-area.ui';
 
@@ -58,6 +68,9 @@ export function AssistantForm({
     onSuccess,
     onCancel,
 }: AssistantFormProps) {
+    const [aiPrompt, setAiPrompt] = useState('');
+    const [isGenerating, setIsGenerating] = useState(false);
+
     const form = useForm<Required<UpdateAssistant>>({
         resolver: zodResolver(assistantSchema),
         defaultValues: assistant ?? {
@@ -71,6 +84,7 @@ export function AssistantForm({
             communicationStyle: '',
             responseTone: '',
             detailLevel: detailLevelEnum.options.at(0),
+            responseMode: 'auto_reply',
         },
     });
 
@@ -111,6 +125,7 @@ export function AssistantForm({
         communicationStyle: string;
         responseTone: string;
         detailLevel: DetailLevel;
+        responseMode: ResponseMode;
     }) => {
         if (assistant) {
             await handleUpdate({
@@ -125,6 +140,37 @@ export function AssistantForm({
         }
     };
 
+    const handleGenerateConfig = async () => {
+        if (!aiPrompt.trim()) {
+            toast.error('Please enter a description for your assistant');
+            return;
+        }
+
+        setIsGenerating(true);
+
+        try {
+            const { data: config, error: configError } =
+                await api.assistant.generateAssistantConfig.mutate({
+                    prompt: aiPrompt,
+                });
+
+            if (configError) {
+                toast.error('Failed to generate configuration');
+                return;
+            }
+
+            form.reset({
+                ...config,
+                model: form.getValues('model'),
+                responseMode: form.getValues('responseMode'),
+            });
+
+            toast.success('Configuration generated successfully');
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
     return (
         <ScrollArea className="max-h-[50vh]">
             <Form {...form}>
@@ -134,6 +180,48 @@ export function AssistantForm({
                         void form.handleSubmit(handleSubmit)(e);
                     }}
                 >
+                    <Collapsible>
+                        <CollapsibleTrigger asChild>
+                            <Button
+                                type="button"
+                                variant="outline"
+                                className="flex w-full items-center justify-between"
+                            >
+                                <span className="flex items-center gap-2">
+                                    <Sparkles className="h-4 w-4" />
+                                    Generate with AI
+                                </span>
+                                <ChevronDown className="h-4 w-4" />
+                            </Button>
+                        </CollapsibleTrigger>
+
+                        <CollapsibleContent className="mt-3 space-y-3">
+                            <Textarea
+                                placeholder="Describe your assistant, e.g. 'A friendly support agent for a SaaS billing product'"
+                                className="min-h-[80px]"
+                                value={aiPrompt}
+                                onChange={(e) => {
+                                    setAiPrompt(e.target.value);
+                                }}
+                            />
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                disabled={isGenerating}
+                                onClick={() => {
+                                    void handleGenerateConfig();
+                                }}
+                            >
+                                {isGenerating ? (
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                ) : (
+                                    <Sparkles className="mr-2 h-4 w-4" />
+                                )}
+                                Generate Configuration
+                            </Button>
+                        </CollapsibleContent>
+                    </Collapsible>
+
                     <FormField
                         control={form.control}
                         name="name"
@@ -213,6 +301,40 @@ export function AssistantForm({
                                                     value={type}
                                                 >
                                                     {type}
+                                                </SelectItem>
+                                            ),
+                                        )}
+                                    </SelectContent>
+                                </Select>
+                            </FormItem>
+                        )}
+                    />
+
+                    <FormField
+                        control={form.control}
+                        name="responseMode"
+                        render={({ field }) => (
+                            <FormItem>
+                                <FormLabel>Response Mode</FormLabel>
+                                <Select
+                                    onValueChange={field.onChange}
+                                    value={field.value}
+                                >
+                                    <FormControl>
+                                        <SelectTrigger>
+                                            <SelectValue placeholder="Response Mode" />
+                                        </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                        {responseModeEnum.options.map(
+                                            (mode) => (
+                                                <SelectItem
+                                                    key={mode}
+                                                    value={mode}
+                                                >
+                                                    {mode === 'auto_reply'
+                                                        ? 'Auto Reply'
+                                                        : 'Suggest Reply'}
                                                 </SelectItem>
                                             ),
                                         )}
