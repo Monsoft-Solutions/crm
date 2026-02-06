@@ -98,30 +98,18 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');
 
-    const suggestionPromises = Array.from({ length: 3 }, () =>
-        generateObject({
-            messages: [
-                { id: uuidv4(), role: 'system', content: systemPrompt },
-                { id: uuidv4(), role: 'user', content: message.body },
-            ],
-            modelParams: { model, temperature: 0.5, callerName: 'assistant' },
-            outputSchema: replySuggestionOutputSchema,
-        }),
-    );
+    const { data: result, error: generateError } = await generateObject({
+        messages: [
+            { id: uuidv4(), role: 'system', content: systemPrompt },
+            { id: uuidv4(), role: 'user', content: message.body },
+        ],
+        modelParams: { model, temperature: 0.5, callerName: 'assistant' },
+        outputSchema: replySuggestionOutputSchema,
+    });
 
-    const results = await Promise.all(suggestionPromises);
+    if (generateError) return Error('GENERATE_TEXT_ERROR');
 
-    const replySuggestions = results
-        .map((result) => {
-            if (result.error) return null;
-            return {
-                content: result.data.content,
-                certaintyLevel: result.data.certaintyLevel,
-            };
-        })
-        .filter((s) => s !== null);
-
-    if (replySuggestions.length === 0) return Error('GENERATE_TEXT_ERROR');
+    const replySuggestions = result.suggestions;
 
     const suggestionRecords = replySuggestions.map(
         ({ content, certaintyLevel }) => ({
@@ -139,36 +127,32 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
     if (insertReplySuggestionsError) return Error();
 
     if (responseMode === 'auto_reply') {
-        const highCertaintySuggestion = suggestionRecords.find(
-            (_, index) => replySuggestions[index].certaintyLevel === 'high',
-        );
+        const certaintyPriority = ['high', 'medium', 'low'] as const;
 
-        if (highCertaintySuggestion) {
+        const bestSuggestion = certaintyPriority.reduce<
+            (typeof suggestionRecords)[number] | undefined
+        >((found, level) => {
+            if (found) return found;
+            const index = replySuggestions.findIndex(
+                (s) => s.certaintyLevel === level,
+            );
+            return index !== -1 ? suggestionRecords[index] : undefined;
+        }, undefined);
+
+        if (bestSuggestion) {
             await sendMessageToContact({
                 db,
                 contactId: message.contactId,
                 channelType: message.channelType,
-                body: highCertaintySuggestion.content,
+                body: bestSuggestion.content,
             });
 
             await catchError(
                 db
                     .update(tables.replySuggestion)
                     .set({ selectedAt: Date.now() })
-                    .where(
-                        eq(
-                            tables.replySuggestion.id,
-                            highCertaintySuggestion.id,
-                        ),
-                    ),
+                    .where(eq(tables.replySuggestion.id, bestSuggestion.id)),
             );
-        } else {
-            emit({
-                event: 'replySuggestionsCreated',
-                payload: {
-                    messageId,
-                },
-            });
         }
     } else {
         emit({
