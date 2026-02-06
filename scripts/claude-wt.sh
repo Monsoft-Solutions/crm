@@ -32,17 +32,20 @@ cmd_new() {
     echo "Creating worktree: $wt_path (branch: $branch, base: $base)"
     git -C "$REPO_ROOT" worktree add "$wt_path" -b "$branch" "$base"
 
-    # Copy .env.local files if they exist
-    local env_src="$REPO_ROOT/monsoft-crm-app/.env.local"
-    local env_dst="$wt_path/monsoft-crm-app/.env.local"
-    if [ -f "$env_src" ]; then
-        echo "Copying .env.local to worktree..."
-        cp "$env_src" "$env_dst"
-    fi
+    # Copy env config files if they exist
+    for env_file in .env-cmdrc .env.local; do
+        local env_src="$REPO_ROOT/monsoft-crm-app/$env_file"
+        local env_dst="$wt_path/monsoft-crm-app/$env_file"
+        if [ -f "$env_src" ]; then
+            echo "Copying $env_file to worktree..."
+            cp "$env_src" "$env_dst"
+        fi
+    done
 
-    # Install dependencies
+    # Install dependencies (--ignore-scripts to skip husky prepare in worktrees)
     echo "Installing dependencies in worktree..."
-    (cd "$wt_path/monsoft-crm-app" && npm install)
+    (cd "$wt_path" && npm install --ignore-scripts)
+    (cd "$wt_path/monsoft-crm-app" && npm install --ignore-scripts)
 
     echo ""
     echo "Worktree ready at: $wt_path"
