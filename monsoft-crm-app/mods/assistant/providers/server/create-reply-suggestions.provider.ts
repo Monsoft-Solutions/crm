@@ -94,6 +94,7 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
             assistant: { brand, tone, instructions },
             contact,
             compressedChatWithoutCurrentMessage,
+            channelType: message.channelType,
         });
 
     if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');

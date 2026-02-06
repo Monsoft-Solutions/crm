@@ -5,32 +5,98 @@ export const createReplySuggestionsPrompt = (({
     assistant: { brand, tone, instructions },
     contact,
     compressedChatWithoutCurrentMessage,
+    channelType,
 }) => {
     if (!tone) return Error('ASSISTANT_TONE_REQUIRED');
     if (!instructions) return Error('ASSISTANT_INSTRUCTIONS_REQUIRED');
 
-    const systemPrompt = `
-    You are a assistant who replies to a message from a contact, using ${tone} tone, following these instructions:
-    ${instructions}
+    const brandContextLines: string[] = [];
 
-    Taking into account this information about the brand you work for:
-    ${JSON.stringify(brand, null, 2)}
+    brandContextLines.push(`Brand: ${brand.name}`);
 
-    And this information about the contact:
-    ${JSON.stringify(contact, null, 2)}
+    const { brandVoice, brandMarket } = brand;
 
-    And this information about the conversation, consisting of a) a list of summaries of older messages and b) a list of the latest messages (non-summarized):
-    ${JSON.stringify(compressedChatWithoutCurrentMessage, null, 2)}
+    const voiceParts = [
+        brandVoice.coreValues && `Core values: ${brandVoice.coreValues}`,
+        brandVoice.personalityTraits &&
+            `Personality: ${brandVoice.personalityTraits}`,
+        brandVoice.communicationStyle &&
+            `Communication style: ${brandVoice.communicationStyle}`,
+        brandVoice.languagePreferences &&
+            `Language preferences: ${brandVoice.languagePreferences}`,
+        brandVoice.voiceGuidelines &&
+            `Voice guidelines: ${brandVoice.voiceGuidelines}`,
+        brandVoice.prohibitedContent &&
+            `Prohibited content: ${brandVoice.prohibitedContent}`,
+    ].filter((v): v is string => Boolean(v));
 
-    Respond with a JSON object containing a "suggestions" array with exactly 3 reply suggestions. Each suggestion should have:
-    - "content": your reply message. Do NOT explain the reasoning behind the reply. Keep it as short as possible, using direct and concise answer.
-    - "certaintyLevel": how confident you are that this is the right reply ("low", "medium", or "high")
-      - "high": you have clear context and the reply directly addresses the contact's message
-      - "medium": you have some context but the reply may need human review
-      - "low": you lack context or the message is ambiguous
+    if (voiceParts.length > 0) {
+        brandContextLines.push(...voiceParts);
+    }
 
-    Each suggestion should offer a different approach or phrasing to give the user meaningful choices.
-    `;
+    const marketParts = [
+        brandMarket.keyProducts && `Key products: ${brandMarket.keyProducts}`,
+        brandMarket.differentiators &&
+            `Differentiators: ${brandMarket.differentiators}`,
+        brandMarket.painPoints && `Pain points: ${brandMarket.painPoints}`,
+        brandMarket.targetSegments &&
+            `Target segments: ${brandMarket.targetSegments}`,
+    ].filter((v): v is string => Boolean(v));
+
+    if (marketParts.length > 0) {
+        brandContextLines.push(...marketParts);
+    }
+
+    const brandContext = brandContextLines.join('\n');
+
+    const { summaries, messages } = compressedChatWithoutCurrentMessage;
+
+    const conversationLines: string[] = [];
+
+    if (summaries.length > 0) {
+        conversationLines.push(
+            '[Summary of earlier messages]',
+            ...summaries.map((s) => s.summary),
+            '',
+        );
+    }
+
+    for (const msg of messages) {
+        const speaker = msg.direction === 'inbound' ? '[Contact]' : '[You]';
+        conversationLines.push(`${speaker}: ${msg.body}`);
+    }
+
+    const hasHistory = summaries.length > 0 || messages.length > 0;
+
+    const conversationSection =
+        conversationLines.length > 0
+            ? `Conversation so far:\n${conversationLines.join('\n')}`
+            : 'No prior messages — this is the first interaction.';
+
+    const systemPrompt = `You are replying to a contact on behalf of a brand. Follow these instructions strictly:
+${instructions}
+
+Use a ${tone} tone throughout.
+
+${brandContext}
+
+You are speaking with ${contact.firstName} ${contact.lastName}.
+
+${conversationSection}
+
+IMPORTANT:
+- This is a ${channelType} conversation. Keep replies appropriately concise.
+- ${hasHistory ? `The conversation is already ongoing — do NOT open with greetings, introductions, or "Hi ${contact.firstName}". Continue naturally from where the conversation left off.` : 'This is the very first interaction, so you may greet the contact.'}
+- Reply directly to what the contact just said.
+
+Respond with a JSON object containing a "suggestions" array with exactly 3 reply suggestions. Each suggestion should have:
+- "content": your reply message. Do NOT explain the reasoning behind the reply. Keep it as short as possible, using direct and concise answer.
+- "certaintyLevel": how confident you are that this is the right reply ("low", "medium", or "high")
+  - "high": you have clear context and the reply directly addresses the contact's message
+  - "medium": you have some context but the reply may need human review
+  - "low": you lack context or the message is ambiguous
+
+Each suggestion should offer a different approach or phrasing to give the user meaningful choices.`;
 
     return Success(systemPrompt);
 }) satisfies Function<
@@ -70,8 +136,10 @@ export const createReplySuggestionsPrompt = (({
             messages: {
                 id: string;
                 body: string;
+                direction: 'inbound' | 'outbound';
             }[];
         };
+        channelType: string;
     },
     string
 >;
