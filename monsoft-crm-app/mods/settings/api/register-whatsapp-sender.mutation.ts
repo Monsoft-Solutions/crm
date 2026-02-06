@@ -8,6 +8,8 @@ import {
     registerWhatsappSender as registerWhatsappSenderProvider,
 } from '@twilio/providers';
 
+import { logger } from '@log/providers';
+
 import { registerWhatsappSenderSchema } from '../schemas';
 
 export const registerWhatsappSender = protectedEndpoint
@@ -22,12 +24,24 @@ export const registerWhatsappSender = protectedEndpoint
                 },
                 input: { phoneNumberSid },
             }) => {
+                logger.info('Register WhatsApp sender requested', {
+                    label: 'whatsapp',
+                    phoneNumberSid,
+                    organizationId,
+                });
+
                 const { data: client, error: clientError } =
                     await getTwilioClientOrg({
                         organizationId,
                     });
 
-                if (clientError) return Error('TWILIO_CLIENT_ERROR');
+                if (clientError) {
+                    logger.error('Failed to get Twilio client', {
+                        label: 'whatsapp',
+                        organizationId,
+                    });
+                    return Error('TWILIO_CLIENT_ERROR');
+                }
 
                 const { data: sender, error: senderError } =
                     await registerWhatsappSenderProvider({
@@ -35,7 +49,20 @@ export const registerWhatsappSender = protectedEndpoint
                         phoneNumber: phoneNumberSid,
                     });
 
-                if (senderError) return Error('REGISTER_FAILED');
+                if (senderError) {
+                    logger.error('WhatsApp sender registration failed', {
+                        label: 'whatsapp',
+                        phoneNumberSid,
+                        organizationId,
+                    });
+                    return Error('REGISTER_FAILED');
+                }
+
+                logger.info('WhatsApp sender registered successfully', {
+                    label: 'whatsapp',
+                    senderSid: sender.senderSid,
+                    organizationId,
+                });
 
                 return Success(sender);
             },

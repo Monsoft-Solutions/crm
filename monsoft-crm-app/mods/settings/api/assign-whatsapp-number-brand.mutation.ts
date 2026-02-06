@@ -8,6 +8,7 @@ import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
 import tables from '@db/db';
+import { logger } from '@log/providers';
 
 import { assignWhatsappNumberBrandSchema } from '../schemas';
 
@@ -24,6 +25,13 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                 input: { phoneNumber, brandId },
                 db,
             }) => {
+                logger.info('Assign WhatsApp number to brand requested', {
+                    label: 'whatsapp',
+                    phoneNumber,
+                    brandId,
+                    organizationId,
+                });
+
                 // Find existing assignment for this WhatsApp number (scoped to org)
                 const { data: existing, error: findError } = await catchError(
                     db
@@ -47,10 +55,22 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                         ),
                 );
 
-                if (findError) return Error('FIND_FAILED');
+                if (findError) {
+                    logger.error('Failed to find existing assignment', {
+                        label: 'whatsapp',
+                        phoneNumber,
+                        organizationId,
+                    });
+                    return Error('FIND_FAILED');
+                }
 
                 // Delete existing assignment if any
                 if (existing.length > 0) {
+                    logger.info('Removing existing brand assignment', {
+                        label: 'whatsapp',
+                        existingId: existing[0].id,
+                    });
+
                     const { error: deleteError } = await catchError(
                         db
                             .delete(tables.brandWhatsappNumber)
@@ -62,11 +82,23 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                             ),
                     );
 
-                    if (deleteError) return Error('DELETE_FAILED');
+                    if (deleteError) {
+                        logger.error('Failed to delete existing assignment', {
+                            label: 'whatsapp',
+                            existingId: existing[0].id,
+                        });
+                        return Error('DELETE_FAILED');
+                    }
                 }
 
                 // If brandId is null, we only needed to unassign
-                if (!brandId) return Success();
+                if (!brandId) {
+                    logger.info('WhatsApp number unassigned from brand', {
+                        label: 'whatsapp',
+                        phoneNumber,
+                    });
+                    return Success();
+                }
 
                 // Verify brand belongs to the user's organization
                 const { data: brand, error: brandError } = await catchError(
@@ -79,7 +111,14 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                     }),
                 );
 
-                if (brandError || !brand) return Error('BRAND_NOT_FOUND');
+                if (brandError || !brand) {
+                    logger.error('Brand not found or access denied', {
+                        label: 'whatsapp',
+                        brandId,
+                        organizationId,
+                    });
+                    return Error('BRAND_NOT_FOUND');
+                }
 
                 // Check if brand already has WhatsApp numbers to determine default
                 const { data: existingNumbers, error: countError } =
@@ -92,7 +131,13 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                             ),
                     );
 
-                if (countError) return Error('COUNT_FAILED');
+                if (countError) {
+                    logger.error('Failed to count existing numbers', {
+                        label: 'whatsapp',
+                        brandId,
+                    });
+                    return Error('COUNT_FAILED');
+                }
 
                 const isDefault =
                     existingNumbers.length === 0 ? ('true' as const) : null;
@@ -107,7 +152,21 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                     }),
                 );
 
-                if (insertError) return Error('INSERT_FAILED');
+                if (insertError) {
+                    logger.error('Failed to insert brand assignment', {
+                        label: 'whatsapp',
+                        phoneNumber,
+                        brandId,
+                    });
+                    return Error('INSERT_FAILED');
+                }
+
+                logger.info('WhatsApp number assigned to brand', {
+                    label: 'whatsapp',
+                    phoneNumber,
+                    brandId,
+                    isDefault,
+                });
 
                 return Success();
             },

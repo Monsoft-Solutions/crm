@@ -7,6 +7,7 @@ import { protectedEndpoint } from '@api/providers/server';
 import { queryMutationCallback } from '@api/providers/server/query-mutation-callback.provider';
 
 import tables from '@db/db';
+import { logger } from '@log/providers';
 
 export const getWhatsappNumbers = protectedEndpoint.query(
     queryMutationCallback(
@@ -42,7 +43,20 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                         .where(eq(tables.brand.organizationId, organizationId)),
                 );
 
-            if (queryError) return Success([]);
+            if (queryError) {
+                logger.error('Failed to query WhatsApp numbers', {
+                    label: 'whatsapp',
+                    organizationId,
+                    error: String(queryError),
+                });
+                return Success([]);
+            }
+
+            logger.info('WhatsApp numbers retrieved', {
+                label: 'whatsapp',
+                count: whatsappNumbers.length,
+                organizationId,
+            });
 
             return Success(whatsappNumbers);
         },

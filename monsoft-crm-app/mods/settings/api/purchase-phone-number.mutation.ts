@@ -8,6 +8,8 @@ import {
     purchasePhoneNumber as purchasePhoneNumberProvider,
 } from '@twilio/providers';
 
+import { logger } from '@log/providers';
+
 import { purchasePhoneNumberSchema } from '../schemas';
 
 export const purchasePhoneNumber = protectedEndpoint
@@ -22,12 +24,24 @@ export const purchasePhoneNumber = protectedEndpoint
                 },
                 input: { phoneNumber },
             }) => {
+                logger.info('Purchase phone number requested', {
+                    label: 'whatsapp',
+                    phoneNumber,
+                    organizationId,
+                });
+
                 const { data: client, error: clientError } =
                     await getTwilioClientOrg({
                         organizationId,
                     });
 
-                if (clientError) return Error('TWILIO_CLIENT_ERROR');
+                if (clientError) {
+                    logger.error('Failed to get Twilio client', {
+                        label: 'whatsapp',
+                        organizationId,
+                    });
+                    return Error('TWILIO_CLIENT_ERROR');
+                }
 
                 const { data: purchased, error: purchaseError } =
                     await purchasePhoneNumberProvider({
@@ -35,7 +49,21 @@ export const purchasePhoneNumber = protectedEndpoint
                         phoneNumber,
                     });
 
-                if (purchaseError) return Error('PURCHASE_FAILED');
+                if (purchaseError) {
+                    logger.error('Phone number purchase failed', {
+                        label: 'whatsapp',
+                        phoneNumber,
+                        organizationId,
+                    });
+                    return Error('PURCHASE_FAILED');
+                }
+
+                logger.info('Phone number purchased successfully', {
+                    label: 'whatsapp',
+                    sid: purchased.sid,
+                    phoneNumber: purchased.phoneNumber,
+                    organizationId,
+                });
 
                 return Success(purchased);
             },
