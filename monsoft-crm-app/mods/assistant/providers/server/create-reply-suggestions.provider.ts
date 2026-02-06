@@ -1,5 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 
+import { eq } from 'drizzle-orm';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 
@@ -7,7 +9,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
-import { generateText } from '@ai/providers';
+import { generateObject } from '@ai/providers';
 
 import tables from '@db/db';
 
@@ -21,7 +23,8 @@ import {
 import { createReplySuggestionsPrompt } from '../../prompts';
 
 import { sendMessageToContact } from '@mods/contact-message/providers/server';
-import { CertaintyLevel } from '@mods/assistant/enums';
+
+import { replySuggestionOutputSchema } from '../../schemas';
 
 export const createReplySuggestions = (async ({ db, messageId }) => {
     const { data: message, error: messageError } = await getContactMessage({
@@ -95,68 +98,70 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     if (systemPromptError) return Error('CREATE_REPLY_SUGGESTIONS_PROMPT');
 
-    const replySuggestions: {
-        content: string;
-        certaintyLevel: CertaintyLevel;
-    }[] = [];
-
-    let count = 0;
-    while (count++ < 3) {
-        const { data: response, error: responseError } = await generateText({
+    const suggestionPromises = Array.from({ length: 3 }, () =>
+        generateObject({
             messages: [
-                {
-                    id: uuidv4(),
-                    role: 'system',
-                    content: systemPrompt,
-                },
-
-                {
-                    id: uuidv4(),
-                    role: 'user',
-                    content: message.body,
-                },
+                { id: uuidv4(), role: 'system', content: systemPrompt },
+                { id: uuidv4(), role: 'user', content: message.body },
             ],
+            modelParams: { model, temperature: 0.5, callerName: 'assistant' },
+            outputSchema: replySuggestionOutputSchema,
+        }),
+    );
 
-            modelParams: {
-                model,
-                temperature: 0.5,
-                callerName: 'assistant',
-            },
-        });
+    const results = await Promise.all(suggestionPromises);
 
-        if (responseError) return Error('GENERATE_TEXT_ERROR');
+    const replySuggestions = results
+        .map((result) => {
+            if (result.error) return null;
+            return {
+                content: result.data.content,
+                certaintyLevel: result.data.certaintyLevel,
+            };
+        })
+        .filter((s) => s !== null);
 
-        replySuggestions.push({
-            content: response,
-            certaintyLevel: 'high',
-        });
-    }
+    if (replySuggestions.length === 0) return Error('GENERATE_TEXT_ERROR');
+
+    const suggestionRecords = replySuggestions.map(
+        ({ content, certaintyLevel }) => ({
+            id: uuidv4(),
+            messageId,
+            content,
+            certaintyLevel,
+        }),
+    );
 
     const { error: insertReplySuggestionsError } = await catchError(
-        db.insert(tables.replySuggestion).values(
-            replySuggestions.map(({ content, certaintyLevel }) => ({
-                id: uuidv4(),
-                messageId,
-                content,
-                certaintyLevel,
-            })),
-        ),
+        db.insert(tables.replySuggestion).values(suggestionRecords),
     );
 
     if (insertReplySuggestionsError) return Error();
 
     if (responseMode === 'auto_reply') {
-        const highCertaintyReplySuggestion = replySuggestions.find(
-            ({ certaintyLevel }) => certaintyLevel === 'high',
+        const highCertaintySuggestion = suggestionRecords.find(
+            (_, index) => replySuggestions[index].certaintyLevel === 'high',
         );
 
-        if (highCertaintyReplySuggestion) {
+        if (highCertaintySuggestion) {
             await sendMessageToContact({
                 db,
                 contactId: message.contactId,
                 channelType: message.channelType,
-                body: highCertaintyReplySuggestion.content,
+                body: highCertaintySuggestion.content,
             });
+
+            await catchError(
+                db
+                    .update(tables.replySuggestion)
+                    .set({ selectedAt: Date.now() })
+                    .where(
+                        eq(
+                            tables.replySuggestion.id,
+                            highCertaintySuggestion.id,
+                        ),
+                    ),
+            );
         } else {
             emit({
                 event: 'replySuggestionsCreated',

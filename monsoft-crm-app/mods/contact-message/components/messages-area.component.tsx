@@ -102,6 +102,14 @@ export function MessagesArea({ contactId }: { contactId: string }) {
         },
     );
 
+    const selectReplySuggestion = (id: string, content: string) => {
+        void api.assistant.selectReplySuggestion.mutate({ id });
+
+        window.dispatchEvent(
+            new CustomEvent('setNewMessage', { detail: content }),
+        );
+    };
+
     if (isLoadingMessages) return;
     if (messagesError) return;
 
@@ -159,11 +167,7 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                                 key={id}
                                 className="bg-primary/[0.06] border-primary/10 hover:bg-primary/[0.1] flex-1 cursor-pointer border p-2 transition-colors"
                                 onClick={() => {
-                                    window.dispatchEvent(
-                                        new CustomEvent('setNewMessage', {
-                                            detail: content,
-                                        }),
-                                    );
+                                    selectReplySuggestion(id, content);
                                 }}
                             >
                                 {content}

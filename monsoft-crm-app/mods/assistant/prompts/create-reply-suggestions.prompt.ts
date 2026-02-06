@@ -22,7 +22,12 @@ export const createReplySuggestionsPrompt = (({
     And this information about the conversation, consisting of a) a list of summaries of older messages and b) a list of the latest messages (non-summarized):
     ${JSON.stringify(compressedChatWithoutCurrentMessage, null, 2)}
 
-    Please respond with the reply. Do NOT explain the reasonning behind the reply. Keep it as short as possible, using direct and concise answer.
+    Respond with a JSON object containing:
+    - "content": your reply message. Do NOT explain the reasoning behind the reply. Keep it as short as possible, using direct and concise answer.
+    - "certaintyLevel": how confident you are that this is the right reply ("low", "medium", or "high")
+      - "high": you have clear context and the reply directly addresses the contact's message
+      - "medium": you have some context but the reply may need human review
+      - "low": you lack context or the message is ambiguous
     `;
 
     return Success(systemPrompt);
