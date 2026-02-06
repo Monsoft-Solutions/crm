@@ -220,6 +220,17 @@ Events are emitted without await: `emit({ event: 'eventName', payload: data })`.
 | Build      | Vite (web), tsup (server), Turbo (orchestration)            |
 | Monitoring | Sentry, Winston, Clarity, GA4                               |
 
+## Agent Memory
+
+This project uses an agent memory system in `agents-notes/` to persist learnings across sessions.
+
+- **Capture notes:** Use `/note [category] <content>` or let Claude auto-capture during work
+- **Recall notes:** Use `/recall [search query]` before starting a task
+- **Categories:** `errors`, `patterns`, `decisions`, `tips`, `context`
+- **Notes location:** See `agents-notes/README.md` for full documentation
+
+Before starting a task, check if relevant notes exist. After solving non-trivial problems, capture the learning.
+
 ## Testing the UI in local
 
 - When testing the UI, use these credentials:
