@@ -4,6 +4,7 @@ export const updateContactSchema = z
     .object({
         firstName: z.string(),
         lastName: z.string(),
+        assistantId: z.string().nullable(),
     })
     .partial();
 

@@ -47,7 +47,7 @@ export const assistant = table('assistant', {
         .references(() => assistantBehavior.id, { onDelete: 'cascade' }),
 });
 
-export const assistantRelations = relations(assistant, ({ one }) => ({
+export const assistantRelations = relations(assistant, ({ one, many }) => ({
     brand: one(tables.brand, {
         fields: [assistant.brandId],
         references: [tables.brand.id],
@@ -57,4 +57,6 @@ export const assistantRelations = relations(assistant, ({ one }) => ({
         fields: [assistant.behaviorId],
         references: [assistantBehavior.id],
     }),
+
+    contacts: many(tables.contact),
 }));

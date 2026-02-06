@@ -41,6 +41,8 @@ export const brand = table('brand', {
     brandMarketId: text('brand_market_id')
         .notNull()
         .references(() => tables.brandMarket.id, { onDelete: 'cascade' }),
+
+    defaultAssistantId: text('default_assistant_id'),
 });
 
 export const brandRelations = relations(
@@ -56,6 +58,11 @@ export const brandRelations = relations(
         contacts: many(tables.contact),
 
         assistants: many(tables.assistant),
+
+        defaultAssistant: one(tables.assistant, {
+            fields: [brand.defaultAssistantId],
+            references: [tables.assistant.id],
+        }),
 
         brandVoice: one(tables.brandVoice, {
             fields: [brand.brandVoiceId],

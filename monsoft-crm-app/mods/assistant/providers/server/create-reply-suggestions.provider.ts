@@ -35,6 +35,14 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, message.contactId),
 
+            columns: {
+                id: true,
+                brandId: true,
+                firstName: true,
+                lastName: true,
+                assistantId: true,
+            },
+
             with: {
                 brand: {
                     with: {
@@ -53,9 +61,13 @@ export const createReplySuggestions = (async ({ db, messageId }) => {
 
     const { brand } = contact;
 
-    const { assistants } = brand;
+    let assistant = contact.assistantId
+        ? brand.assistants.find((a) => a.id === contact.assistantId)
+        : undefined;
 
-    const assistant = assistants.at(0);
+    if (!assistant) {
+        assistant = brand.assistants.at(0);
+    }
 
     if (!assistant) return Error('BRAND_ASSISTANT_NOT_FOUND');
 

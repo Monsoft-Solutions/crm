@@ -13,6 +13,12 @@ export const getContact = protectedEndpoint
             const { error, data: contact } = await catchError(
                 db.query.contact.findFirst({
                     where: (record, { eq }) => eq(record.id, id),
+
+                    with: {
+                        assistant: {
+                            columns: { id: true, name: true },
+                        },
+                    },
                 }),
             );
 

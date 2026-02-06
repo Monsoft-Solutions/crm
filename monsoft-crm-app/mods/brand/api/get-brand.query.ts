@@ -13,6 +13,19 @@ export const getBrand = protectedEndpoint
             const { error, data: brand } = await catchError(
                 db.query.brand.findFirst({
                     where: (record, { eq }) => eq(record.id, id),
+
+                    columns: {
+                        id: true,
+                        name: true,
+                        description: true,
+                        industry: true,
+                        companySize: true,
+                        foundedYear: true,
+                        organizationId: true,
+                        brandVoiceId: true,
+                        brandMarketId: true,
+                        defaultAssistantId: true,
+                    },
                 }),
             );
 

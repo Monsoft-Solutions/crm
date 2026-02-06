@@ -15,6 +15,10 @@ export const contact = table('contact', {
 
     lastName: text('last_name').notNull(),
 
+    assistantId: text('assistant_id').references(() => tables.assistant.id, {
+        onDelete: 'set null',
+    }),
+
     createdAt: timestamp('created_at').notNull(),
 });
 
@@ -22,6 +26,11 @@ export const contactTableRelations = relations(contact, ({ one, many }) => ({
     brand: one(tables.brand, {
         fields: [contact.brandId],
         references: [tables.brand.id],
+    }),
+
+    assistant: one(tables.assistant, {
+        fields: [contact.assistantId],
+        references: [tables.assistant.id],
     }),
 
     emailAddresses: many(tables.contactEmailAddress),

@@ -23,6 +23,7 @@ export const ContactDataSchemaWithConstrains: typeof createContactSchema =
             .string()
             .regex(/^\+\d+$/, 'must start with + followed by numbers only'),
         emailAddress: z.string().email('invalid email address'),
+        assistantId: z.string().optional(),
     });
 
 export function ContactDetailsDialog({

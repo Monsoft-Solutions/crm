@@ -11,9 +11,10 @@ import { api, apiClientUtils } from '@api/providers/web';
 
 type AssistantCardProps = {
     assistantId: string;
+    isDefault?: boolean;
 };
 
-export function AssistantCard({ assistantId }: AssistantCardProps) {
+export function AssistantCard({ assistantId, isDefault }: AssistantCardProps) {
     const {
         data: assistant,
         error: assistantError,
@@ -29,8 +30,9 @@ export function AssistantCard({ assistantId }: AssistantCardProps) {
     return (
         <Card className="w-full">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-3">
-                <div>
+                <div className="flex items-center gap-2">
                     <CardTitle className="text-lg">{assistant.name}</CardTitle>
+                    {isDefault && <Badge>Default</Badge>}
                 </div>
 
                 <CreateEditAssistantDialog

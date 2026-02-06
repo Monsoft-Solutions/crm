@@ -61,6 +61,7 @@ void listen(
                     brandId: brand.id,
                     firstName: '',
                     lastName: '',
+                    assistantId: brand.defaultAssistantId,
                 }),
             );
 
