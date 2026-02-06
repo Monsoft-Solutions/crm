@@ -28,10 +28,14 @@ import { createTwilioSubaccount } from '@twilio/providers';
 
 import { createTwilioOrgSink } from '@twilio/providers';
 
+import { appUrl } from '@dist/constants';
+
 export const authServer = betterAuth({
     basePath: authPath,
 
     secret: authEnv.MSS_AUTH_SECRET,
+
+    trustedOrigins: [appUrl],
 
     database: drizzleAdapter(db, {
         provider: 'pg',
