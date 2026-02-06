@@ -1,7 +1,7 @@
 import { z } from 'zod';
 
 export const registerWhatsappSenderSchema = z.object({
-    phoneNumberSid: z.string(),
+    phoneNumber: z.string(),
 });
 
 export type RegisterWhatsappSender = z.infer<

@@ -93,6 +93,7 @@ export function PurchasePhoneNumberDialog(): ReactElement {
         toast.success(`Purchased ${phoneNumber}`);
 
         void apiClientUtils.settings.getOwnedPhoneNumbers.invalidate();
+        void apiClientUtils.settings.getWhatsappNumbers.invalidate();
 
         setOpen(false);
         setResults([]);

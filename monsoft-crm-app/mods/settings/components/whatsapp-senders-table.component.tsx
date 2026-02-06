@@ -24,13 +24,14 @@ import {
 } from '@ui/select.ui';
 
 type WhatsappNumber = {
-    id: string;
+    id: string | null;
     phoneNumber: string;
+    friendlyName: string;
     twilioSid: string | null;
     senderStatus: 'creating' | 'offline' | 'online';
     isDefault: string | null;
-    brandId: string;
-    brandName: string;
+    brandId: string | null;
+    brandName: string | null;
 };
 
 type Brand = {
@@ -80,9 +81,9 @@ export function WhatsappSendersTable({
         onRefresh();
     };
 
-    const handleRegister = async (phoneNumberSid: string) => {
+    const handleRegister = async (phoneNumber: string) => {
         const { error } = await api.settings.registerWhatsappSender.mutate({
-            phoneNumberSid,
+            phoneNumber,
         });
 
         if (error) {
@@ -97,8 +98,7 @@ export function WhatsappSendersTable({
     if (whatsappNumbers.length === 0) {
         return (
             <p className="text-muted-foreground text-sm">
-                No WhatsApp numbers configured. Assign phone numbers to brands
-                to get started.
+                No phone numbers found. Purchase numbers to get started.
             </p>
         );
     }
@@ -117,7 +117,7 @@ export function WhatsappSendersTable({
 
             <TableBody>
                 {whatsappNumbers.map((number) => (
-                    <TableRow key={number.id}>
+                    <TableRow key={number.phoneNumber}>
                         <TableCell className="font-mono">
                             {number.phoneNumber}
                         </TableCell>
@@ -128,7 +128,7 @@ export function WhatsappSendersTable({
 
                         <TableCell>
                             <Select
-                                value={number.brandId}
+                                value={number.brandId ?? 'unassigned'}
                                 onValueChange={(value) =>
                                     void handleAssignBrand(
                                         number.phoneNumber,
@@ -181,27 +181,20 @@ export function WhatsappSendersTable({
                         </TableCell>
 
                         <TableCell>
-                            {(() => {
-                                const { twilioSid } = number;
-
-                                if (
-                                    number.senderStatus !== 'offline' ||
-                                    !twilioSid
-                                )
-                                    return null;
-
-                                return (
+                            {number.senderStatus === 'offline' &&
+                                number.brandId && (
                                     <Button
                                         variant="outline"
                                         size="sm"
                                         onClick={() =>
-                                            void handleRegister(twilioSid)
+                                            void handleRegister(
+                                                number.phoneNumber,
+                                            )
                                         }
                                     >
                                         Register for WhatsApp
                                     </Button>
-                                );
-                            })()}
+                                )}
 
                             {number.senderStatus === 'creating' && (
                                 <div className="text-muted-foreground flex items-center gap-1 text-sm">
