@@ -83,7 +83,7 @@ export function ConversationInsights({ contactId }: { contactId: string }) {
                         >
                             {
                                 <AccordionItem value="topics-discussed">
-                                    <AccordionTrigger className="py-3 transition-colors hover:bg-gray-50/80">
+                                    <AccordionTrigger className="hover:bg-accent/50 py-3 transition-colors">
                                         <div className="flex items-center">
                                             <Icon className="text-primary/70 mr-2 h-5 w-5" />
 

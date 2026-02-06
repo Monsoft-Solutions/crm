@@ -20,7 +20,7 @@ export function ContactData({ contactId }: { contactId: string }) {
                 className="border-none"
             >
                 <AccordionItem value="info">
-                    <AccordionTrigger className="py-3 transition-colors hover:bg-gray-50/80">
+                    <AccordionTrigger className="hover:bg-accent/50 py-3 transition-colors">
                         <div className="flex items-center">
                             <User className="text-primary/70 mr-2 h-5 w-5" />
 
@@ -36,7 +36,7 @@ export function ContactData({ contactId }: { contactId: string }) {
                 </AccordionItem>
 
                 <AccordionItem value="sms">
-                    <AccordionTrigger className="py-3 transition-colors hover:bg-gray-50/80">
+                    <AccordionTrigger className="hover:bg-accent/50 py-3 transition-colors">
                         <div className="flex items-center">
                             <MessageSquare className="text-primary/70 mr-2 h-5 w-5 scale-80" />
 

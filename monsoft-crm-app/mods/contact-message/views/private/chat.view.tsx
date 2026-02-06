@@ -34,7 +34,7 @@ export function ChatView() {
 
     return (
         <SidebarProvider className="" defaultOpen={false}>
-            <div className="grow py-2">
+            <div className="grow p-0">
                 <ChatInterface
                     brandId={brandId}
                     activeContactId={activeContactId}

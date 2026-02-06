@@ -43,11 +43,11 @@ export function ConfirmationDialog({
                 />
                 <AlertDialog.Content
                     className={cn(
-                        'fixed top-1/2 left-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-md',
-                        'bg-white p-6 shadow-lg focus:outline-none',
+                        'fixed top-1/2 left-1/2 z-50 w-full max-w-sm -translate-x-1/2 -translate-y-1/2 rounded-xl',
+                        'bg-card p-6 shadow-xl focus:outline-none',
                     )}
                 >
-                    <AlertDialog.Title className="mb-2 text-lg font-semibold">
+                    <AlertDialog.Title className="text-foreground mb-2 text-lg font-semibold">
                         {title}
                     </AlertDialog.Title>
                     <AlertDialog.Description className="text-muted-foreground mb-4 text-sm">
@@ -57,18 +57,18 @@ export function ConfirmationDialog({
                     <div className="flex justify-end space-x-2">
                         <AlertDialog.Cancel
                             onClick={() => {
-                                onOpenChange(false); // or setDeleteDialogOpen(false)
+                                onOpenChange(false);
                                 onCancel?.();
                             }}
-                            className="text-xs"
+                            className="hover:bg-accent focus-visible:ring-ring/50 rounded-md px-4 py-2 text-sm font-medium transition-all duration-200 focus-visible:ring-2 focus-visible:outline-none"
                         >
                             {cancelLabel}
                         </AlertDialog.Cancel>
                         <AlertDialog.Action
                             onClick={onConfirm}
                             className={cn(
-                                'inline-flex items-center justify-center rounded-sm px-4 py-2 text-sm font-medium',
-                                'text-white focus:outline-none',
+                                'inline-flex items-center justify-center rounded-md px-4 py-2 text-sm font-medium transition-all duration-200',
+                                'text-destructive-foreground focus-visible:ring-ring/50 focus-visible:ring-2 focus-visible:outline-none',
                                 destructive
                                     ? 'bg-destructive hover:bg-destructive/90'
                                     : 'bg-primary hover:bg-primary/90',

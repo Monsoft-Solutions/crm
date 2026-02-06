@@ -116,7 +116,7 @@ export function LogInForm({
             </CardContent>
 
             <CardFooter className="flex justify-center border-t p-4">
-                <span className="text-sm text-gray-500">
+                <span className="text-muted-foreground text-sm">
                     New to Monsoft CRM?{' '}
                 </span>
                 <Link to="/auth/sign-up">

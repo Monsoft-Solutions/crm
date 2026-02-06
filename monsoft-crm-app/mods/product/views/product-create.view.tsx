@@ -5,9 +5,8 @@ import { useNavigate } from '@tanstack/react-router';
 import { api } from '@api/providers/web';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@ui/card.ui';
-import { Button } from '@ui/button.ui';
 
-import { ArrowLeft } from 'lucide-react';
+import { PageHeader } from '@shared/components/page-header.component';
 
 import { ProductForm } from '../components';
 
@@ -66,24 +65,16 @@ export function ProductCreateView() {
     if (isLoadingBrands || brandsError) return;
 
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="grow overflow-y-auto p-6">
             {/* Header */}
-            <div className="mb-6">
-                <div className="mb-4 flex items-center gap-4">
-                    <Button variant="outline" size="sm" onClick={handleCancel}>
-                        <ArrowLeft className="mr-2 h-4 w-4" />
-                        Back to Products
-                    </Button>
-                    <div>
-                        <h1 className="text-3xl font-bold">
-                            Create New Product
-                        </h1>
-                        <p className="text-muted-foreground">
-                            Add a new product to your inventory
-                        </p>
-                    </div>
-                </div>
-            </div>
+            <PageHeader
+                title="Create New Product"
+                description="Add a new product to your inventory"
+                breadcrumbs={[
+                    { label: 'Products', href: '/products' },
+                    { label: 'Create' },
+                ]}
+            />
 
             {/* Form */}
             <div className="max-w-4xl">

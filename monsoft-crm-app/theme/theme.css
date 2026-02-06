@@ -4,32 +4,78 @@
 @source "../shared/";
 @source "../mods/";
 
-@theme {
-    --color-primary: hsl(202 88% 45%);
-    --color-primary-foreground: hsl(355.7 100% 97.3%);
-    --color-secondary: hsl(240 4.8% 95.9%);
-    --color-secondary-foreground: hsl(240 5.9% 10%);
-    --color-background: hsl(0 0% 100%);
-    --color-foreground: hsl(240 10% 3.9%);
-    --color-card: hsl(0 0% 100%);
-    --color-card-foreground: hsl(240 10% 3.9%);
-    --color-popover: hsl(0 0% 100%);
-    --color-popover-foreground: hsl(240 10% 3.9%);
-    --color-muted: hsl(240 4.8% 95.9%);
-    --color-muted-foreground: hsl(240 3.8% 46.1%);
-    --color-accent: hsl(240 4.8% 95.9%);
-    --color-accent-foreground: hsl(240 5.9% 10%);
-    --color-destructive: hsl(0 84.2% 60.2%);
-    --color-destructive-foreground: hsl(0 0% 98%);
-    --color-border: hsl(240 5.9% 90%);
-    --color-input: hsl(240 5.9% 90%);
-    --color-ring: hsl(68.5% 0.169 237.323);
-    --radius-sm: 0.55rem;
-    --radius-md: 0.675rem;
-    --radius-lg: 0.8rem;
-    --shadow-floating: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px,
-        rgba(145, 158, 171, 0.12) 1px 6px 24px 0px;
+/* Inter Variable font */
+@font-face {
+    font-family: 'Inter Variable';
+    font-style: normal;
+    font-display: swap;
+    font-weight: 100 900;
+    src: url(@fontsource-variable/inter/files/inter-latin-wght-normal.woff2)
+        format('woff2-variations');
+    unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+        U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+2074, U+20AC, U+2122,
+        U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
 
+@theme {
+    /* Typography */
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, -apple-system,
+        sans-serif;
+
+    /* Colors - Light Mode (OKLCH) */
+    --color-background: oklch(1 0 0);
+    --color-foreground: oklch(0.145 0.015 285);
+    --color-card: oklch(1 0 0);
+    --color-card-foreground: oklch(0.145 0.015 285);
+    --color-popover: oklch(1 0 0);
+    --color-popover-foreground: oklch(0.145 0.015 285);
+    --color-primary: oklch(0.546 0.182 237);
+    --color-primary-foreground: oklch(0.985 0.002 0);
+    --color-secondary: oklch(0.967 0.003 285);
+    --color-secondary-foreground: oklch(0.205 0.015 285);
+    --color-muted: oklch(0.967 0.003 285);
+    --color-muted-foreground: oklch(0.556 0.015 285);
+    --color-accent: oklch(0.967 0.003 285);
+    --color-accent-foreground: oklch(0.205 0.015 285);
+    --color-destructive: oklch(0.577 0.245 27);
+    --color-destructive-foreground: oklch(0.985 0.002 0);
+    --color-border: oklch(0.922 0.005 285);
+    --color-input: oklch(0.922 0.005 285);
+    --color-ring: oklch(0.546 0.182 237);
+
+    /* Semantic surface tokens */
+    --color-surface: oklch(0.985 0.002 285);
+    --color-surface-hover: oklch(0.96 0.003 285);
+    --color-border-subtle: oklch(0.94 0.004 285);
+
+    /* Status colors */
+    --color-success: oklch(0.627 0.194 149);
+    --color-warning: oklch(0.75 0.183 55);
+    --color-info: oklch(0.623 0.143 253);
+
+    /* Radii */
+    --radius-sm: 0.375rem;
+    --radius-md: 0.5rem;
+    --radius-lg: 0.75rem;
+    --radius-xl: 1rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.04);
+    --shadow-md: 0 1px 3px 0 oklch(0 0 0 / 0.06),
+        0 1px 2px -1px oklch(0 0 0 / 0.06);
+    --shadow-lg: 0 4px 6px -1px oklch(0 0 0 / 0.06),
+        0 2px 4px -2px oklch(0 0 0 / 0.04);
+    --shadow-xl: 0 10px 15px -3px oklch(0 0 0 / 0.06),
+        0 4px 6px -4px oklch(0 0 0 / 0.04);
+    --shadow-floating: 0 0px 2px 0 oklch(0 0 0 / 0.06),
+        0 6px 24px 0 oklch(0 0 0 / 0.08);
+
+    /* Durations */
+    --duration-fast: 150ms;
+    --duration-normal: 200ms;
+    --duration-slow: 300ms;
+
+    /* Sidebar */
     --color-sidebar: oklch(0.985 0 0);
     --color-sidebar-foreground: oklch(0.145 0 0);
     --color-sidebar-primary: oklch(0.205 0 0);
@@ -38,20 +84,115 @@
     --color-sidebar-accent-foreground: oklch(0.205 0 0);
     --color-sidebar-border: oklch(0.922 0 0);
     --color-sidebar-ring: oklch(0.708 0 0);
+
+    /* Animations */
+    --animate-shimmer: shimmer 2s infinite linear;
+    --animate-page-enter: pageEnter 200ms ease-out;
+}
+
+/* Dark mode overrides */
+.dark {
+    --color-background: oklch(0.155 0.014 285);
+    --color-foreground: oklch(0.965 0.003 285);
+    --color-card: oklch(0.195 0.014 285);
+    --color-card-foreground: oklch(0.965 0.003 285);
+    --color-popover: oklch(0.175 0.014 285);
+    --color-popover-foreground: oklch(0.965 0.003 285);
+    --color-primary: oklch(0.6 0.19 237);
+    --color-primary-foreground: oklch(0.985 0.002 0);
+    --color-secondary: oklch(0.25 0.012 285);
+    --color-secondary-foreground: oklch(0.965 0.003 285);
+    --color-muted: oklch(0.25 0.012 285);
+    --color-muted-foreground: oklch(0.65 0.015 285);
+    --color-accent: oklch(0.25 0.012 285);
+    --color-accent-foreground: oklch(0.965 0.003 285);
+    --color-destructive: oklch(0.577 0.245 27);
+    --color-destructive-foreground: oklch(0.985 0.002 0);
+    --color-border: oklch(0.28 0.012 285);
+    --color-input: oklch(0.28 0.012 285);
+    --color-ring: oklch(0.6 0.19 237);
+
+    --color-surface: oklch(0.22 0.014 285);
+    --color-surface-hover: oklch(0.26 0.014 285);
+    --color-border-subtle: oklch(0.3 0.012 285);
+
+    --color-success: oklch(0.627 0.194 149);
+    --color-warning: oklch(0.75 0.183 55);
+    --color-info: oklch(0.623 0.143 253);
+
+    --shadow-sm: 0 1px 2px 0 oklch(0 0 0 / 0.2);
+    --shadow-md: 0 1px 3px 0 oklch(0 0 0 / 0.3),
+        0 1px 2px -1px oklch(0 0 0 / 0.3);
+    --shadow-lg: 0 4px 6px -1px oklch(0 0 0 / 0.3),
+        0 2px 4px -2px oklch(0 0 0 / 0.2);
+    --shadow-xl: 0 10px 15px -3px oklch(0 0 0 / 0.3),
+        0 4px 6px -4px oklch(0 0 0 / 0.2);
+    --shadow-floating: 0 0px 2px 0 oklch(0 0 0 / 0.3),
+        0 6px 24px 0 oklch(0 0 0 / 0.25);
+
+    --color-sidebar: oklch(0.175 0.014 285);
+    --color-sidebar-foreground: oklch(0.965 0.003 285);
+    --color-sidebar-primary: oklch(0.6 0.19 237);
+    --color-sidebar-primary-foreground: oklch(0.985 0 0);
+    --color-sidebar-accent: oklch(0.25 0.012 285);
+    --color-sidebar-accent-foreground: oklch(0.965 0.003 285);
+    --color-sidebar-border: oklch(0.28 0.012 285);
+    --color-sidebar-ring: oklch(0.6 0.19 237);
 }
 
 @layer base {
     * {
         @apply border-border;
     }
+
+    html {
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        text-rendering: optimizeLegibility;
+    }
+
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background text-foreground font-sans;
     }
 }
 
 @utility container {
     margin-inline: auto;
     padding-inline: 2rem;
+}
+
+/* Scrollbar styling */
+@layer base {
+    * {
+        scrollbar-width: thin;
+        scrollbar-color: oklch(0.75 0 0 / 0.35) transparent;
+    }
+
+    .dark * {
+        scrollbar-color: oklch(0.4 0 0 / 0.5) transparent;
+    }
+
+    *::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+    }
+
+    *::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    *::-webkit-scrollbar-thumb {
+        background: oklch(0.75 0 0 / 0.35);
+        border-radius: 9999px;
+    }
+
+    .dark *::-webkit-scrollbar-thumb {
+        background: oklch(0.4 0 0 / 0.5);
+    }
+
+    *::-webkit-scrollbar-thumb:hover {
+        background: oklch(0.65 0 0 / 0.5);
+    }
 }
 
 @layer components {
@@ -88,8 +229,41 @@
     }
 }
 
-/* #app {
+/* Page enter animation */
+@keyframes pageEnter {
+    from {
+        opacity: 0;
+        transform: translateY(4px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Shimmer animation for skeletons */
+@keyframes shimmer {
+    0% {
+        background-position: -200% 0;
+    }
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+@utility animate-shimmer {
+    animation: shimmer 2s infinite linear;
+    background: linear-gradient(
+        90deg,
+        transparent 25%,
+        oklch(0.9 0 0 / 0.5) 50%,
+        transparent 75%
+    );
+    background-size: 200% 100%;
+}
+
+#app {
     height: 100dvh;
     overflow-x: hidden;
     overflow-y: hidden;
-} */
+}

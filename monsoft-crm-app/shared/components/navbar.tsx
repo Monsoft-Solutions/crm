@@ -1,15 +1,13 @@
 import { Link, useNavigate } from '@tanstack/react-router';
 
 import {
-    ChevronDown,
-    ChevronUp,
     Fingerprint,
     LucideIcon,
     Power,
-    Settings,
     MessageCircle,
     Package,
     Bot,
+    Zap,
 } from 'lucide-react';
 
 import { useIsMobile } from '../hooks/is-mobile';
@@ -20,19 +18,12 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarGroupContent,
-    SidebarGroupLabel,
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
     useSidebar,
 } from '@ui/sidebar.ui';
-
-import {
-    Collapsible,
-    CollapsibleContent,
-    CollapsibleTrigger,
-} from '@ui/collapsible.ui';
 
 import {
     DropdownMenu,
@@ -43,11 +34,16 @@ import {
     DropdownMenuTrigger,
 } from '@ui/dropdown-menu.ui';
 
+import { Avatar, AvatarFallback, AvatarImage } from '@ui/avatar.ui';
+
+import { ThemeDropdown } from '@ui/theme-dropdown.ui';
+
 import { HRef, router } from '@web/router';
 
 import { authClient } from '@auth/providers/web';
 
-// NavbarLink component that closes the sidebar on mobile when clicked
+import { cn } from '@css/utils';
+
 function NavbarLink({
     item,
     setOpen,
@@ -59,25 +55,26 @@ function NavbarLink({
     const isMobile = useIsMobile();
 
     const handleClick = (e: React.MouseEvent) => {
-        // Only take special action on mobile devices
         if (isMobile) {
-            // Prevent default Link behavior
             e.preventDefault();
-
-            // Close the sidebar
             setOpen(false);
-
             void navigate({ to: item.url });
         }
-        // On desktop, let the Link component handle navigation normally
     };
 
     return (
         <Link to={item.url} onClick={handleClick}>
             {({ isActive }) => (
                 <SidebarMenuItem>
-                    <SidebarMenuButton isActive={isActive}>
-                        <item.icon />
+                    <SidebarMenuButton
+                        isActive={isActive}
+                        className={cn(
+                            'transition-all duration-150',
+                            isActive &&
+                                'border-primary bg-sidebar-accent border-l-2 pl-[calc(0.5rem-2px)]',
+                        )}
+                    >
+                        <item.icon className="size-4" />
                         <span>{item.title}</span>
                     </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -85,8 +82,6 @@ function NavbarLink({
         </Link>
     );
 }
-
-// Menu items.
 
 export function Navbar() {
     const navigate = useNavigate();
@@ -99,7 +94,13 @@ export function Navbar() {
 
     if (!user) return null;
 
-    // Menu items.
+    const initials = user.name
+        .split(' ')
+        .map((n) => n[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2);
+
     const nullableItems: ({
         title: string;
         url: HRef;
@@ -110,13 +111,11 @@ export function Navbar() {
             url: '/chat',
             icon: MessageCircle,
         },
-
         {
             title: 'Products',
             url: '/products',
             icon: Package,
         },
-
         {
             title: 'Assistants',
             url: '/assistant',
@@ -128,42 +127,54 @@ export function Navbar() {
 
     return (
         <Sidebar variant="floating" collapsible="icon" side="left">
-            <SidebarHeader className="h-8"></SidebarHeader>
+            <SidebarHeader className="flex flex-row items-center gap-2 p-3">
+                <div className="bg-primary text-primary-foreground flex size-7 items-center justify-center rounded-lg">
+                    <Zap className="size-4" />
+                </div>
+                <span className="text-sm font-semibold tracking-tight group-data-[collapsible=icon]:hidden">
+                    Monsoft CRM
+                </span>
+            </SidebarHeader>
 
             <SidebarContent>
-                <Collapsible defaultOpen className="group/collapsible">
-                    <SidebarGroup>
-                        <SidebarGroupLabel asChild>
-                            <CollapsibleTrigger>
-                                Dashboard
-                                <ChevronDown className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-180" />
-                            </CollapsibleTrigger>
-                        </SidebarGroupLabel>
-                        <CollapsibleContent>
-                            <SidebarGroupContent>
-                                <SidebarMenu>
-                                    {items.map((item) => (
-                                        <NavbarLink
-                                            key={item.title}
-                                            item={item}
-                                            setOpen={setOpenMobile}
-                                        />
-                                    ))}
-                                </SidebarMenu>
-                            </SidebarGroupContent>
-                        </CollapsibleContent>
-                    </SidebarGroup>
-                </Collapsible>
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {items.map((item) => (
+                                <NavbarLink
+                                    key={item.title}
+                                    item={item}
+                                    setOpen={setOpenMobile}
+                                />
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
             </SidebarContent>
 
             <SidebarFooter>
                 <SidebarMenu>
+                    <SidebarMenuItem className="group-data-[collapsible=icon]:hidden">
+                        <div className="flex items-center justify-center px-2 py-1">
+                            <ThemeDropdown size="sm" variant="ghost" />
+                        </div>
+                    </SidebarMenuItem>
+
                     <SidebarMenuItem>
                         <DropdownMenu>
                             <SidebarMenuButton asChild>
                                 <DropdownMenuTrigger className="w-full">
-                                    <Settings /> Settings
-                                    <ChevronUp className="ml-auto" />
+                                    <Avatar className="size-5">
+                                        <AvatarImage
+                                            src={user.image ?? undefined}
+                                        />
+                                        <AvatarFallback className="text-[10px]">
+                                            {initials}
+                                        </AvatarFallback>
+                                    </Avatar>
+                                    <span className="truncate text-sm">
+                                        {user.name}
+                                    </span>
                                 </DropdownMenuTrigger>
                             </SidebarMenuButton>
 
@@ -178,10 +189,8 @@ export function Navbar() {
                                         });
                                     }}
                                 >
-                                    Account
-                                    <DropdownMenuShortcut>
-                                        <Fingerprint className="size-4" />
-                                    </DropdownMenuShortcut>
+                                    <Fingerprint className="mr-2 size-4" />
+                                    Settings
                                 </DropdownMenuItem>
 
                                 <DropdownMenuSeparator />
@@ -190,7 +199,6 @@ export function Navbar() {
                                     className="font-semibold"
                                     onClick={() => {
                                         void authClient.signOut();
-
                                         void router.invalidate();
                                     }}
                                 >

@@ -51,10 +51,9 @@ export const ContactCard = forwardRef<
             <div
                 ref={ref}
                 className={cn(
-                    'relative flex cursor-pointer items-center border-b border-gray-100 px-3 py-3 transition-colors',
-                    // WhatsApp style hover and active states
-                    'hover:bg-gray-50',
-                    active && 'bg-blue-50',
+                    'border-border/50 relative flex cursor-pointer items-center border-b px-3 py-3 transition-colors',
+                    'hover:bg-accent',
+                    active && 'bg-primary/10',
                 )}
                 onClick={() => {
                     onSelect?.();
@@ -73,7 +72,7 @@ export const ContactCard = forwardRef<
                         firstName={contact.firstName}
                         lastName={contact.lastName}
                         className={cn(
-                            'border border-gray-200',
+                            'border-border border',
                             isMobileView ? 'h-12 w-12' : 'h-11 w-11',
                         )}
                     />
@@ -83,14 +82,14 @@ export const ContactCard = forwardRef<
                     <div className="ml-3 min-w-0 flex-1 overflow-hidden pr-1">
                         {/* Top row: Contact name and time */}
                         <div className="flex w-full items-center justify-between">
-                            <p className="max-w-[70%] truncate font-medium text-gray-900">
+                            <p className="text-foreground max-w-[70%] truncate font-medium">
                                 {contactName}
                             </p>
 
                             <div className="flex flex-shrink-0 items-center gap-1">
                                 {/* Last message time in WhatsApp style */}
                                 {
-                                    <span className="min-w-[40px] text-right text-xs text-gray-500">
+                                    <span className="text-muted-foreground min-w-[40px] text-right text-xs">
                                         {timeToAgo(lastEvent.timestamp)}
                                     </span>
                                 }
@@ -105,11 +104,11 @@ export const ContactCard = forwardRef<
                                     {/* Check mark for outbound messages (like WhatsApp) */}
                                     {lastEvent.message.direction ===
                                         'outbound' && (
-                                        <Check className="size-3.5 flex-shrink-0 stroke-blue-500" />
+                                        <Check className="stroke-primary size-3.5 flex-shrink-0" />
                                     )}
 
                                     {/* Message preview */}
-                                    <p className="truncate text-xs text-gray-500">
+                                    <p className="text-muted-foreground truncate text-xs">
                                         {lastEvent.message.body.length > 40
                                             ? lastEvent.message.body.substring(
                                                   0,
@@ -123,7 +122,7 @@ export const ContactCard = forwardRef<
                             <div className="ml-1 flex flex-shrink-0 items-center gap-1">
                                 {/* Unread count badge in WhatsApp style */}
                                 {numUnreadInboundMessages > 0 && (
-                                    <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-green-500 p-0 text-xs text-white">
+                                    <Badge className="ml-1 size-5 flex-shrink-0 justify-center rounded-full border-0 bg-emerald-500 p-0 text-xs text-white dark:bg-emerald-400">
                                         {intToOneDigitStr(
                                             numUnreadInboundMessages,
                                         )}

@@ -77,7 +77,7 @@ export function EditableText(
                 />
             ) : (
                 <p
-                    className="-mx-2 mr-2 flex max-w-full grow cursor-text items-center overflow-hidden rounded-md border border-transparent p-2 transition-colors hover:bg-gray-100"
+                    className="hover:bg-accent -mx-2 mr-2 flex max-w-full grow cursor-text items-center overflow-hidden rounded-md border border-transparent p-2 transition-colors"
                     role="button"
                     tabIndex={0}
                     onKeyDown={(e) => {

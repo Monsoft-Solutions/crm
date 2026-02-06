@@ -133,7 +133,7 @@ export function MessageInput({
 
     return (
         <>
-            <div className="flex items-center border-t bg-white p-2 px-4">
+            <div className="bg-card flex items-center border-t p-2 px-4">
                 <div className="relative">
                     <Attach
                         asChild
@@ -144,9 +144,9 @@ export function MessageInput({
                         <Button
                             size="sm"
                             variant="ghost"
-                            className="h-9 w-9 rounded-full p-0 hover:bg-gray-100"
+                            className="hover:bg-accent h-9 w-9 rounded-full p-0"
                         >
-                            <Paperclip className="h-4 w-4 text-gray-500" />
+                            <Paperclip className="text-muted-foreground h-4 w-4" />
                         </Button>
                     </Attach>
 
@@ -176,7 +176,7 @@ export function MessageInput({
                 <TextareaAutosize
                     ref={textAreaRef}
                     placeholder="Type a message..."
-                    className="mx-2 flex-1 rounded-2xl border border-gray-200 px-3 py-2 text-sm placeholder:text-gray-400 focus:ring-0 focus:ring-offset-0"
+                    className="border-border placeholder:text-muted-foreground mx-2 flex-1 rounded-2xl border px-3 py-2 text-sm focus:ring-0 focus:ring-offset-0"
                     maxHeight={200}
                     value={newMessage}
                     onChange={handleNewMessageChange}
@@ -192,7 +192,7 @@ export function MessageInput({
                             <Button
                                 variant="ghost"
                                 size="sm"
-                                className="h-9 w-9 rounded-full p-0 hover:bg-gray-100"
+                                className="hover:bg-accent h-9 w-9 rounded-full p-0"
                                 disabled={isSending}
                             >
                                 <div className="flex items-center justify-center">
@@ -237,7 +237,7 @@ export function MessageInput({
                             'h-9 w-9 rounded-full p-0',
                             canSend
                                 ? 'bg-primary hover:bg-primary/90'
-                                : 'hover:bg-gray-100',
+                                : 'hover:bg-accent',
                         )}
                         aria-label="Send message"
                         onClick={() => {
@@ -255,7 +255,7 @@ export function MessageInput({
             </div>
 
             {attachments.length > 0 && (
-                <div className="flex gap-2 border-t bg-gray-50 p-2 px-4">
+                <div className="bg-muted/50 flex gap-2 border-t p-2 px-4">
                     {attachments.map((file, idx) => (
                         <div key={idx} className="group relative">
                             <Thumbnail file={file} />

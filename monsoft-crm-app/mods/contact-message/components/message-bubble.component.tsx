@@ -52,8 +52,8 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                             className={cn(
                                 'text-[10px] font-medium opacity-70',
                                 direction === 'inbound'
-                                    ? 'text-gray-500'
-                                    : 'text-blue-600',
+                                    ? 'text-muted-foreground'
+                                    : 'text-primary',
                             )}
                         >
                             {timeToHMEpochStr(createdAt)}
@@ -68,15 +68,15 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                                             className={cn(
                                                 'flex items-center justify-center opacity-60',
                                                 direction === 'inbound'
-                                                    ? 'text-gray-500'
-                                                    : 'text-blue-500',
+                                                    ? 'text-muted-foreground'
+                                                    : 'text-primary',
                                             )}
                                         >
                                             <ChannelIcon className="size-3.5" />
                                         </div>
                                     </TooltipTrigger>
 
-                                    <TooltipContent className="bg-white text-black shadow-md">
+                                    <TooltipContent className="bg-popover text-popover-foreground shadow-md">
                                         <p className="text-xs">
                                             {channelTooltip}
                                         </p>
@@ -100,8 +100,8 @@ export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
                 className={cn(
                     'relative max-w-[85%] min-w-[150px] overflow-hidden rounded-2xl transition-all',
                     direction === 'outbound'
-                        ? 'self-end bg-blue-50 shadow-sm hover:shadow'
-                        : 'self-start bg-gray-100 text-gray-800 shadow-sm hover:shadow',
+                        ? 'bg-primary/10 self-end shadow-sm hover:shadow'
+                        : 'bg-muted text-foreground self-start shadow-sm hover:shadow',
                 )}
             >
                 {messageBubbleContent}

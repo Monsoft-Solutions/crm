@@ -62,11 +62,11 @@ export function SignUpView(): ReactElement {
     };
 
     return (
-        <div className="flex h-full flex-col overflow-auto bg-gray-50">
+        <div className="bg-background flex h-full flex-col overflow-auto">
             {/* Main content container */}
             <div className="flex flex-1 flex-col md:flex-row">
                 {/* Left side - Form */}
-                <div className="flex w-full flex-col items-center justify-center bg-white p-4 pb-16 md:w-1/2 md:p-8">
+                <div className="bg-card flex w-full flex-col items-center justify-center p-4 pb-16 md:w-1/2 md:p-8">
                     <SignUpForm
                         form={form}
                         onSubmit={(data) => void handleSubmit(data)}

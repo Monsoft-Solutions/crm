@@ -130,7 +130,7 @@ export function MessagesArea({ contactId }: { contactId: string }) {
                                     className="flex flex-col gap-3"
                                 >
                                     <div className="my-3 flex justify-center">
-                                        <div className="rounded-full bg-gray-100 px-3 py-0.5 text-[10px] font-medium text-gray-500 shadow-sm">
+                                        <div className="bg-muted text-muted-foreground rounded-full px-3 py-0.5 text-[10px] font-medium shadow-sm">
                                             {formatMessageDate(
                                                 new Date(dateString),
                                             )}

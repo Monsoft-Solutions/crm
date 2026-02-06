@@ -57,7 +57,7 @@ export function ProductsListView() {
     if (!products) return null;
 
     return (
-        <div className="h-screen grow overflow-y-scroll py-2">
+        <div className="grow overflow-y-auto p-6">
             <ProductsFiltersComponent
                 brands={brands}
                 search={search}

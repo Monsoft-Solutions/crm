@@ -21,7 +21,7 @@ export function ContactInfoSidebar({ contactId }: { contactId: string }) {
 
     return (
         <Sidebar variant="floating" collapsible="offcanvas" side="right">
-            <SidebarHeader className="sticky top-0 z-10 flex items-center justify-between border-b bg-white px-4 py-3">
+            <SidebarHeader className="bg-card sticky top-0 z-10 flex items-center justify-between border-b px-4 py-3">
                 <div className="flex items-center">
                     {isMobile && (
                         <Button
@@ -67,7 +67,7 @@ export function ContactInfoSidebar({ contactId }: { contactId: string }) {
                         defaultValue="contact"
                         className="flex w-full flex-col text-left"
                     >
-                        <div className="sticky top-0 z-10 bg-white">
+                        <div className="bg-card sticky top-0 z-10">
                             <TabsList className="grid w-full grid-cols-2 bg-transparent p-0">
                                 <TabsTrigger
                                     value="contact"

@@ -36,14 +36,14 @@ export function ChatHeader({
     const { contact } = contactSummary;
 
     return (
-        <div className="flex h-16 items-center justify-between border-b bg-white px-3 shadow-sm sm:px-5">
+        <div className="bg-card flex h-16 items-center justify-between border-b px-3 shadow-sm sm:px-5">
             <div className="flex grow items-center">
                 {/* Back button for mobile view */}
                 {isMobileView && onBackToList && (
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="mr-2 size-8 rounded-full p-0 hover:bg-gray-100"
+                        className="hover:bg-accent mr-2 size-8 rounded-full p-0"
                         onClick={(e) => {
                             e.preventDefault();
                             // Call the back function to clear the URL and return to contacts list
@@ -60,7 +60,7 @@ export function ChatHeader({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="mr-2 size-8 rounded-full p-0 hover:bg-gray-100 sm:hidden"
+                        className="hover:bg-accent mr-2 size-8 rounded-full p-0 sm:hidden"
                         // onClick={() => {
                         //     setNavbarOpen(!navbarOpen);
                         // }}
@@ -76,7 +76,7 @@ export function ChatHeader({
                         firstName={contact.firstName}
                         lastName={contact.lastName}
                     />
-                    <span className="absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border border-white bg-green-500"></span>
+                    <span className="border-card absolute right-0 bottom-0 h-2.5 w-2.5 rounded-full border bg-emerald-500"></span>
                 </div>
 
                 <div className="ml-3 grow overflow-hidden">
@@ -84,7 +84,7 @@ export function ChatHeader({
                         <p className="truncate text-sm font-medium">
                             {contact.firstName} {contact.lastName}
                         </p>
-                        <p className="text-xs text-gray-500">Online</p>
+                        <p className="text-muted-foreground text-xs">Online</p>
                     </div>
                 </div>
 

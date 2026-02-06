@@ -6,8 +6,8 @@ export function Main({ children }: { children: React.ReactNode }) {
     const { isMobile } = useSidebar();
 
     return (
-        <main className="relative grow px-4">
-            <div className="relative flex h-full items-center justify-center">
+        <main className="relative flex flex-1 flex-col overflow-y-auto px-4">
+            <div className="animate-page-enter relative flex h-full flex-col">
                 {children}
             </div>
 
