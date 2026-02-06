@@ -37,10 +37,11 @@ export const getAssistant = protectedEndpoint
             if (!assistant) return Error('ASSISTANT_NOT_FOUND');
 
             const { behavior, ...rest } = assistant;
+            const { id: _behaviorId, ...behaviorFields } = behavior;
 
             const flattenedAssistant = {
                 ...rest,
-                ...behavior,
+                ...behaviorFields,
             };
 
             return Success(flattenedAssistant);
