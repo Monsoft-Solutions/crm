@@ -32,6 +32,7 @@ type WhatsappNumber = {
     isDefault: string | null;
     brandId: string | null;
     brandName: string | null;
+    isSandbox: boolean;
 };
 
 type Brand = {
@@ -119,7 +120,18 @@ export function WhatsappSendersTable({
                 {whatsappNumbers.map((number) => (
                     <TableRow key={number.phoneNumber}>
                         <TableCell className="font-mono">
-                            {number.phoneNumber}
+                            <span className="flex items-center gap-2">
+                                {number.phoneNumber}
+
+                                {number.isSandbox && (
+                                    <Badge
+                                        variant="outline"
+                                        className="border-blue-300 text-blue-700"
+                                    >
+                                        Sandbox
+                                    </Badge>
+                                )}
+                            </span>
                         </TableCell>
 
                         <TableCell>
@@ -182,7 +194,8 @@ export function WhatsappSendersTable({
 
                         <TableCell>
                             {number.senderStatus === 'offline' &&
-                                number.brandId && (
+                                number.brandId &&
+                                !number.isSandbox && (
                                     <Button
                                         variant="outline"
                                         size="sm"

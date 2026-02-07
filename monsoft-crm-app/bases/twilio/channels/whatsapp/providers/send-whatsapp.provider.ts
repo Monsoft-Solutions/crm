@@ -13,7 +13,7 @@ export const sendWhatsapp = (async ({ client, from, to, body }) => {
         }),
     );
 
-    if (messageError) return Error();
+    if (messageError) return Error('WHATSAPP_SEND_FAILED');
 
     const { sid } = message;
 

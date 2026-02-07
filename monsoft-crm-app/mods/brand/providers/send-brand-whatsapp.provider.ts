@@ -62,7 +62,7 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
         body,
     });
 
-    if (messageError) return Error();
+    if (messageError) return Error('WHATSAPP_SEND_FAILED');
 
     const { sid } = message;
 
