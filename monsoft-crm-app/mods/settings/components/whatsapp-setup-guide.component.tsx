@@ -1,6 +1,6 @@
-import { ReactElement } from 'react';
+import { ReactElement, useState } from 'react';
 
-import { Info } from 'lucide-react';
+import { Check, Copy, Info } from 'lucide-react';
 
 import {
     Card,
@@ -10,7 +10,25 @@ import {
     CardTitle,
 } from '@ui/card.ui';
 
+import { Button } from '@ui/button.ui';
+
 export function WhatsappSetupGuide(): ReactElement {
+    const [copied, setCopied] = useState(false);
+
+    const webhookUrl =
+        typeof window !== 'undefined'
+            ? `${window.location.origin}/twilio-sandbox`
+            : '';
+
+    function handleCopy() {
+        void navigator.clipboard.writeText(webhookUrl).then(() => {
+            setCopied(true);
+            setTimeout(() => {
+                setCopied(false);
+            }, 2000);
+        });
+    }
+
     return (
         <Card>
             <CardHeader>
@@ -40,8 +58,43 @@ export function WhatsappSetupGuide(): ReactElement {
                         </li>
                         <li>Set it as the default (star icon).</li>
                         <li>
-                            Go to Twilio Console &rarr; Messaging &rarr; Try it
-                            out &rarr; WhatsApp to find your sandbox join code.
+                            In Twilio Console &rarr; Messaging &rarr; Try it out
+                            &rarr; Send a WhatsApp message &rarr; Sandbox
+                            settings, set both{' '}
+                            <span className="font-medium">
+                                &ldquo;When a message comes in&rdquo;
+                            </span>{' '}
+                            and{' '}
+                            <span className="font-medium">
+                                &ldquo;Status callback URL&rdquo;
+                            </span>{' '}
+                            to:
+                            <span className="mt-1 flex items-center gap-2">
+                                <code className="bg-muted rounded px-2 py-1 text-xs">
+                                    {webhookUrl}
+                                </code>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={handleCopy}
+                                >
+                                    {copied ? (
+                                        <Check className="h-3 w-3" />
+                                    ) : (
+                                        <Copy className="h-3 w-3" />
+                                    )}
+                                </Button>
+                            </span>
+                            <span className="text-muted-foreground mt-1 block text-xs">
+                                For local development, use your ngrok or tunnel
+                                URL instead.
+                            </span>
+                        </li>
+                        <li>
+                            Find your sandbox join code on the same page in
+                            Twilio Console.
                         </li>
                         <li>
                             Have recipients text{' '}
