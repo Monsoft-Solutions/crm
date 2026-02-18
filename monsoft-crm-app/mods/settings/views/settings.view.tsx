@@ -24,6 +24,7 @@ import { TwilioPhoneNumbersTable } from '../components/twilio-phone-numbers-tabl
 import { WhatsappSendersTable } from '../components/whatsapp-senders-table.component';
 import { PurchasePhoneNumberDialog } from '../components/purchase-phone-number-dialog.component';
 import { WhatsappSetupGuide } from '../components/whatsapp-setup-guide.component';
+import { AddMetaWhatsappNumberDialog } from '../components/add-meta-whatsapp-number-dialog.component';
 
 export function SettingsView(): ReactElement {
     const { data: credentials } = api.settings.getTwilioCredentials.useQuery();
@@ -131,6 +132,10 @@ export function SettingsView(): ReactElement {
                         <CardHeader>
                             <div className="flex items-center gap-2">
                                 <CardTitle>WhatsApp Senders</CardTitle>
+
+                                <AddMetaWhatsappNumberDialog
+                                    brands={brands ?? []}
+                                />
 
                                 <Button
                                     variant="ghost"

@@ -15,6 +15,7 @@ import { purchasePhoneNumber } from './purchase-phone-number.mutation';
 import { registerWhatsappSender } from './register-whatsapp-sender.mutation';
 import { assignWhatsappNumberBrand } from './assign-whatsapp-number-brand.mutation';
 import { setDefaultBrandWhatsappNumber } from './set-default-brand-whatsapp-number.mutation';
+import { addMetaWhatsappNumber } from './add-meta-whatsapp-number.mutation';
 
 // subscriptions
 
@@ -34,6 +35,7 @@ export const settings = endpoints({
     registerWhatsappSender,
     assignWhatsappNumberBrand,
     setDefaultBrandWhatsappNumber,
+    addMetaWhatsappNumber,
 
     // subscriptions
 });

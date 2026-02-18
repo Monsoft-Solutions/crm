@@ -1,0 +1,1 @@
+ALTER TABLE "brand_whatsapp_number" ADD COLUMN "meta_phone_number_id" text;

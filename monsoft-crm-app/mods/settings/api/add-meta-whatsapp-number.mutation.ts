@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 
 import { Success, Error } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
@@ -10,10 +10,10 @@ import { queryMutationCallback } from '@api/providers/server/query-mutation-call
 import tables from '@db/db';
 import { logger } from '@log/providers';
 
-import { assignWhatsappNumberBrandSchema } from '../schemas';
+import { addMetaWhatsappNumberSchema } from '../schemas';
 
-export const assignWhatsappNumberBrand = protectedEndpoint
-    .input(assignWhatsappNumberBrandSchema)
+export const addMetaWhatsappNumber = protectedEndpoint
+    .input(addMetaWhatsappNumberSchema)
     .mutation(
         queryMutationCallback(
             async ({
@@ -22,83 +22,16 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                         user: { organizationId },
                     },
                 },
-                input: { phoneNumber, brandId, metaPhoneNumberId },
+                input: { phoneNumber, metaPhoneNumberId, brandId },
                 db,
             }) => {
-                logger.info('Assign WhatsApp number to brand requested', {
+                logger.info('Add Meta WhatsApp number requested', {
                     label: 'whatsapp',
                     phoneNumber,
+                    metaPhoneNumberId,
                     brandId,
                     organizationId,
                 });
-
-                // Find existing assignment for this WhatsApp number (scoped to org)
-                const { data: existing, error: findError } = await catchError(
-                    db
-                        .select({ id: tables.brandWhatsappNumber.id })
-                        .from(tables.brandWhatsappNumber)
-                        .innerJoin(
-                            tables.brand,
-                            eq(
-                                tables.brandWhatsappNumber.brandId,
-                                tables.brand.id,
-                            ),
-                        )
-                        .where(
-                            and(
-                                eq(
-                                    tables.brandWhatsappNumber.phoneNumber,
-                                    phoneNumber,
-                                ),
-                                eq(tables.brand.organizationId, organizationId),
-                            ),
-                        ),
-                );
-
-                if (findError) {
-                    logger.error('Failed to find existing assignment', {
-                        label: 'whatsapp',
-                        phoneNumber,
-                        organizationId,
-                    });
-                    return Error('FIND_FAILED');
-                }
-
-                // Delete existing assignment if any
-                if (existing.length > 0) {
-                    logger.info('Removing existing brand assignment', {
-                        label: 'whatsapp',
-                        existingId: existing[0].id,
-                    });
-
-                    const { error: deleteError } = await catchError(
-                        db
-                            .delete(tables.brandWhatsappNumber)
-                            .where(
-                                eq(
-                                    tables.brandWhatsappNumber.id,
-                                    existing[0].id,
-                                ),
-                            ),
-                    );
-
-                    if (deleteError) {
-                        logger.error('Failed to delete existing assignment', {
-                            label: 'whatsapp',
-                            existingId: existing[0].id,
-                        });
-                        return Error('DELETE_FAILED');
-                    }
-                }
-
-                // If brandId is null, we only needed to unassign
-                if (!brandId) {
-                    logger.info('WhatsApp number unassigned from brand', {
-                        label: 'whatsapp',
-                        phoneNumber,
-                    });
-                    return Success();
-                }
 
                 // Verify brand belongs to the user's organization
                 const { data: brand, error: brandError } = await catchError(
@@ -142,29 +75,33 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                 const isDefault =
                     existingNumbers.length === 0 ? ('true' as const) : null;
 
-                // Insert new assignment
+                // Insert new Meta WhatsApp number
                 const { error: insertError } = await catchError(
                     db.insert(tables.brandWhatsappNumber).values({
                         id: uuidv4(),
                         brandId,
                         phoneNumber,
                         metaPhoneNumberId,
+                        senderStatus: 'online',
                         isDefault,
                     }),
                 );
 
                 if (insertError) {
-                    logger.error('Failed to insert brand assignment', {
+                    logger.error('Failed to insert Meta WhatsApp number', {
                         label: 'whatsapp',
                         phoneNumber,
+                        metaPhoneNumberId,
                         brandId,
+                        error: String(insertError),
                     });
                     return Error('INSERT_FAILED');
                 }
 
-                logger.info('WhatsApp number assigned to brand', {
+                logger.info('Meta WhatsApp number added', {
                     label: 'whatsapp',
                     phoneNumber,
+                    metaPhoneNumberId,
                     brandId,
                     isDefault,
                 });

@@ -7,3 +7,4 @@ export * from './purchase-phone-number.schema';
 export * from './register-whatsapp-sender.schema';
 export * from './assign-whatsapp-number-brand.schema';
 export * from './set-default-brand-whatsapp-number.schema';
+export * from './add-meta-whatsapp-number.schema';

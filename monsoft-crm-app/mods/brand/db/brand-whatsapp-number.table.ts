@@ -26,6 +26,8 @@ export const brandWhatsappNumber = table(
 
         twilioSid: text('twilio_sid'),
 
+        metaPhoneNumberId: text('meta_phone_number_id'),
+
         senderStatus: whatsappSenderStatusEnum('sender_status')
             .notNull()
             .default('offline'),

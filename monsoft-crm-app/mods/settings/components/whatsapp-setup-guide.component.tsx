@@ -13,18 +13,33 @@ import {
 import { Button } from '@ui/button.ui';
 
 export function WhatsappSetupGuide(): ReactElement {
-    const [copied, setCopied] = useState(false);
+    const [copiedSandbox, setCopiedSandbox] = useState(false);
+    const [copiedMeta, setCopiedMeta] = useState(false);
 
-    const webhookUrl =
+    const sandboxWebhookUrl =
         typeof window !== 'undefined'
             ? `${window.location.origin}/twilio-sandbox`
             : '';
 
-    function handleCopy() {
-        void navigator.clipboard.writeText(webhookUrl).then(() => {
-            setCopied(true);
+    const metaWebhookUrl =
+        typeof window !== 'undefined'
+            ? `${window.location.origin}/meta-event`
+            : '';
+
+    function handleCopySandbox() {
+        void navigator.clipboard.writeText(sandboxWebhookUrl).then(() => {
+            setCopiedSandbox(true);
             setTimeout(() => {
-                setCopied(false);
+                setCopiedSandbox(false);
+            }, 2000);
+        });
+    }
+
+    function handleCopyMeta() {
+        void navigator.clipboard.writeText(metaWebhookUrl).then(() => {
+            setCopiedMeta(true);
+            setTimeout(() => {
+                setCopiedMeta(false);
             }, 2000);
         });
     }
@@ -38,7 +53,8 @@ export function WhatsappSetupGuide(): ReactElement {
                 </div>
 
                 <CardDescription>
-                    Follow these steps to enable WhatsApp messaging via Twilio.
+                    Follow these steps to enable WhatsApp messaging via Twilio
+                    Sandbox or Meta Cloud API.
                 </CardDescription>
             </CardHeader>
 
@@ -71,16 +87,16 @@ export function WhatsappSetupGuide(): ReactElement {
                             to:
                             <span className="mt-1 flex items-center gap-2">
                                 <code className="bg-muted rounded px-2 py-1 text-xs">
-                                    {webhookUrl}
+                                    {sandboxWebhookUrl}
                                 </code>
 
                                 <Button
                                     variant="ghost"
                                     size="icon"
                                     className="h-6 w-6"
-                                    onClick={handleCopy}
+                                    onClick={handleCopySandbox}
                                 >
-                                    {copied ? (
+                                    {copiedSandbox ? (
                                         <Check className="h-3 w-3" />
                                     ) : (
                                         <Copy className="h-3 w-3" />
@@ -112,30 +128,52 @@ export function WhatsappSetupGuide(): ReactElement {
 
                 <div>
                     <h4 className="mb-2 text-sm font-medium">
-                        Production Setup
+                        Meta Cloud API (Production)
                     </h4>
 
                     <ol className="text-muted-foreground list-inside list-decimal space-y-2 text-sm">
                         <li>
-                            Ensure your Twilio credentials are configured in the
-                            Twilio tab.
-                        </li>
-                        <li>
-                            Search and purchase a phone number from the section
-                            below.
-                        </li>
-                        <li>
-                            Register the purchased number as a WhatsApp sender.
-                        </li>
-                        <li>
-                            Wait for the sender status to become{' '}
-                            <span className="font-medium text-green-600">
-                                online
+                            Set up the WhatsApp Business API in the{' '}
+                            <span className="font-medium">
+                                Meta Business Dashboard
                             </span>
                             .
                         </li>
                         <li>
-                            Assign the number to a brand and set it as default.
+                            Copy your phone number ID and generate a permanent
+                            access token.
+                        </li>
+                        <li>
+                            Configure the Meta webhook URL to point to:
+                            <span className="mt-1 flex items-center gap-2">
+                                <code className="bg-muted rounded px-2 py-1 text-xs">
+                                    {metaWebhookUrl}
+                                </code>
+
+                                <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    className="h-6 w-6"
+                                    onClick={handleCopyMeta}
+                                >
+                                    {copiedMeta ? (
+                                        <Check className="h-3 w-3" />
+                                    ) : (
+                                        <Copy className="h-3 w-3" />
+                                    )}
+                                </Button>
+                            </span>
+                        </li>
+                        <li>
+                            Add the Meta number below using{' '}
+                            <span className="font-medium">
+                                &ldquo;Add Meta Number&rdquo;
+                            </span>
+                            .
+                        </li>
+                        <li>
+                            Set the number as default for your brand (star
+                            icon).
                         </li>
                     </ol>
                 </div>
