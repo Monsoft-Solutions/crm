@@ -20,32 +20,30 @@ export function resendWebhookHandler(server: express.Express) {
         void (async () => {
             const event = resendEventWebhookBodySchema.parse(req.body);
 
-            const { email_id: sid } = event.data;
+            const { email_id: externalId } = event.data;
 
             const status = resendEventTypeToStatus(event.type);
 
-            const { error: contactSmsMessageUpdateError } = await catchError(
+            const { error: updateError } = await catchError(
                 db
-                    .update(tables.contactEmail)
-                    .set({
-                        status,
-                    })
-                    .where(eq(tables.contactEmail.sid, sid)),
+                    .update(tables.contactMessage)
+                    .set({ status })
+                    .where(eq(tables.contactMessage.externalId, externalId)),
             );
 
-            if (contactSmsMessageUpdateError) return;
+            if (updateError) return;
 
-            const { data: contactEmail, error: contactEmailError } =
-                await catchError(
-                    db.query.contactEmail.findFirst({
-                        where: (record, { eq }) => eq(record.sid, sid),
-                    }),
-                );
+            const { data: message, error: messageError } = await catchError(
+                db.query.contactMessage.findFirst({
+                    where: (record, { eq }) =>
+                        eq(record.externalId, externalId),
+                }),
+            );
 
-            if (contactEmailError) return;
-            if (!contactEmail) return;
+            if (messageError) return;
+            if (!message) return;
 
-            const { id, contactId } = contactEmail;
+            const { id, contactId } = message;
 
             emit({
                 event: 'contactMessageStatusUpdated',

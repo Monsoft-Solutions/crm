@@ -37,7 +37,5 @@ export const contactTableRelations = relations(contact, ({ one, many }) => ({
 
     phoneNumbers: many(tables.contactPhoneNumber),
 
-    smsMessages: many(tables.contactSmsMessage),
-
-    whatsappMessages: many(tables.contactWhatsappMessage),
+    messages: many(tables.contactMessage),
 }));

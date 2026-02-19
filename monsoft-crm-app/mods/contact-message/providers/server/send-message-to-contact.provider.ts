@@ -53,17 +53,22 @@ export const sendMessageToContact = async ({
         }
 
         case 'whatsapp': {
-            const { data: smsMessage, error } = await sendWhatsappToContact({
-                contactId,
-                body,
-                db,
-            });
+            const { data: whatsappMessage, error } =
+                await sendWhatsappToContact({
+                    contactId,
+                    body,
+                    db,
+                });
 
             if (error) return Error();
 
-            id = smsMessage.id;
+            id = whatsappMessage.id;
             break;
         }
+
+        case 'messenger':
+        case 'instagram':
+            return Error('CHANNEL_NOT_SUPPORTED');
     }
 
     emit({

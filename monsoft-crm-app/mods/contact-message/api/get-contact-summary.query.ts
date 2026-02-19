@@ -17,7 +17,7 @@ export const getContactSummary = protectedEndpoint
                     where: (record, { eq }) => eq(record.id, contactId),
 
                     with: {
-                        smsMessages: true,
+                        messages: true,
                     },
                 }),
             );
@@ -25,7 +25,7 @@ export const getContactSummary = protectedEndpoint
             if (error) return Error();
             if (!rawContact) return Error();
 
-            const { id, firstName, lastName, smsMessages } = rawContact;
+            const { id, firstName, lastName, messages } = rawContact;
 
             const contact = {
                 id,
@@ -33,10 +33,10 @@ export const getContactSummary = protectedEndpoint
                 lastName,
             };
 
-            const numUnreadInboundMessages = smsMessages.filter(
-                (smsMessage) =>
-                    smsMessage.direction === 'inbound' &&
-                    smsMessage.status !== 'read',
+            const numUnreadInboundMessages = messages.filter(
+                (message) =>
+                    message.direction === 'inbound' &&
+                    message.status !== 'read',
             ).length;
 
             const { data: lastEvent, error: lastEventError } =

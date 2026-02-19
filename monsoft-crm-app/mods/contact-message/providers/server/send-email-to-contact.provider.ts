@@ -31,6 +31,18 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
 
     const { emailAddress } = defaultContactEmailAddress;
 
+    const { data: brand, error: brandError } = await catchError(
+        db.query.brand.findFirst({
+            where: (record, { eq }) => eq(record.id, brandId),
+        }),
+    );
+
+    if (brandError) return Error();
+
+    const brandEmail = brand?.name
+        ? `noreply@${brand.name.toLowerCase().replace(/\s+/g, '')}.com`
+        : '';
+
     const { data: message, error: messageError } = await sendBrandEmail({
         brandId,
         subject,
@@ -46,11 +58,14 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
-        db.insert(tables.contactEmail).values({
+        db.insert(tables.contactMessage).values({
             id,
-            sid,
+            externalId: sid,
             contactId,
-            contactEmailAddress: emailAddress,
+            channel: 'email',
+            fromAddress: brandEmail,
+            toAddress: emailAddress,
+            subject,
             direction: 'outbound',
             body,
         }),
@@ -58,11 +73,7 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
 
     if (dbError) return Error();
 
-    const result = {
-        id,
-    };
-
-    return Success(result);
+    return Success({ id });
 }) satisfies Function<
     {
         contactId: string;

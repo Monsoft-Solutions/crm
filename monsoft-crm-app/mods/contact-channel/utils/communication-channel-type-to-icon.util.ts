@@ -1,8 +1,13 @@
 import { ContactChannelType } from '../enums';
 
-import { Mail, MessageCircle, MessageSquare } from 'lucide-react';
+import {
+    Mail,
+    MessageCircle,
+    MessageSquare,
+    MessagesSquare,
+    Camera,
+} from 'lucide-react';
 
-// Map channel types to their respective icons
 export const communicationChannelTypeToIcon = (
     channelType: ContactChannelType,
 ) => {
@@ -13,5 +18,9 @@ export const communicationChannelTypeToIcon = (
             return Mail;
         case 'whatsapp':
             return MessageCircle;
+        case 'messenger':
+            return MessagesSquare;
+        case 'instagram':
+            return Camera;
     }
 };

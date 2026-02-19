@@ -17,12 +17,7 @@ export const getContactLastEvent = (async ({ contactId, db }) => {
             where: (record, { eq }) => eq(record.id, contactId),
 
             with: {
-                smsMessages: {
-                    orderBy: (record, { desc }) => desc(record.createdAt),
-                    limit: 1,
-                },
-
-                whatsappMessages: {
+                messages: {
                     orderBy: (record, { desc }) => desc(record.createdAt),
                     limit: 1,
                 },
@@ -34,11 +29,7 @@ export const getContactLastEvent = (async ({ contactId, db }) => {
 
     if (!contact) return Error('CONTACT_NOT_FOUND');
 
-    const messages = [...contact.smsMessages, ...contact.whatsappMessages];
-
-    const messagesSorted = messages.sort((a, b) => b.createdAt - a.createdAt);
-
-    const lastMessage = messagesSorted.at(0);
+    const lastMessage = contact.messages.at(0);
 
     if (lastMessage) {
         return Success({

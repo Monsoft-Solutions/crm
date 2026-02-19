@@ -1,67 +1,42 @@
+import { and, asc } from 'drizzle-orm';
+
 import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
+import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
+import { contactMessage } from '@db/db';
+
 import { MessageBubbleProps } from '@mods/contact-message/schemas';
 
-import { getContactSmsMessages } from './get-contact-sms-messages.provider';
-import { getContactWhatsappMessages } from './get-contact-whatsapp-messages.provider';
-import { getContactEmailMessages } from './get-contact-email-messages.provider';
-
 export const getContactMessages = (async ({ db, contactId, from, to }) => {
-    const { data: contactSmsMessages, error: contactSmsMessagesError } =
-        await getContactSmsMessages({
-            contactId,
-            db,
-            from,
-            to,
-        });
+    const { data: messages, error: messagesError } = await catchError(
+        db.query.contactMessage.findMany({
+            where: (record, { eq, gte, lt }) =>
+                and(
+                    eq(record.contactId, contactId),
+                    from ? gte(record.createdAt, from) : undefined,
+                    to ? lt(record.createdAt, to) : undefined,
+                ),
 
-    if (contactSmsMessagesError) return Error();
+            orderBy: asc(contactMessage.createdAt),
+        }),
+    );
 
-    const {
-        data: contactWhatsappMessages,
-        error: contactWhatsappMessagesError,
-    } = await getContactWhatsappMessages({
-        contactId,
-        db,
-        from,
-        to,
-    });
+    if (messagesError) return Error();
 
-    if (contactWhatsappMessagesError) return Error();
+    const mapped: MessageBubbleProps[] = messages.map((message) => ({
+        id: message.id,
+        channelType: message.channel,
+        direction: message.direction,
+        subject: message.subject,
+        body: message.body,
+        createdAt: message.createdAt,
+        status: message.status,
+    }));
 
-    const { data: contactEmailMessages, error: contactEmailMessagesError } =
-        await getContactEmailMessages({
-            contactId,
-            db,
-            from,
-            to,
-        });
-
-    if (contactEmailMessagesError) return Error();
-
-    const messages = [
-        ...(contactSmsMessages.map((message) => ({
-            ...message,
-            channelType: 'sms',
-        })) as MessageBubbleProps[]),
-
-        ...(contactWhatsappMessages.map((message) => ({
-            ...message,
-            channelType: 'whatsapp',
-        })) as MessageBubbleProps[]),
-
-        ...(contactEmailMessages.map((message) => ({
-            ...message,
-            channelType: 'email',
-        })) as MessageBubbleProps[]),
-    ];
-
-    const messagesSorted = messages.sort((a, b) => a.createdAt - b.createdAt);
-
-    return Success(messagesSorted);
+    return Success(mapped);
 }) satisfies Function<
     { contactId: string; db: Tx; from?: number; to?: number },
     MessageBubbleProps[]

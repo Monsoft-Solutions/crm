@@ -31,6 +31,16 @@ export const sendSmsToContact = (async ({ contactId, body, db }) => {
 
     if (!defaultContactPhoneNumber) return Error('NO_DEFAULT_PHONE_NUMBER');
 
+    const { data: brandPhone, error: brandPhoneError } = await catchError(
+        db.query.brandPhoneNumber.findFirst({
+            where: (record, { eq }) => eq(record.brandId, brandId),
+        }),
+    );
+
+    if (brandPhoneError) return Error();
+
+    const brandPhoneNumber = brandPhone?.phoneNumber ?? '';
+
     const { data: message, error: messageError } = await sendBrandSms({
         brandId,
         to: defaultContactPhoneNumber,
@@ -45,11 +55,13 @@ export const sendSmsToContact = (async ({ contactId, body, db }) => {
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
-        db.insert(tables.contactSmsMessage).values({
+        db.insert(tables.contactMessage).values({
             id,
-            sid,
+            externalId: sid,
             contactId,
-            contactPhoneNumber: defaultContactPhoneNumber,
+            channel: 'sms',
+            fromAddress: brandPhoneNumber,
+            toAddress: defaultContactPhoneNumber,
             direction: 'outbound',
             body,
         }),
@@ -57,11 +69,7 @@ export const sendSmsToContact = (async ({ contactId, body, db }) => {
 
     if (dbError) return Error();
 
-    const result = {
-        id,
-    };
-
-    return Success(result);
+    return Success({ id });
 }) satisfies Function<
     { contactId: string; body: string; db: Tx },
     { id: string }
