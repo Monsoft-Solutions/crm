@@ -1,4 +1,5 @@
 import { relations } from 'drizzle-orm';
+import { index } from 'drizzle-orm/pg-core';
 import { defaultTimestamp, table, text, enumType } from '@db/sql';
 
 import { contact } from '@db/db';
@@ -25,31 +26,48 @@ export const contactMessageStatus = enumType(
     contactMessageStatusEnum.options,
 );
 
-export const contactMessage = table('contact_message', {
-    id: text('id').primaryKey(),
+export const contactMessage = table(
+    'contact_message',
 
-    externalId: text('external_id'),
+    {
+        id: text('id').primaryKey(),
 
-    contactId: text('contact_id')
-        .notNull()
-        .references(() => contact.id, { onDelete: 'cascade' }),
+        externalId: text('external_id'),
 
-    channel: contactMessageChannel('channel').notNull(),
+        contactId: text('contact_id')
+            .notNull()
+            .references(() => contact.id, { onDelete: 'cascade' }),
 
-    fromAddress: text('from_address').notNull(),
+        channel: contactMessageChannel('channel').notNull(),
 
-    toAddress: text('to_address').notNull(),
+        fromAddress: text('from_address').notNull(),
 
-    direction: contactMessageDirection('direction').notNull(),
+        toAddress: text('to_address').notNull(),
 
-    subject: text('subject'),
+        direction: contactMessageDirection('direction').notNull(),
 
-    body: text('body').notNull(),
+        subject: text('subject'),
 
-    status: contactMessageStatus('status').notNull().default('queued'),
+        body: text('body').notNull(),
 
-    createdAt: defaultTimestamp('created_at').notNull(),
-});
+        status: contactMessageStatus('status').notNull().default('queued'),
+
+        createdAt: defaultTimestamp('created_at').notNull(),
+    },
+
+    (t) => [
+        index('contact_message_contact_created_idx').on(
+            t.contactId,
+            t.createdAt,
+        ),
+        index('contact_message_external_id_idx').on(t.externalId),
+        index('contact_message_contact_direction_status_idx').on(
+            t.contactId,
+            t.direction,
+            t.status,
+        ),
+    ],
+);
 
 export const contactMessageRelations = relations(contactMessage, ({ one }) => ({
     contact: one(contact, {
