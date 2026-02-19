@@ -19,8 +19,7 @@ export function metaWebhookHandler(server: express.Express) {
     server.get(metaEventWebhookPath, function (req, res) {
         if (
             req.query['hub.mode'] == 'subscribe' &&
-            req.query['hub.verify_token'] ==
-                (process.env.MSS_META_VERIFY_TOKEN ?? 'token')
+            req.query['hub.verify_token'] == 'token'
         ) {
             res.send(req.query['hub.challenge']);
         } else {

@@ -22,7 +22,7 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                         user: { organizationId },
                     },
                 },
-                input: { phoneNumber, brandId, metaPhoneNumberId },
+                input: { phoneNumber, brandId },
                 db,
             }) => {
                 logger.info('Assign WhatsApp number to brand requested', {
@@ -148,7 +148,6 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                         id: uuidv4(),
                         brandId,
                         phoneNumber,
-                        metaPhoneNumberId,
                         isDefault,
                     }),
                 );

@@ -28,7 +28,6 @@ type WhatsappNumber = {
     phoneNumber: string;
     friendlyName: string;
     twilioSid: string | null;
-    metaPhoneNumberId: string | null;
     senderStatus: 'creating' | 'offline' | 'online';
     isDefault: string | null;
     brandId: string | null;
@@ -130,15 +129,6 @@ export function WhatsappSendersTable({
                                         className="border-blue-300 text-blue-700"
                                     >
                                         Sandbox
-                                    </Badge>
-                                )}
-
-                                {number.metaPhoneNumberId && (
-                                    <Badge
-                                        variant="outline"
-                                        className="border-green-300 text-green-700"
-                                    >
-                                        Meta
                                     </Badge>
                                 )}
                             </span>

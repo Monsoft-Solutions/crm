@@ -44,8 +44,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                         id: tables.brandWhatsappNumber.id,
                         phoneNumber: tables.brandWhatsappNumber.phoneNumber,
                         twilioSid: tables.brandWhatsappNumber.twilioSid,
-                        metaPhoneNumberId:
-                            tables.brandWhatsappNumber.metaPhoneNumberId,
                         senderStatus: tables.brandWhatsappNumber.senderStatus,
                         isDefault: tables.brandWhatsappNumber.isDefault,
                         brandId: tables.brand.id,
@@ -74,7 +72,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                     {
                         id: r.id,
                         twilioSid: r.twilioSid,
-                        metaPhoneNumberId: r.metaPhoneNumberId,
                         senderStatus: r.senderStatus,
                         isDefault: r.isDefault,
                         brandId: r.brandId,
@@ -93,7 +90,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                     friendlyName: number.friendlyName,
                     id: db?.id ?? null,
                     twilioSid: db?.twilioSid ?? null,
-                    metaPhoneNumberId: db?.metaPhoneNumberId ?? null,
                     senderStatus: db?.senderStatus ?? ('offline' as const),
                     isDefault: db?.isDefault ?? null,
                     brandId: db?.brandId ?? null,
@@ -110,7 +106,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                     friendlyName: 'WhatsApp Sandbox',
                     id: sandboxDb?.id ?? null,
                     twilioSid: sandboxDb?.twilioSid ?? null,
-                    metaPhoneNumberId: sandboxDb?.metaPhoneNumberId ?? null,
                     senderStatus:
                         sandboxDb?.senderStatus ?? ('online' as const),
                     isDefault: sandboxDb?.isDefault ?? null,
@@ -118,31 +113,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                     brandName: sandboxDb?.brandName ?? null,
                     isSandbox: true,
                 });
-            }
-
-            // Add Meta-only numbers (not from Twilio)
-            const resultPhoneNumbers = new Set(
-                result.map((n) => n.phoneNumber),
-            );
-
-            for (const record of dbRecords) {
-                if (
-                    record.metaPhoneNumberId &&
-                    !resultPhoneNumbers.has(record.phoneNumber)
-                ) {
-                    result.push({
-                        phoneNumber: record.phoneNumber,
-                        friendlyName: 'Meta WhatsApp',
-                        id: record.id,
-                        twilioSid: record.twilioSid,
-                        metaPhoneNumberId: record.metaPhoneNumberId,
-                        senderStatus: record.senderStatus,
-                        isDefault: record.isDefault,
-                        brandId: record.brandId,
-                        brandName: record.brandName,
-                        isSandbox: false,
-                    });
-                }
             }
 
             // Sync status for "creating" numbers

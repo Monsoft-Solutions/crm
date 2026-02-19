@@ -4,13 +4,9 @@ import { Function } from '@errors/types';
 import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 
-import { logger } from '@log/providers';
-
 import { sendWhatsappResponseSchema } from '@meta/schemas';
 
 export const sendWhatsapp = (async ({ authToken, fromPhoneId, to, body }) => {
-    logger.info('[meta/sendWhatsapp] Sending', { fromPhoneId, to });
-
     const { data: axiosRawData, error } = await catchError(
         axios.post(
             `https://graph.facebook.com/v19.0/${fromPhoneId}/messages`,
@@ -32,14 +28,7 @@ export const sendWhatsapp = (async ({ authToken, fromPhoneId, to, body }) => {
         ),
     );
 
-    if (error) {
-        logger.error('[meta/sendWhatsapp] API call failed', {
-            fromPhoneId,
-            to,
-            error: String(error),
-        });
-        return Error();
-    }
+    if (error) return Error();
 
     const parsedData = sendWhatsappResponseSchema.safeParse(axiosRawData.data);
 
@@ -52,8 +41,6 @@ export const sendWhatsapp = (async ({ authToken, fromPhoneId, to, body }) => {
     if (!message) return Error('INVALID_RESPONSE');
 
     const { id: sid } = message;
-
-    logger.info('[meta/sendWhatsapp] Message sent', { sid });
 
     return Success({ sid });
 }) satisfies Function<

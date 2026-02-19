@@ -4,12 +4,9 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
-import { sendWhatsapp as sendTwilioWhatsapp } from '@twilio-whatsapp/providers';
-import { sendWhatsapp as sendMetaWhatsapp } from '@meta/channels/whatsapp/providers';
+import { sendWhatsapp } from '@twilio-whatsapp/providers';
 
 import { getTwilioClientOrg } from '@twilio/providers';
-
-import { getCustomConf, getCoreConf } from '@conf/providers/server';
 
 import { logger } from '@log/providers';
 
@@ -47,9 +44,9 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
 
     const { organizationId, whatsappNumbers } = brand;
 
-    let defaultWhatsappRecord = whatsappNumbers.at(0);
+    let defaultWhatsappNumber = whatsappNumbers.at(0)?.phoneNumber;
 
-    if (!defaultWhatsappRecord) {
+    if (!defaultWhatsappNumber) {
         const { data: fallbackBrand, error: fallbackError } = await catchError(
             db.query.brand.findFirst({
                 where: (record, { eq }) => eq(record.id, brandId),
@@ -62,72 +59,18 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
         );
 
         if (!fallbackError && fallbackBrand) {
-            defaultWhatsappRecord = fallbackBrand.whatsappNumbers.at(0);
+            defaultWhatsappNumber =
+                fallbackBrand.whatsappNumbers.at(0)?.phoneNumber;
         }
     }
 
-    if (!defaultWhatsappRecord) {
+    if (!defaultWhatsappNumber) {
         logger.error('[sendBrandWhatsapp] No WhatsApp number found', {
             brandId,
         });
         return Error('NO_DEFAULT_WHATSAPP_NUMBER');
     }
 
-    const { phoneNumber: defaultWhatsappNumber, metaPhoneNumberId } =
-        defaultWhatsappRecord;
-
-    const isSandbox = defaultWhatsappNumber === '+14155238886';
-
-    // Meta Cloud API path: production numbers with metaPhoneNumberId
-    if (!isSandbox && metaPhoneNumberId) {
-        logger.info('[sendBrandWhatsapp] Sending via Meta Cloud API', {
-            fromPhoneId: metaPhoneNumberId,
-            to,
-        });
-
-        // Try org-level whatsappToken first, fall back to core conf
-        const { data: customConf } = await getCustomConf({ organizationId });
-        let authToken = customConf?.whatsappToken;
-
-        if (!authToken) {
-            const { data: coreConf, error: coreConfError } =
-                await getCoreConf();
-
-            if (coreConfError) {
-                logger.error(
-                    '[sendBrandWhatsapp] Failed to get Meta auth token',
-                    { organizationId },
-                );
-                return Error('META_AUTH_TOKEN_MISSING');
-            }
-
-            authToken = coreConf.whatsappToken;
-        }
-
-        const { data: message, error: messageError } = await sendMetaWhatsapp({
-            authToken,
-            fromPhoneId: metaPhoneNumberId,
-            to,
-            body,
-        });
-
-        if (messageError) {
-            logger.error('[sendBrandWhatsapp] Meta send failed', {
-                fromPhoneId: metaPhoneNumberId,
-                to,
-                error: String(messageError),
-            });
-            return Error('WHATSAPP_SEND_FAILED');
-        }
-
-        const { sid } = message;
-
-        logger.info('[sendBrandWhatsapp] Message sent via Meta', { sid });
-
-        return Success({ sid });
-    }
-
-    // Twilio path: sandbox or numbers without metaPhoneNumberId
     const { data: client, error: clientError } = await getTwilioClientOrg({
         organizationId,
     });
@@ -140,17 +83,18 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
         return Error();
     }
 
+    const isSandbox = defaultWhatsappNumber === '+14155238886';
     const statusCallback = isSandbox
         ? appUrl + twilioSandboxWebhookPath
         : undefined;
 
-    logger.info('[sendBrandWhatsapp] Sending via Twilio', {
+    logger.info('[sendBrandWhatsapp] Sending via WhatsApp', {
         from: defaultWhatsappNumber,
         to,
         isSandbox,
     });
 
-    const { data: message, error: messageError } = await sendTwilioWhatsapp({
+    const { data: message, error: messageError } = await sendWhatsapp({
         client,
         from: defaultWhatsappNumber,
         to,
@@ -159,7 +103,7 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
     });
 
     if (messageError) {
-        logger.error('[sendBrandWhatsapp] Twilio send failed', {
+        logger.error('[sendBrandWhatsapp] Send failed', {
             from: defaultWhatsappNumber,
             to,
             error: String(messageError),
@@ -169,9 +113,13 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
 
     const { sid } = message;
 
-    logger.info('[sendBrandWhatsapp] Message sent via Twilio', { sid });
+    logger.info('[sendBrandWhatsapp] Message sent', { sid });
 
-    return Success({ sid });
+    const result = {
+        sid,
+    };
+
+    return Success(result);
 }) satisfies Function<
     { brandId: string; to: string; body: string; db: Tx },
     { sid: string }
