@@ -16,6 +16,15 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
             where: (record, { eq }) => eq(record.id, contactId),
             with: {
                 emailAddresses: true,
+                brand: {
+                    with: {
+                        domains: {
+                            with: {
+                                emailAddresses: true,
+                            },
+                        },
+                    },
+                },
             },
         }),
     );
@@ -23,13 +32,20 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
     if (contactError) return Error();
     if (!contact) return Error();
 
-    const { brandId, emailAddresses } = contact;
+    const { brandId, emailAddresses, brand } = contact;
 
     const defaultContactEmailAddress = emailAddresses.at(0);
 
     if (!defaultContactEmailAddress) return Error('NO_DEFAULT_EMAIL_ADDRESS');
 
     const { emailAddress } = defaultContactEmailAddress;
+
+    const brandEmailAddresses = brand.domains.flatMap(
+        ({ domain, emailAddresses: addrs }) =>
+            addrs.map(({ username }) => `${username}@${domain}`),
+    );
+
+    const fromAddress = brandEmailAddresses.at(0) ?? '';
 
     const { data: message, error: messageError } = await sendBrandEmail({
         brandId,
@@ -46,11 +62,14 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
-        db.insert(tables.contactEmail).values({
+        db.insert(tables.contactMessage).values({
             id,
-            sid,
+            externalId: sid,
             contactId,
-            contactEmailAddress: emailAddress,
+            channel: 'email',
+            fromAddress,
+            toAddress: emailAddress,
+            subject,
             direction: 'outbound',
             body,
         }),
@@ -58,11 +77,7 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
 
     if (dbError) return Error();
 
-    const result = {
-        id,
-    };
-
-    return Success(result);
+    return Success({ id });
 }) satisfies Function<
     {
         contactId: string;

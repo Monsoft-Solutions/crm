@@ -477,6 +477,20 @@
       "when": 1770397533348,
       "tag": "0067_outstanding_whizzer",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1771478074728,
+      "tag": "0068_goofy_silver_sable",
+      "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1771479375568,
+      "tag": "0069_fair_leech",
+      "breakpoints": true
     }
   ]
 }

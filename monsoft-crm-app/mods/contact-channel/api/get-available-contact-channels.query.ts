@@ -74,6 +74,10 @@ export const getAvailableContactChannels = protectedEndpoint
                                 brandEmailAddresses.length > 0 &&
                                 contactEmailAddresses.length > 0
                             );
+
+                        case 'messenger':
+                        case 'instagram':
+                            return false;
                     }
                 });
 

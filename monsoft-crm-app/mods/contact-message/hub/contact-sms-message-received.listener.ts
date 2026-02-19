@@ -88,18 +88,20 @@ void listen(
 
         const messageId = uuidv4();
 
-        const { error: insertContactSmsMessageError } = await catchError(
-            db.insert(tables.contactSmsMessage).values({
+        const { error: insertMessageError } = await catchError(
+            db.insert(tables.contactMessage).values({
                 id: messageId,
                 contactId,
-                contactPhoneNumber: fromPhoneNumber,
+                channel: 'sms',
+                fromAddress: fromPhoneNumber,
+                toAddress: to,
                 direction: 'inbound',
                 body,
                 createdAt,
             }),
         );
 
-        if (insertContactSmsMessageError) return;
+        if (insertMessageError) return;
 
         emit({
             event: 'newContactMessage',
@@ -109,7 +111,7 @@ void listen(
                 channelType: 'sms',
                 direction: 'inbound',
                 body,
-                createdAt: Date.now(),
+                createdAt,
             },
         });
     },

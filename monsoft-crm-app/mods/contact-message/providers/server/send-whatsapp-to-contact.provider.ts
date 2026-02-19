@@ -10,7 +10,6 @@ import tables from '@db/db';
 import { sendBrandWhatsapp } from '@mods/brand/providers';
 
 export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
-    // TODO: use whatsapp-specific numbers
     const { data: contact, error: contactError } = await catchError(
         db.query.contact.findFirst({
             where: (record, { eq }) => eq(record.id, contactId),
@@ -31,6 +30,15 @@ export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
 
     if (!defaultContactPhoneNumber) return Error('NO_DEFAULT_PHONE_NUMBER');
 
+    const { data: brandWhatsapp, error: brandWhatsappError } = await catchError(
+        db.query.brandWhatsappNumber.findFirst({
+            where: (record, { eq }) => eq(record.brandId, brandId),
+        }),
+    );
+
+    if (brandWhatsappError) return Error();
+    if (!brandWhatsapp) return Error('NO_BRAND_WHATSAPP_NUMBER');
+
     const { data: message, error: messageError } = await sendBrandWhatsapp({
         brandId,
         to: defaultContactPhoneNumber,
@@ -45,11 +53,13 @@ export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
     const id = uuidv4();
 
     const { error: dbError } = await catchError(
-        db.insert(tables.contactWhatsappMessage).values({
+        db.insert(tables.contactMessage).values({
             id,
-            sid,
+            externalId: sid,
             contactId,
-            contactWhatsappNumber: defaultContactPhoneNumber,
+            channel: 'whatsapp',
+            fromAddress: brandWhatsapp.phoneNumber,
+            toAddress: defaultContactPhoneNumber,
             direction: 'outbound',
             body,
         }),
@@ -57,11 +67,7 @@ export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
 
     if (dbError) return Error();
 
-    const result = {
-        id,
-    };
-
-    return Success(result);
+    return Success({ id });
 }) satisfies Function<
     { contactId: string; body: string; db: Tx },
     { id: string }

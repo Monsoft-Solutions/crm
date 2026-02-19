@@ -9,31 +9,25 @@ import tables from '@db/db';
 import { eq } from 'drizzle-orm';
 
 void listen('twilioMessageStatusUpdated', async ({ sid, status }) => {
-    const { error: contactSmsMessageUpdateError } = await catchError(
+    const { error: updateError } = await catchError(
         db
-            .update(tables.contactSmsMessage)
-            .set({
-                status,
-            })
-            .where(eq(tables.contactSmsMessage.sid, sid)),
+            .update(tables.contactMessage)
+            .set({ status })
+            .where(eq(tables.contactMessage.externalId, sid)),
     );
 
-    if (contactSmsMessageUpdateError) return;
+    if (updateError) return;
 
-    const { data: contactSmsMessage, error: contactSmsMessageError } =
-        await catchError(
-            db.query.contactSmsMessage.findFirst({
-                where: (record, { eq }) => eq(record.sid, sid),
-                with: {
-                    contact: true,
-                },
-            }),
-        );
+    const { data: message, error: messageError } = await catchError(
+        db.query.contactMessage.findFirst({
+            where: (record, { eq }) => eq(record.externalId, sid),
+        }),
+    );
 
-    if (contactSmsMessageError) return;
-    if (!contactSmsMessage) return;
+    if (messageError) return;
+    if (!message) return;
 
-    const { id, contactId } = contactSmsMessage;
+    const { id, contactId } = message;
 
     emit({
         event: 'contactMessageStatusUpdated',

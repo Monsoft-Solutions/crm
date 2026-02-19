@@ -6,26 +6,27 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { Tx } from '@db/types';
 
-import { contactEmail } from '@db/db';
+import { contactMessage } from '@db/db';
 
 export const getContactEmailMessages = (async ({ db, contactId, from, to }) => {
-    const { data: contactEmails, error: contactEmailsError } = await catchError(
-        db.query.contactEmail.findMany({
+    const { data: emails, error: emailsError } = await catchError(
+        db.query.contactMessage.findMany({
             where: (record, { eq, gte, lt }) =>
                 and(
                     eq(record.contactId, contactId),
+                    eq(record.channel, 'email'),
                     from ? gte(record.createdAt, from) : undefined,
                     to ? lt(record.createdAt, to) : undefined,
                 ),
 
-            orderBy: asc(contactEmail.createdAt),
+            orderBy: asc(contactMessage.createdAt),
         }),
     );
 
-    if (contactEmailsError) return Error();
+    if (emailsError) return Error();
 
-    return Success(contactEmails);
+    return Success(emails);
 }) satisfies Function<
     { contactId: string; db: Tx; from?: number; to?: number },
-    InferSelectModel<typeof contactEmail>[]
+    InferSelectModel<typeof contactMessage>[]
 >;

@@ -89,17 +89,19 @@ void listen(
 
         const messageId = uuidv4();
 
-        const { error: insertContactWhatsappMessageError } = await catchError(
-            db.insert(tables.contactWhatsappMessage).values({
+        const { error: insertMessageError } = await catchError(
+            db.insert(tables.contactMessage).values({
                 id: messageId,
                 contactId,
-                contactWhatsappNumber: fromPhoneNumber,
+                channel: 'whatsapp',
+                fromAddress: fromPhoneNumber,
+                toAddress: toPhoneNumber,
                 direction: 'inbound',
                 body,
             }),
         );
 
-        if (insertContactWhatsappMessageError) return;
+        if (insertMessageError) return;
 
         emit({
             event: 'newContactMessage',

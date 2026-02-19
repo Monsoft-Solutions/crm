@@ -1,6 +1,5 @@
 import { ContactChannelType } from '../enums';
 
-// Map channel types to their respective icons
 export const communicationChannelTypeToTooltip = (
     channelType: ContactChannelType,
 ) => {
@@ -11,5 +10,9 @@ export const communicationChannelTypeToTooltip = (
             return 'Email';
         case 'whatsapp':
             return 'WhatsApp';
+        case 'messenger':
+            return 'Messenger';
+        case 'instagram':
+            return 'Instagram';
     }
 };

@@ -2,7 +2,7 @@ import { relations } from 'drizzle-orm';
 import { unique } from 'drizzle-orm/pg-core';
 import { enumType, table, text } from '@db/sql';
 
-import { contact, contactSmsMessage } from '@db/db';
+import { contact } from '@db/db';
 
 export const isDefaultPhoneNumber = enumType('is_default_phone_number', [
     'true',
@@ -28,12 +28,10 @@ export const contactPhoneNumber = table(
 
 export const contactPhoneNumberRelations = relations(
     contactPhoneNumber,
-    ({ one, many }) => ({
+    ({ one }) => ({
         contact: one(contact, {
             fields: [contactPhoneNumber.contactId],
             references: [contact.id],
         }),
-
-        contactSmsMessages: many(contactSmsMessage),
     }),
 );

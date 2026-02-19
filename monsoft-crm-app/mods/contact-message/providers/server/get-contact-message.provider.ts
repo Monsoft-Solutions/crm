@@ -6,56 +6,21 @@ import { Tx } from '@db/types';
 import { ContactChannelType } from '@mods/contact-channel/enums';
 
 export const getContactMessage = (async ({ db, messageId }) => {
-    const { data: whatsappMessage, error: whatsappMessageError } =
-        await catchError(
-            db.query.contactWhatsappMessage.findFirst({
-                where: (record, { eq }) => eq(record.id, messageId),
-            }),
-        );
-
-    if (whatsappMessageError) return Error();
-
-    if (whatsappMessage)
-        return Success({
-            id: whatsappMessage.id,
-            contactId: whatsappMessage.contactId,
-            body: whatsappMessage.body,
-            channelType: 'whatsapp',
-        });
-
-    const { data: smsMessage, error: smsMessageError } = await catchError(
-        db.query.contactSmsMessage.findFirst({
+    const { data: message, error: messageError } = await catchError(
+        db.query.contactMessage.findFirst({
             where: (record, { eq }) => eq(record.id, messageId),
         }),
     );
 
-    if (smsMessageError) return Error();
+    if (messageError) return Error();
+    if (!message) return Error('MESSAGE_NOT_FOUND');
 
-    if (smsMessage)
-        return Success({
-            id: smsMessage.id,
-            contactId: smsMessage.contactId,
-            body: smsMessage.body,
-            channelType: 'sms',
-        });
-
-    const { data: emailMessage, error: emailMessageError } = await catchError(
-        db.query.contactEmail.findFirst({
-            where: (record, { eq }) => eq(record.id, messageId),
-        }),
-    );
-
-    if (emailMessageError) return Error();
-
-    if (emailMessage)
-        return Success({
-            id: emailMessage.id,
-            contactId: emailMessage.contactId,
-            body: emailMessage.body,
-            channelType: 'email',
-        });
-
-    return Error('MESSAGE_NOT_FOUND');
+    return Success({
+        id: message.id,
+        contactId: message.contactId,
+        body: message.body,
+        channelType: message.channel,
+    });
 }) satisfies Function<
     { db: Tx; messageId: string },
     {
