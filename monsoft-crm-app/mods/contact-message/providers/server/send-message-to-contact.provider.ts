@@ -15,11 +15,13 @@ export const sendMessageToContact = async ({
     contactId,
     channelType,
     body,
+    subject,
 }: {
     db: Tx;
     contactId: string;
     channelType: ContactChannelType;
     body: string;
+    subject?: string;
 }) => {
     let id: string;
 
@@ -40,7 +42,7 @@ export const sendMessageToContact = async ({
         case 'email': {
             const { data: emailMessage, error } = await sendEmailToContact({
                 contactId,
-                subject: '',
+                subject: subject ?? '',
                 body,
                 db,
             });

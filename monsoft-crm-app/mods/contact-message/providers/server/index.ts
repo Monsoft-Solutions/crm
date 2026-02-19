@@ -10,3 +10,5 @@ export * from './get-contact-compressed-chat.provider';
 export * from './ensure-chat-compression.provider';
 
 export * from './mark-all-contact-inbound-messages-as-read.provider';
+
+export * from './draft-email-with-ai.provider';

@@ -12,6 +12,7 @@ import { markAllContactInboundMessagesAsRead } from './mark-all-contact-inbound-
 // subscriptions
 import { onNewContactMessage } from './new-contact-message.subscription';
 import { onContactMessageStatusUpdated } from './contact-message-status-updated.subscription';
+import { onDraftEmailWithAi } from './draft-email-with-ai.subscription';
 
 export const contactMessage = endpoints({
     // queries
@@ -26,4 +27,5 @@ export const contactMessage = endpoints({
     // subscriptions
     onNewContactMessage,
     onContactMessageStatusUpdated,
+    onDraftEmailWithAi,
 });

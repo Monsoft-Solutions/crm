@@ -11,12 +11,16 @@ export const sendMessageToContact = protectedEndpoint
     .input(sendMessageToContactSchema)
     .mutation(
         queryMutationCallback(
-            async ({ input: { contactId, channelType, body }, db }) => {
+            async ({
+                input: { contactId, channelType, body, subject },
+                db,
+            }) => {
                 const { error } = await sendMessageToContactProvider({
                     db,
                     contactId,
                     channelType,
                     body,
+                    subject,
                 });
 
                 if (error) return Error();

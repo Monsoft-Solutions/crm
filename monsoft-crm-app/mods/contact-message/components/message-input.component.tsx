@@ -35,6 +35,8 @@ import {
     communicationChannelTypeToTooltip,
 } from '@mods/contact-channel/utils';
 
+import { EmailComposeDrawer } from './email-compose-drawer.component';
+
 export function MessageInput({
     activeContactId,
     initText,
@@ -68,6 +70,8 @@ export function MessageInput({
 
     const [selectedChannel, setSelectedChannel] =
         useState<ContactChannelType>('sms');
+
+    const [emailDrawerOpen, setEmailDrawerOpen] = useState(false);
 
     const { data: availableContactChannels } =
         api.contactChannel.getAvailableContactChannels.useQuery({
@@ -222,6 +226,10 @@ export function MessageInput({
                                     <DropdownMenuItem
                                         key={channelType}
                                         onClick={() => {
+                                            if (channelType === 'email') {
+                                                setEmailDrawerOpen(true);
+                                                return;
+                                            }
                                             setSelectedChannel(channelType);
                                         }}
                                         className="flex items-center gap-2 py-1.5"
@@ -281,6 +289,12 @@ export function MessageInput({
                     ))}
                 </div>
             )}
+
+            <EmailComposeDrawer
+                open={emailDrawerOpen}
+                onOpenChange={setEmailDrawerOpen}
+                contactId={activeContactId}
+            />
         </>
     );
 }

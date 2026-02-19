@@ -20,8 +20,15 @@ import { MessageBubbleProps } from '../schemas';
 
 import { contactMessageStatusToIcon } from '@mods/contact-channel/utils';
 
+import { EmailMessageBubble } from './email-message-bubble.component';
+
 export const MessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>(
-    ({ body, direction, createdAt, channelType, status }, ref) => {
+    (props, ref) => {
+        const { body, direction, createdAt, channelType, status } = props;
+
+        if (channelType === 'email') {
+            return <EmailMessageBubble ref={ref} {...props} />;
+        }
         const lines = body.split('\n');
 
         const ChannelIcon = communicationChannelTypeToIcon(channelType);
