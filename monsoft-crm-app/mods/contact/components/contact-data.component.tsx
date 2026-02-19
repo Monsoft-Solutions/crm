@@ -1,4 +1,4 @@
-import { User, MessageSquare, Bot } from 'lucide-react';
+import { User, MessageSquare, Mail, Bot } from 'lucide-react';
 
 import {
     Accordion,
@@ -9,6 +9,7 @@ import {
 
 import { ContactInfo } from './contact-info.component';
 import { ContactPhoneNumbers } from './contact-phone-numbers.component';
+import { ContactEmailAddresses } from './contact-email-addresses.component';
 import { ContactAssignedAssistant } from './contact-assigned-assistant.component';
 
 export function ContactData({ contactId }: { contactId: string }) {
@@ -47,6 +48,23 @@ export function ContactData({ contactId }: { contactId: string }) {
 
                     <AccordionContent className="px-3 pt-3 pb-5">
                         <ContactPhoneNumbers
+                            key={contactId}
+                            contactId={contactId}
+                        />
+                    </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="email">
+                    <AccordionTrigger className="hover:bg-accent/50 py-3 transition-colors">
+                        <div className="flex items-center">
+                            <Mail className="text-primary/70 mr-2 h-5 w-5 scale-80" />
+
+                            <h3 className="text-base font-medium">Email</h3>
+                        </div>
+                    </AccordionTrigger>
+
+                    <AccordionContent className="px-3 pt-3 pb-5">
+                        <ContactEmailAddresses
                             key={contactId}
                             contactId={contactId}
                         />

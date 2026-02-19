@@ -7,6 +7,7 @@ import { getContactEmailAddresses } from './get-contact-email-addresses.query';
 
 // mutations
 import { addContactEmailAddress } from './add-contact-email-address.mutation';
+import { removeContactEmailAddress } from './remove-contact-email-address.mutation';
 import { addContactPhoneNumber } from './add-contact-phone-number.mutation';
 import { removeContactPhoneNumber } from './remove-contact-phone-number.mutation';
 import { setDefaultContactPhoneNumber } from './set-default-contact-phone-number.mutation';
@@ -21,6 +22,7 @@ export const contactChannel = endpoints({
 
     // mutations
     addContactEmailAddress,
+    removeContactEmailAddress,
     addContactPhoneNumber,
     removeContactPhoneNumber,
     setDefaultContactPhoneNumber,
