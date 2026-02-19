@@ -23,7 +23,8 @@ export function twilioEventWebhookHandler(server: express.Express) {
             const { MessageSid, MessageStatus, To, From } = statusResult.data;
 
             const isWhatsapp =
-                To?.startsWith('whatsapp:') ?? From?.startsWith('whatsapp:');
+                To?.startsWith('whatsapp:') === true ||
+                From?.startsWith('whatsapp:') === true;
 
             logger.info('[twilioEventWebhook] Status callback received', {
                 sid: MessageSid,
