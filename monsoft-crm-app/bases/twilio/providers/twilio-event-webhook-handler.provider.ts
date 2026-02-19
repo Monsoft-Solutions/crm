@@ -4,7 +4,6 @@ import { twilioEventWebhookPath } from '../constants';
 
 import {
     twilioEventWebhookBodySchema,
-    twilioWebhookInboundSchema,
     twilioWebhookStatusSchema,
 } from '../schemas';
 
@@ -54,54 +53,7 @@ export function twilioEventWebhookHandler(server: express.Express) {
             return;
         }
 
-        // Standard Twilio webhook format (urlencoded): inbound message
-        const inboundResult = twilioWebhookInboundSchema.safeParse(req.body);
-
-        if (inboundResult.success) {
-            const { From, To, Body } = inboundResult.data;
-
-            const isWhatsapp = From.startsWith('whatsapp:');
-
-            if (isWhatsapp) {
-                const fromPhone = From.replace('whatsapp:', '');
-                const toPhone = To.replace('whatsapp:', '');
-
-                logger.info('[twilioEventWebhook] Inbound WhatsApp message', {
-                    from: fromPhone,
-                    to: toPhone,
-                });
-
-                emit({
-                    event: 'twilioWhatsappMessageReceived',
-                    payload: {
-                        fromPhoneNumber: fromPhone,
-                        toPhoneNumber: toPhone,
-                        body: Body,
-                        createdAt: Date.now(),
-                    },
-                });
-            } else {
-                logger.info('[twilioEventWebhook] Inbound SMS message', {
-                    from: From,
-                    to: To,
-                });
-
-                emit({
-                    event: 'twilioMessageReceived',
-                    payload: {
-                        from: From,
-                        to: To,
-                        body: Body,
-                        createdAt: Date.now(),
-                    },
-                });
-            }
-
-            res.send();
-            return;
-        }
-
-        // Twilio Event Streams format (JSON)
+        // Twilio Event Streams format (JSON) — handles inbound messages + status updates
         const eventResult = twilioEventWebhookBodySchema.safeParse(req.body);
 
         if (eventResult.success) {
