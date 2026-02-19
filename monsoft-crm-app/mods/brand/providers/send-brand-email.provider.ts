@@ -33,11 +33,13 @@ export const sendBrandEmail = (async ({ brandId, to, subject, body, db }) => {
 
     if (!defaultEmailAddress) return Error('NO_DEFAULT_EMAIL_ADDRESS');
 
+    const isHtml = /<[a-z][\s\S]*>/i.test(body);
+
     const { data: messsage, error: messageError } = await sendEmail({
         from: defaultEmailAddress,
         to,
         subject,
-        text: body,
+        ...(isHtml ? { html: body } : { text: body }),
     });
 
     if (messageError) return Error();
