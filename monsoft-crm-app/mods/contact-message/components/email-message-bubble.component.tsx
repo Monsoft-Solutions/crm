@@ -94,7 +94,7 @@ export const EmailMessageBubble = forwardRef<HTMLDivElement, MessageBubbleProps>
                         />
 
                         <p className="text-sm font-semibold leading-tight">
-                            {subject || '(no subject)'}
+                            {subject ?? '(no subject)'}
                         </p>
                     </div>
 

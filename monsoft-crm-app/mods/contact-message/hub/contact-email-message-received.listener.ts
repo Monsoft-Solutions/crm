@@ -14,12 +14,14 @@ void listen(
 
     async ({ from, to, subject, text, html, createdAt }) => {
         // Extract raw email from "Name <email>" format
+        const emailBracketRe = /<(.+)>/;
+
         const fromEmail = from.includes('<')
-            ? (from.match(/<(.+)>/)?.[1] ?? from)
+            ? (emailBracketRe.exec(from)?.[1] ?? from)
             : from;
 
         const toEmail = to.includes('<')
-            ? (to.match(/<(.+)>/)?.[1] ?? to)
+            ? (emailBracketRe.exec(to)?.[1] ?? to)
             : to;
 
         // Find the brand by matching the "to" email with brand email addresses

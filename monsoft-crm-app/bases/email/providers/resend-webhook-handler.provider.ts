@@ -31,7 +31,7 @@ export function resendWebhookHandler(server: express.Express) {
                 const { data: email, error: fetchError } =
                     await fetchReceivedEmail({ emailId });
 
-                if (!fetchError && email) {
+                if (!fetchError) {
                     const to = Array.isArray(email.to)
                         ? email.to[0]
                         : email.to;
@@ -40,11 +40,11 @@ export function resendWebhookHandler(server: express.Express) {
                         event: 'resendInboundEmailReceived',
                         payload: {
                             emailId,
-                            from: email.from ?? '',
-                            to: to ?? '',
-                            subject: email.subject ?? '',
-                            text: email.text ?? '',
-                            html: email.html ?? '',
+                            from: email.from,
+                            to,
+                            subject: email.subject,
+                            text: email.text,
+                            html: email.html,
                             createdAt: Date.now(),
                         },
                     });

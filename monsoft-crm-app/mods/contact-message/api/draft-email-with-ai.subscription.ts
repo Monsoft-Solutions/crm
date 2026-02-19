@@ -23,9 +23,10 @@ export const onDraftEmailWithAi = protectedEndpoint
             userId: user.id,
         });
 
-        if (error || !reader) return;
+        if (error) return;
 
         try {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             while (true) {
                 if (signal?.aborted) break;
 
