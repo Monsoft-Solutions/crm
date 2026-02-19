@@ -38,8 +38,7 @@ export const sendSmsToContact = (async ({ contactId, body, db }) => {
     );
 
     if (brandPhoneError) return Error();
-
-    const brandPhoneNumber = brandPhone?.phoneNumber ?? '';
+    if (!brandPhone) return Error('NO_BRAND_PHONE_NUMBER');
 
     const { data: message, error: messageError } = await sendBrandSms({
         brandId,
@@ -60,7 +59,7 @@ export const sendSmsToContact = (async ({ contactId, body, db }) => {
             externalId: sid,
             contactId,
             channel: 'sms',
-            fromAddress: brandPhoneNumber,
+            fromAddress: brandPhone.phoneNumber,
             toAddress: defaultContactPhoneNumber,
             direction: 'outbound',
             body,

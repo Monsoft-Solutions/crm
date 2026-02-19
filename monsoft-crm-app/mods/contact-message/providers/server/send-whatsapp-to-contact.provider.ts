@@ -37,8 +37,7 @@ export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
     );
 
     if (brandWhatsappError) return Error();
-
-    const brandWhatsappNumber = brandWhatsapp?.phoneNumber ?? '';
+    if (!brandWhatsapp) return Error('NO_BRAND_WHATSAPP_NUMBER');
 
     const { data: message, error: messageError } = await sendBrandWhatsapp({
         brandId,
@@ -59,7 +58,7 @@ export const sendWhatsappToContact = (async ({ contactId, body, db }) => {
             externalId: sid,
             contactId,
             channel: 'whatsapp',
-            fromAddress: brandWhatsappNumber,
+            fromAddress: brandWhatsapp.phoneNumber,
             toAddress: defaultContactPhoneNumber,
             direction: 'outbound',
             body,

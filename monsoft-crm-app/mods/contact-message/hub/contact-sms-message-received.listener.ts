@@ -111,7 +111,7 @@ void listen(
                 channelType: 'sms',
                 direction: 'inbound',
                 body,
-                createdAt: Date.now(),
+                createdAt,
             },
         });
     },

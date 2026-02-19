@@ -16,6 +16,15 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
             where: (record, { eq }) => eq(record.id, contactId),
             with: {
                 emailAddresses: true,
+                brand: {
+                    with: {
+                        domains: {
+                            with: {
+                                emailAddresses: true,
+                            },
+                        },
+                    },
+                },
             },
         }),
     );
@@ -23,7 +32,7 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
     if (contactError) return Error();
     if (!contact) return Error();
 
-    const { brandId, emailAddresses } = contact;
+    const { brandId, emailAddresses, brand } = contact;
 
     const defaultContactEmailAddress = emailAddresses.at(0);
 
@@ -31,17 +40,12 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
 
     const { emailAddress } = defaultContactEmailAddress;
 
-    const { data: brand, error: brandError } = await catchError(
-        db.query.brand.findFirst({
-            where: (record, { eq }) => eq(record.id, brandId),
-        }),
+    const brandEmailAddresses = brand.domains.flatMap(
+        ({ domain, emailAddresses: addrs }) =>
+            addrs.map(({ username }) => `${username}@${domain}`),
     );
 
-    if (brandError) return Error();
-
-    const brandEmail = brand?.name
-        ? `noreply@${brand.name.toLowerCase().replace(/\s+/g, '')}.com`
-        : '';
+    const fromAddress = brandEmailAddresses.at(0) ?? '';
 
     const { data: message, error: messageError } = await sendBrandEmail({
         brandId,
@@ -63,7 +67,7 @@ export const sendEmailToContact = (async ({ contactId, subject, body, db }) => {
             externalId: sid,
             contactId,
             channel: 'email',
-            fromAddress: brandEmail,
+            fromAddress,
             toAddress: emailAddress,
             subject,
             direction: 'outbound',
