@@ -80,7 +80,7 @@ export const registerWhatsappSender = protectedEndpoint
                 const { data: sender, error: senderError } =
                     await registerWhatsappSenderProvider({
                         client,
-                        phoneNumber: twilioPhoneNumberSid,
+                        phoneNumberSid: twilioPhoneNumberSid,
                     });
 
                 if (senderError) {

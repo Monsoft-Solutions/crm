@@ -5,10 +5,10 @@ import { Error, Success } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
 import { logger } from '@log/providers';
 
-export const registerWhatsappSender = (async ({ client, phoneNumber }) => {
+export const registerWhatsappSender = (async ({ client, phoneNumberSid }) => {
     logger.info('Registering WhatsApp sender', {
         label: 'twilio',
-        phoneNumber,
+        phoneNumberSid,
     });
 
     const { data: services, error: servicesError } = await catchError(
@@ -38,13 +38,13 @@ export const registerWhatsappSender = (async ({ client, phoneNumber }) => {
     const { data: sender, error: senderError } = await catchError(
         client.messaging.v1
             .services(service.sid)
-            .phoneNumbers.create({ phoneNumberSid: phoneNumber }),
+            .phoneNumbers.create({ phoneNumberSid }),
     );
 
     if (senderError) {
         logger.error('Failed to register WhatsApp sender', {
             label: 'twilio',
-            phoneNumber,
+            phoneNumberSid,
             serviceSid: service.sid,
             error: String(senderError),
         });
@@ -63,6 +63,6 @@ export const registerWhatsappSender = (async ({ client, phoneNumber }) => {
 
     return Success(result);
 }) satisfies Function<
-    { client: Twilio; phoneNumber: string },
+    { client: Twilio; phoneNumberSid: string },
     { senderSid: string; status: 'creating' }
 >;
