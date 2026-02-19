@@ -13,4 +13,6 @@ export const twilioWebhookInboundSchema = z.object({
 export const twilioWebhookStatusSchema = z.object({
     MessageSid: z.string(),
     MessageStatus: contactMessageStatusEnum,
+    To: z.string().optional(),
+    From: z.string().optional(),
 });

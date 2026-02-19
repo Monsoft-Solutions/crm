@@ -23,6 +23,7 @@ const twilioEventSchema = z.discriminatedUnion('type', [
 
         data: z.object({
             messageSid: z.string(),
+            from: z.string().optional(),
         }),
     }),
 
@@ -33,6 +34,7 @@ const twilioEventSchema = z.discriminatedUnion('type', [
 
         data: z.object({
             messageSid: z.string(),
+            from: z.string().optional(),
         }),
     }),
 
@@ -43,6 +45,7 @@ const twilioEventSchema = z.discriminatedUnion('type', [
 
         data: z.object({
             messageSid: z.string(),
+            from: z.string().optional(),
         }),
     }),
 ]);
