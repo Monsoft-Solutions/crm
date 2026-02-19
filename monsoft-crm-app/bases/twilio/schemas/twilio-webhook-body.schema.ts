@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 import { contactMessageStatusEnum } from '@mods/contact-message/enums';
 
-export const twilioSandboxInboundSchema = z.object({
+export const twilioWebhookInboundSchema = z.object({
     MessageSid: z.string(),
     From: z.string(),
     To: z.string(),
@@ -10,7 +10,7 @@ export const twilioSandboxInboundSchema = z.object({
     SmsStatus: z.literal('received'),
 });
 
-export const twilioSandboxStatusSchema = z.object({
+export const twilioWebhookStatusSchema = z.object({
     MessageSid: z.string(),
     MessageStatus: contactMessageStatusEnum,
 });

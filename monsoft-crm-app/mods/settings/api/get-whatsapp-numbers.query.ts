@@ -80,8 +80,6 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                 ]),
             );
 
-            const TWILIO_SANDBOX_NUMBER = '+14155238886';
-
             const result = incomingNumbers.map((number) => {
                 const db = dbMap.get(number.phoneNumber);
 
@@ -94,26 +92,8 @@ export const getWhatsappNumbers = protectedEndpoint.query(
                     isDefault: db?.isDefault ?? null,
                     brandId: db?.brandId ?? null,
                     brandName: db?.brandName ?? null,
-                    isSandbox: false,
                 };
             });
-
-            if (!result.some((n) => n.phoneNumber === TWILIO_SANDBOX_NUMBER)) {
-                const sandboxDb = dbMap.get(TWILIO_SANDBOX_NUMBER);
-
-                result.push({
-                    phoneNumber: TWILIO_SANDBOX_NUMBER,
-                    friendlyName: 'WhatsApp Sandbox',
-                    id: sandboxDb?.id ?? null,
-                    twilioSid: sandboxDb?.twilioSid ?? null,
-                    senderStatus:
-                        sandboxDb?.senderStatus ?? ('online' as const),
-                    isDefault: sandboxDb?.isDefault ?? null,
-                    brandId: sandboxDb?.brandId ?? null,
-                    brandName: sandboxDb?.brandName ?? null,
-                    isSandbox: true,
-                });
-            }
 
             // Sync status for "creating" numbers
             const creatingNumbers = result.filter(

@@ -6,13 +6,7 @@ import { catchError } from '@errors/utils/catch-error.util';
 
 import { logger } from '@log/providers';
 
-export const sendWhatsapp = (async ({
-    client,
-    from,
-    to,
-    body,
-    statusCallback,
-}) => {
+export const sendWhatsapp = (async ({ client, from, to, body }) => {
     logger.info('[sendWhatsapp] Sending message', { from, to });
 
     const { data: message, error: messageError } = await catchError(
@@ -20,7 +14,6 @@ export const sendWhatsapp = (async ({
             body,
             from: `whatsapp:${from}`,
             to: `whatsapp:${to}`,
-            ...(statusCallback ? { statusCallback } : {}),
         }),
     );
 
@@ -48,7 +41,6 @@ export const sendWhatsapp = (async ({
         from: string;
         to: string;
         body: string;
-        statusCallback?: string;
     },
     { sid: string }
 >;

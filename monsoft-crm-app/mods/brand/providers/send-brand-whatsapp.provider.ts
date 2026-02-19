@@ -10,10 +10,6 @@ import { getTwilioClientOrg } from '@twilio/providers';
 
 import { logger } from '@log/providers';
 
-import { appUrl } from '@dist/constants';
-
-import { twilioSandboxWebhookPath } from '@twilio/constants';
-
 export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
     logger.info('[sendBrandWhatsapp] Starting', { brandId, to });
 
@@ -83,15 +79,9 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
         return Error();
     }
 
-    const isSandbox = defaultWhatsappNumber === '+14155238886';
-    const statusCallback = isSandbox
-        ? appUrl + twilioSandboxWebhookPath
-        : undefined;
-
-    logger.info('[sendBrandWhatsapp] Sending via WhatsApp', {
+    logger.info('[sendBrandWhatsapp] Sending via Twilio', {
         from: defaultWhatsappNumber,
         to,
-        isSandbox,
     });
 
     const { data: message, error: messageError } = await sendWhatsapp({
@@ -99,11 +89,10 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
         from: defaultWhatsappNumber,
         to,
         body,
-        statusCallback,
     });
 
     if (messageError) {
-        logger.error('[sendBrandWhatsapp] Send failed', {
+        logger.error('[sendBrandWhatsapp] Twilio send failed', {
             from: defaultWhatsappNumber,
             to,
             error: String(messageError),
@@ -113,13 +102,9 @@ export const sendBrandWhatsapp = (async ({ brandId, to, body, db }) => {
 
     const { sid } = message;
 
-    logger.info('[sendBrandWhatsapp] Message sent', { sid });
+    logger.info('[sendBrandWhatsapp] Message sent via Twilio', { sid });
 
-    const result = {
-        sid,
-    };
-
-    return Success(result);
+    return Success({ sid });
 }) satisfies Function<
     { brandId: string; to: string; body: string; db: Tx },
     { sid: string }

@@ -47,4 +47,6 @@ const twilioEventSchema = z.discriminatedUnion('type', [
     }),
 ]);
 
-export const twilioEventWebhookBodySchema = z.array(twilioEventSchema);
+export const twilioEventWebhookBodySchema = z
+    .union([z.array(twilioEventSchema), twilioEventSchema])
+    .transform((val) => (Array.isArray(val) ? val : [val]));

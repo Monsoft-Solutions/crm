@@ -17,7 +17,7 @@ export function WhatsappSetupGuide(): ReactElement {
 
     const webhookUrl =
         typeof window !== 'undefined'
-            ? `${window.location.origin}/twilio-sandbox`
+            ? `${window.location.origin}/twilio-event`
             : '';
 
     function handleCopy() {
@@ -45,30 +45,20 @@ export function WhatsappSetupGuide(): ReactElement {
             <CardContent className="space-y-4">
                 <div>
                     <h4 className="mb-2 text-sm font-medium">
-                        Quick Start (Sandbox Testing)
+                        Twilio WhatsApp Setup
                     </h4>
 
                     <ol className="text-muted-foreground list-inside list-decimal space-y-2 text-sm">
                         <li>
-                            Assign the{' '}
-                            <span className="font-mono font-medium">
-                                WhatsApp Sandbox
-                            </span>{' '}
-                            number to your brand below.
+                            Purchase a WhatsApp-enabled phone number in Twilio
+                            Console or use the number manager below.
                         </li>
-                        <li>Set it as the default (star icon).</li>
                         <li>
-                            In Twilio Console &rarr; Messaging &rarr; Try it out
-                            &rarr; Send a WhatsApp message &rarr; Sandbox
-                            settings, set both{' '}
-                            <span className="font-medium">
-                                &ldquo;When a message comes in&rdquo;
-                            </span>{' '}
-                            and{' '}
-                            <span className="font-medium">
-                                &ldquo;Status callback URL&rdquo;
-                            </span>{' '}
-                            to:
+                            Register the number as a WhatsApp sender in Twilio
+                            Console &rarr; Messaging &rarr; WhatsApp senders.
+                        </li>
+                        <li>
+                            Configure the Twilio Event Streams webhook URL to:
                             <span className="mt-1 flex items-center gap-2">
                                 <code className="bg-muted rounded px-2 py-1 text-xs">
                                     {webhookUrl}
@@ -93,15 +83,8 @@ export function WhatsappSetupGuide(): ReactElement {
                             </span>
                         </li>
                         <li>
-                            Find your sandbox join code on the same page in
-                            Twilio Console.
-                        </li>
-                        <li>
-                            Have recipients text{' '}
-                            <span className="font-mono font-medium">
-                                join &lt;your-keyword&gt;
-                            </span>{' '}
-                            to +14155238886 from their WhatsApp.
+                            Assign the number to your brand below and set it as
+                            default (star icon).
                         </li>
                         <li>
                             Open a contact&apos;s conversation, select the
