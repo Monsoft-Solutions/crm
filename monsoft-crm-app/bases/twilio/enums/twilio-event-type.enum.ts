@@ -3,6 +3,7 @@ import { z } from 'zod';
 export const twilioEventTypeEnum = z.enum([
     'com.twilio.messaging.message.delivered',
     'com.twilio.messaging.message.sent',
+    'com.twilio.messaging.message.read',
     'com.twilio.messaging.inbound-message.received',
 ]);
 

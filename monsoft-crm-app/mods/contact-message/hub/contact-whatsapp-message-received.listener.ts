@@ -10,14 +10,14 @@ import { db } from '@db/providers/server';
 import tables from '@db/db';
 
 void listen(
-    'whatsappMessageReceivedEvent',
+    'twilioWhatsappMessageReceived',
 
-    async ({ contactName, fromPhoneNumber, toPhoneNumberId, body }) => {
+    async ({ fromPhoneNumber, toPhoneNumber, body }) => {
         const { data: brandWhatsappNumber, error: brandWhatsappNumberError } =
             await catchError(
                 db.query.brandWhatsappNumber.findFirst({
                     where: (record, { eq }) =>
-                        eq(record.phoneId, toPhoneNumberId),
+                        eq(record.phoneNumber, toPhoneNumber),
 
                     with: {
                         brand: true,
@@ -60,7 +60,7 @@ void listen(
                 db.insert(tables.contact).values({
                     id: contactId,
                     brandId: brand.id,
-                    firstName: contactName,
+                    firstName: '',
                     lastName: '',
                     assistantId: brand.defaultAssistantId,
                 }),

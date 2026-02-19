@@ -470,6 +470,13 @@
       "when": 1770391050737,
       "tag": "0066_fantastic_dark_beast",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1770397533348,
+      "tag": "0067_outstanding_whizzer",
+      "breakpoints": true
     }
   ]
 }

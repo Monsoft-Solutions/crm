@@ -23,6 +23,7 @@ const twilioEventSchema = z.discriminatedUnion('type', [
 
         data: z.object({
             messageSid: z.string(),
+            from: z.string().optional(),
         }),
     }),
 
@@ -33,8 +34,22 @@ const twilioEventSchema = z.discriminatedUnion('type', [
 
         data: z.object({
             messageSid: z.string(),
+            from: z.string().optional(),
+        }),
+    }),
+
+    z.object({
+        type: z.literal(
+            'com.twilio.messaging.message.read' satisfies TwilioEventType,
+        ),
+
+        data: z.object({
+            messageSid: z.string(),
+            from: z.string().optional(),
         }),
     }),
 ]);
 
-export const twilioEventWebhookBodySchema = z.array(twilioEventSchema);
+export const twilioEventWebhookBodySchema = z
+    .union([z.array(twilioEventSchema), twilioEventSchema])
+    .transform((val) => (Array.isArray(val) ? val : [val]));

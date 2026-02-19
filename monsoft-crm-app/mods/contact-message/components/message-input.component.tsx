@@ -24,6 +24,8 @@ import { Attach } from '@ui/attach.ui';
 
 import { cn } from '@css/utils';
 
+import { toast } from 'sonner';
+
 import { api } from '@api/providers/web';
 
 import { ContactChannelType } from '@mods/contact-channel/enums';
@@ -100,13 +102,18 @@ export function MessageInput({
     const handleSendMessage = useCallback(async () => {
         if (canSend) {
             setIsSending(true);
-            await sendMessage();
-            setIsSending(false);
 
-            setNewMessage('');
-            setAttachments([]);
+            try {
+                await sendMessage();
 
-            textAreaRef.current?.textArea.focus();
+                setNewMessage('');
+                setAttachments([]);
+            } catch {
+                toast.error('Failed to send message');
+            } finally {
+                setIsSending(false);
+                textAreaRef.current?.textArea.focus();
+            }
         }
     }, [sendMessage, canSend]);
 
