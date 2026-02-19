@@ -1,5 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { and, eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 
 import { Success, Error } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
@@ -35,7 +35,12 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                 // Find existing assignment for this WhatsApp number (scoped to org)
                 const { data: existing, error: findError } = await catchError(
                     db
-                        .select({ id: tables.brandWhatsappNumber.id })
+                        .select({
+                            id: tables.brandWhatsappNumber.id,
+                            senderStatus:
+                                tables.brandWhatsappNumber.senderStatus,
+                            twilioSid: tables.brandWhatsappNumber.twilioSid,
+                        })
                         .from(tables.brandWhatsappNumber)
                         .innerJoin(
                             tables.brand,
@@ -66,26 +71,28 @@ export const assignWhatsappNumberBrand = protectedEndpoint
 
                 // Delete existing assignment if any
                 if (existing.length > 0) {
-                    logger.info('Removing existing brand assignment', {
+                    const existingIds = existing.map((row) => row.id);
+
+                    logger.info('Removing existing brand assignments', {
                         label: 'whatsapp',
-                        existingId: existing[0].id,
+                        existingIds,
                     });
 
                     const { error: deleteError } = await catchError(
                         db
                             .delete(tables.brandWhatsappNumber)
                             .where(
-                                eq(
+                                inArray(
                                     tables.brandWhatsappNumber.id,
-                                    existing[0].id,
+                                    existingIds,
                                 ),
                             ),
                     );
 
                     if (deleteError) {
-                        logger.error('Failed to delete existing assignment', {
+                        logger.error('Failed to delete existing assignments', {
                             label: 'whatsapp',
-                            existingId: existing[0].id,
+                            existingIds,
                         });
                         return Error('DELETE_FAILED');
                     }
@@ -142,6 +149,9 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                 const isDefault =
                     existingNumbers.length === 0 ? ('true' as const) : null;
 
+                // Preserve sender state from existing assignment if available
+                const previousRecord = existing.length > 0 ? existing[0] : null;
+
                 // Insert new assignment
                 const { error: insertError } = await catchError(
                     db.insert(tables.brandWhatsappNumber).values({
@@ -149,6 +159,8 @@ export const assignWhatsappNumberBrand = protectedEndpoint
                         brandId,
                         phoneNumber,
                         isDefault,
+                        senderStatus: previousRecord?.senderStatus ?? 'offline',
+                        twilioSid: previousRecord?.twilioSid ?? null,
                     }),
                 );
 

@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { and, eq, inArray } from 'drizzle-orm';
 
 import { Success, Error } from '@errors/utils';
 import { catchError } from '@errors/utils/catch-error.util';
@@ -99,6 +99,12 @@ export const registerWhatsappSender = protectedEndpoint
                     organizationId,
                 });
 
+                // Scope update to brands within the current organization
+                const orgBrandIds = db
+                    .select({ id: tables.brand.id })
+                    .from(tables.brand)
+                    .where(eq(tables.brand.organizationId, organizationId));
+
                 const { error: updateError } = await catchError(
                     db
                         .update(tables.brandWhatsappNumber)
@@ -107,9 +113,15 @@ export const registerWhatsappSender = protectedEndpoint
                             senderStatus: 'creating',
                         })
                         .where(
-                            eq(
-                                tables.brandWhatsappNumber.phoneNumber,
-                                phoneNumber,
+                            and(
+                                eq(
+                                    tables.brandWhatsappNumber.phoneNumber,
+                                    phoneNumber,
+                                ),
+                                inArray(
+                                    tables.brandWhatsappNumber.brandId,
+                                    orgBrandIds,
+                                ),
                             ),
                         ),
                 );
